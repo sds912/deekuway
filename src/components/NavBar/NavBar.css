@@ -1,0 +1,23 @@
+.NavBar {
+
+}
+.type-location{
+    width: 210px;
+    border-right: 0 !important;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.nb-chambre{
+    width: 210px;
+    border-right: 0 !important;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.search-field{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}

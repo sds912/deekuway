@@ -1,0 +1,12 @@
+.PostForm {
+
+}
+
+.location-option, .vente-option{
+    border: 1px solid orange;
+    font-size: 22px;
+    transition: all .5s;
+}
+.btn{
+    width: 120px;
+}

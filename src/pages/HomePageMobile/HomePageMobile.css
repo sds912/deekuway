@@ -1,0 +1,42 @@
+.HomePage {
+  width: 100vw;
+}
+
+.search-filter{
+  width: 100%;
+  border: 1px solid #cccccc;
+  display: flex;
+  align-items: center;
+  justify-content:space-between;
+  padding: 4px;
+  background-color: #FFFFFF;
+  border-radius: 7px;
+}
+.search-filter input{
+  height: 38px;
+  border: none;
+  width: 100%;
+  outline: none;
+}
+
+.filter-icon{
+  height: 38px;
+   width: 45px;
+}
+
+.mode{
+  padding: 4px 8px;
+  font-size: 18px;
+  font-weight: 700;
+  opacity: .4;
+  border: 1px solid #7d7d7d !important;
+  border-radius: 7px;
+  margin: auto 2px;
+
+}
+
+.active{
+  opacity: 1 !important;
+}
+
+

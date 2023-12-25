@@ -1,0 +1,30 @@
+.active{
+    border: 2px solid #daffca !important;
+}
+
+
+
+
+.custom-scrollbar {
+    background-color: #f4f4f4;
+    border-radius: 7px !important;
+    height: 90vh !important;
+    border-radius: 7px !important;
+  overflow-y: auto; /* Add a vertical scrollbar when content overflows */
+  /* Additional styling for the scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: darkgray lightgray;
+}
+
+/* For webkit browsers like Chrome/Safari */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: lightgray;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: darkgray;
+}
