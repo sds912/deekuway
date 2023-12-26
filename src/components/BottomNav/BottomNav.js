@@ -64,8 +64,9 @@ export const BottomNav = () => {
 				title="Ajouter une annonce"
 				visible={isPostModalVisible}
 				onCancel={handlePostCancelModal}
-				footer={false}
-				style={{top: 20}}>
+				maskClosable={true}
+				bodyStyle={{padding:'4px'}}
+				footer={false}>
 				<PostForm closeModel={handlePostCancelModal} />
 			</Modal>
 		</div>)

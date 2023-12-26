@@ -1,4 +1,5 @@
 .App, html, body {
+  font-size: 12px !important;
   background-color: #f4f4f4 !important;
 
 }

@@ -2,9 +2,7 @@ import React from 'react';
 import { List } from 'antd';
 import { PostCard } from '../PostCard/PostCard';
 
-
 const PostListMobile = ({postToHomePage, posts, selectedPost}) => {
-  
   return (
     <List
       grid={{ gutter: 16, column: 1 }}

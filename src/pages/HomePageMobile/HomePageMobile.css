@@ -1,5 +1,6 @@
 .HomePage {
   width: 100vw;
+  padding-bottom: 120px !important;
 }
 
 .search-filter{
@@ -26,7 +27,7 @@
 
 .mode{
   padding: 4px 8px;
-  font-size: 18px;
+  font-size: 13px;
   font-weight: 700;
   opacity: .4;
   border: 1px solid #7d7d7d !important;
@@ -37,6 +38,11 @@
 
 .active{
   opacity: 1 !important;
+  border: none !important;
+}
+
+:where(.css-dev-only-do-not-override-2q8sxy).ant-pagination .ant-pagination-item-active {
+  border-color: orange !important;
 }
 
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import firebase from '../../services/firebaseConfig'; 
 import { message } from 'antd';
@@ -7,7 +7,7 @@ import PlacesAutocomplete, {
 	geocodeByAddress,
 	getLatLng,
   } from 'react-places-autocomplete';
-import { CloseCircleOutlined, EnvironmentOutlined, FileAddOutlined, FileImageOutlined} from '@ant-design/icons';
+import { ArrowLeftOutlined, ArrowRightOutlined, CloseCircleOutlined, EnvironmentOutlined, FileAddOutlined, FileImageOutlined} from '@ant-design/icons';
 import Loader from '../Loader/Loader';
   
 
@@ -22,7 +22,7 @@ export const  PostForm = ({closeModel}) => {
 	const [loading, setLoading] = useState(false);
 
 
-	const {register, handleSubmit, setValue, watch, getValues, formState: { errors },} = useForm();
+	const {register, handleSubmit, setValue, getFieldState, watch, getValues, formState: { errors },} = useForm();
 	
 
 
@@ -55,7 +55,10 @@ export const  PostForm = ({closeModel}) => {
 	const onCloseModel = () => {
 		closeModel()
 	}
-	
+
+	useEffect(() =>{
+      console.log(mode)
+	},[])
 	  const onAddPost = async (data) => {
 		setLoading(true);
 		 const imageUrls = await Promise.all(images.map(async (imageFile) => {
@@ -103,7 +106,7 @@ export const  PostForm = ({closeModel}) => {
 	}
 	
 	return(
-		<div className="container">
+		<div className="container px-0">
 			{contextHolder}
 			{!loading ? <div>
 				<form onSubmit={handleSubmit(onAddPost)}>
@@ -116,13 +119,13 @@ export const  PostForm = ({closeModel}) => {
 							<div className='col'>
 								<label for='location' className='p-3 fw-bold location-option text-center' style={{display: 'block', width: '100%', backgroundColor: mode === 'location' ? 'orange': 'inherit'}}>
 									Location
-									<input style={{visibility: 'hidden', position: 'absolute'}} id="location" value={'location'} type='radio' name='mode' {...register('mode', {required: true})} />
+									<input defaultValue={null} style={{visibility: 'hidden', position: 'absolute'}} id="location" value={'location'} type='radio' name='mode' {...register('mode', {required: true})} />
 								</label>
 							</div> 
 							<div className='col'>
 								<label for='vente'  className='p-3 fw-bold vente-option text-center' style={{display: 'block', width: '100%', backgroundColor: mode === 'vente' ? 'orange': 'inherit'}}>
 								Vente	
-								<input style={{visibility: 'hidden', position: 'absolute'}} id="vente" value={'vente'} type='radio' name='mode' {...register('mode', {required: true})} />
+								<input defaultValue={null} style={{visibility: 'hidden', position: 'absolute'}} id="vente" value={'vente'} type='radio' name='mode' {...register('mode', {required: true})} />
 								</label>
 							</div> 
 						</div>
@@ -130,7 +133,7 @@ export const  PostForm = ({closeModel}) => {
 					</div>
 					<div className='form-group mt-3'>
                        <label className='form-label'>Choisir le type d'appartement</label>
-					   <select className='form-select w-100' {...register("type",  {required: true})}>
+					   <select defaultValue={null} className='form-select w-100' {...register("type",  {required: true})}>
 						  <option selected value={null} disabled>Choisir le type</option>
                           <option value={'appartement'}>Appartement</option>
                           <option value={'maison'}>Maision</option>
@@ -143,13 +146,13 @@ export const  PostForm = ({closeModel}) => {
 
 					</div>
 				</>}
-				{step === 2 && <div className='form-group w-100 mt-3'>
+				{step === 2 && 
+					<div className='form-group w-100 mt-5'>
 					<label className='form-label'>Ajouter des images (max 10)</label>
-					
 					{errors.images && <div className='text-danger'>Veuillez sélectionner des images</div>}
-					<div className='row'>
-						<div className='col'>
-						<label for="images" style={{height: '120px', maxWidth: '130px', display: 'flex', backgroundColor: '#f2f2f2', alignItems: 'center', justifyContent: 'center', border: '1px dashed #ccc'}}>
+					<div className='row w-100 px-0'>
+						<div className='col-6 px-1'>
+						<label for="images" style={{height: '120px',width: '100%', display: 'flex', backgroundColor: '#f2f2f2', alignItems: 'center', justifyContent: 'center', border: '1px dashed #ccc'}}>
 							<input
 							   id='images'
 							   style={{visibility: 'hidden', position: 'absolute'}}
@@ -166,7 +169,7 @@ export const  PostForm = ({closeModel}) => {
 						
 						</div>
 						{images.map((image, index) => (
-							<div className="col p-0 mx-1" style={{position: 'relative'}}>
+							<div key={index} className="col-6 px-1 mt-2" style={{position: 'relative'}}>
 								<img style={{height: '120px'}} className='img-fluid w-100' key={index} src={URL.createObjectURL(image)} alt={`Preview ${index}`} /> 
                                 <CloseCircleOutlined onClick={() =>removeImage(index)}  style={{position: 'absolute', top: '2px', left: '2px'}} />
 						    </div>
@@ -177,13 +180,13 @@ export const  PostForm = ({closeModel}) => {
 				</div>}		
 				{step === 3 &&<div>
 					<div className='form-group w-100'>
-						<label className='form-label'>Titre</label>
+						<label className='form-label'>Titre de l'annonce</label>
 						<input type="text"  {...register("title", {required: true})} className='form-control w-100' />
 						{errors.nom && <span className='text-danger'>Veillez renseigner le titre</span>}
 					</div>
 					<div className='form-group w-100 mt-3'>
 						<label className='form-label'>Adresse de localisation</label>
-						<PlacesAutocomplete
+						{/*<PlacesAutocomplete
 							value={address}
 							onChange={handleChange}
 							onSelect={handleSelect}
@@ -224,17 +227,24 @@ export const  PostForm = ({closeModel}) => {
 								</div>
 							</div>
 							)}
-						</PlacesAutocomplete>
+							</PlacesAutocomplete>*/}
 					</div>
 					<div className='form-group w-100 mt-3'>
-						<label className='form-label'>Prix</label>
-						<input type="number"  {...register("price", {required: true, min: 20000, pattern: {value: /^[0-9]*$/,message: 'Please enter only numbers',}})} className='form-control w-100' />
+						<label className='form-label'>Prix par (Mois, Jour)</label>
+						<div className='d-flex justify-content-between align-items-center'>
+						    <input type="number"  {...register("price", {required: true, min: 20000, pattern: {value: /^[0-9]*$/,message: 'Please enter only numbers',}})} className='form-control w-100' />
+							<select className='form-select' {...register("priceBy",  {required: true})}>
+								<option value={null} selected disabled>Par ...</option>
+								<option value={'mois'}>Mois</option>
+								<option value={'jour'}>Jour</option>
+							</select>
+						</div>
 						{errors.price && <span className='text-danger'>Veillez renseigner le prix</span>}
 					</div>
 				</div>}
 				{step === 4 && mode !== null && type !== 'magasin'  &&<div>
 				<div className='row'>
-                   <div className='col'>
+                   <div className='col-6'>
 					<div className='form-group  mt-3'>
 						<label className='form-label'>Chambre(s)</label>
 						<select className='form-select' {...register("rooms",  {required: true})}>
@@ -248,7 +258,7 @@ export const  PostForm = ({closeModel}) => {
 						{errors.chambre && <span className='text-danger'>Veillez renseigner le nombre de chambre</span>}
 						</div>
 				   </div>
-				   <div className='col'>
+				   <div className='col-6'>
 						<div className='form-group mt-3'>
 						   <label className='form-label'>Sallon(s)</label>
 						   <select className='form-select' {...register("sallon", {required: true})}>
@@ -262,7 +272,7 @@ export const  PostForm = ({closeModel}) => {
 							{errors.toilette && <span className='text-danger'>Veillez renseigner nombre de salle de bain</span>}
 						</div>
 				   </div>
-                   <div  className='col'>
+                   <div  className='col-6'>
 						<div className='form-group mt-3'>
 						   <label className='form-label'>Salle(s) de bain</label>
 						   <select className='form-select' {...register("bathRooms", {required: true})}>
@@ -276,7 +286,7 @@ export const  PostForm = ({closeModel}) => {
 							{errors.toilette && <span className='text-danger'>Veillez renseigner nombre de salle de bain</span>}
 						</div>
 				   </div>
-                   <div className='col'>
+                   <div className='col-6'>
 				   		<div className='form-group  mt-3'>
 						   <label className='form-label'>Toilette(s)</label>
 						   <select className='form-select' {...register("toilet",{required: true})}>
@@ -293,14 +303,22 @@ export const  PostForm = ({closeModel}) => {
 				</div>
 				<div className='form-group w-100 mt-3'>
 					<label className='form-label'>Description </label>
-						<textarea  {...register("description", { required: true })}  className='form-control w-100' />
-						{errors.description && <span className='text-danger'>Veillez Ajouter une description</span>}
+					<textarea rows={5} {...register("description", { required: true })}  className='form-control w-100' />
+					{errors.description && <span className='text-danger'>Veillez Ajouter une description</span>}
 				</div>
 				</div>}
-					
-					<div className='mt-5 px-2 d-flex justify-content-between align-items-end'>
-						{step > 1 &&   <button  onClick={() => prev()} className='btn btn-outline-dark'>Précédent</button>}
-						{step < 4 &&   <button  onClick={() => next()} className='btn btn-outline-warning'>Suivant</button>}
+				
+					<div className={step > 1 ?'mt-5 px-2 d-flex justify-content-between align-items-end': 'mt-5 px-2 d-flex justify-content-end align-items-end'}>
+						{step > 1 &&    
+						<button  onClick={() => prev()} className='btn btn-outline-dark'>
+							<ArrowLeftOutlined />
+							<span className='ms-3'>Précédent</span>
+						</button>}
+						{step < 4 && (mode !== undefined && type !== undefined && type !== null)  &&   
+						<button  onClick={() => next()} className='btn btn-outline-warning'>
+							<span className='me-3'>Suivant</span>
+							<ArrowRightOutlined />
+						</button>}
 						{step === 4 && <input type="submit" value="Publier" className='btn btn-warning' />}
 					</div>
 				</form>

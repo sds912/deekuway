@@ -3,27 +3,36 @@ import './HomePageMobile.css';
 import GeolocationMap from '../../components/GeolocationMap/GeolocationMap';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { Modal, message } from 'antd';
+import { Modal, Pagination, message } from 'antd';
 import PostListCarousel from '../../components/PostListCarousel/PostListCarousel';
 import PostListMobile from '../../components/PostListMobile/PostListMobile';
 import firebase from '../../services/firebaseConfig';
 import data from '../../assets/data.json';
 import { SearchOutlined, SettingOutlined } from '@ant-design/icons';
 import Loader from '../../components/Loader/Loader';
+import PostFilter from '../../components/PostFilter/PostFilter';
 
 const  HomePageMobile = () => {
 
 	const [post, setPost] = useState(null);
 	const [posts, setPosts] = useState([]);
-	const [pageSize, setPageSize] = useState(5);
+	const [pageSize, setPageSize] = useState(3);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(100);
 	const [userLocation, setUserLocation] = useState({ latitude: null, longitude: null });
 	const [messageApi, contextHolder] = message.useMessage();
 	const [isModalVisible, setIsModalVisible] = useState(false);
+	const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [mode, setMode] = useState('location');
   const [loading, setLoading] = useState(false);
 
   const handleCancelModal = () => {
     setIsModalVisible(false);
+
+  };
+
+  const handleFilterCancelModal = () => {
+    setIsFilterModalVisible(false);
 
   };
 	
@@ -32,11 +41,6 @@ const  HomePageMobile = () => {
     setPost(post);
     setIsModalVisible(true)
   };
-
-  useEffect(() => {
-   fetchData();
-  // setPosts(data.posts)
-  }, []);
 
   const fetchData = async (mode = 'all', search = null) => {
   setLoading(true);
@@ -56,7 +60,8 @@ const  HomePageMobile = () => {
       ...doc.data()
     }));
     setPosts(updatedPosts);
-    setLoading(false)
+    setLoading(false);
+    setMode(mode);
   };
 
   const search = (event) => {
@@ -93,24 +98,36 @@ const  HomePageMobile = () => {
   };
 
   useEffect(() => {
-    fetchData();
+   fetchData();
    getLocation();
+  // setPosts(data.posts)
   },[]);
 
  const filterByMode = (mode) => {
   fetchData(mode);
- // setPosts(data.posts);
-  setMode(mode)
+
+ }
+
+ const onPageChange = (page,size)=>{
+    console.warn(page)
+    console.warn(size)
+    setCurrentPage(page);
+
+    
+ }
+
+ const openFilter = () => {
+    setIsFilterModalVisible(true);
  }
 
 	return(
-		<div className="HomePage container p-2 mt-5 pb-5" style={{ backgroundColor: '#F4F4F4', position: 'relative', height: '100vh'}}>
+		<div className="HomePage container p-2 mt-5" style={{ backgroundColor: '#F4F4F4', position: 'relative', height: '100vh'}}>
       {loading && <Loader />}
       <div>
         <div className='search-filter mt-4'>
           <SearchOutlined className='search-icon mx-2' />
           <input type='search' placeholder='Rechercher un appart ...' onKeyUp={search} />
-          <button className='btn btn-dark filter-icon'>
+          <button className='btn btn-dark filter-icon' onClick={openFilter}>
             <SettingOutlined />
           </button>
         </div>
@@ -120,12 +137,22 @@ const  HomePageMobile = () => {
           <div className={mode === 'vente' ? 'mode active' : 'mode'} onClick={() => filterByMode('vente')}>Vente</div>
         </div>
       </div>
-			<div className='pb-3'>
+			<div style={{paddingBottom: '100px'}}>
 				{contextHolder}
-        <h2 className='text-muted fw-bold py-3'>Meilleurs Annonces</h2>
+        <h2 className='text-muted fw-bold pb-1 pt-0' style={{fontSize: '12.6px'}}>Meilleurs Annonces</h2>
 				<PostListCarousel postToHomePage={handlePostFromPostList}  posts={posts} selectedPost={post} />
-        <h2 className='text-muted fw-bold pb-2 pt-3'>Derniéres Annonces</h2>
+        <h2 className='text-muted fw-bold pb-1 pt-3' style={{fontSize: '12.6px'}}>Derniéres Annonces</h2>
 				<PostListMobile postToHomePage={handlePostFromPostList}   posts={posts} selectedPost={post} />
+        <div className='w-100 text-center mt-3'>
+          <Pagination 
+          pageSize={pageSize}  
+          total={totalPage} 
+          current={currentPage} 
+          onChange={onPageChange}
+          style={{borderColor: 'orange'}}
+          hideOnSinglePage={true}
+            />
+        </div>
 			</div>
 			{post !== null &&
         <Modal
@@ -143,7 +170,16 @@ const  HomePageMobile = () => {
         </div>
       </Modal>
       }
-			
+
+      <Modal
+        title='Filtrer par ...'
+        visible={isFilterModalVisible}
+        onCancel={handleFilterCancelModal}
+        footer={false}
+      >
+        <PostFilter onPostListFilter={(posts) => { setPost(posts); setIsFilterModalVisible(false)}} screen='Mobile' />
+      </Modal>
+     
 		</div>
 	)
 	

@@ -5,7 +5,7 @@ import './PostFilter.css'
 import firebase from '../../services/firebaseConfig';
 
 
-const PostFilter = ({onPostListFilter}) => {
+const PostFilter = ({onPostListFilter, screen}) => {
 
 const [mode, setMode] = useState('location');
 const [distances, setDistances] = useState([]);
@@ -99,28 +99,33 @@ const [type, setType] = useState('appartement');
            <button className={mode === 'location'? 'btn-mode btn-mode-active': 'btn-mode'} onClick={() => searchMode('location')}>Location</button>
            <button className={mode === 'vente'? 'btn-mode btn-mode-active': 'btn-mode'} onClick={() => searchMode('vente')}>Vente</button>
         </div>
-        <div className='d-flex justify-content-start align-items-end bg-white p-2'>
-           <div className='form-group '>
+        <div className={ screen === 'Mobile'? 'bg-white p-2' :'d-flex justify-content-start align-items-end bg-white p-2'}>
+           <div className='form-group mb-3 w-100'>
               <label className='form-label'>Distance</label>
-              <select defaultValue={distance} className='form-select' onChange={(e) => setDistance(e.target.value)} >
+              <select defaultValue={distance} className='form-select w-100' onChange={(e) => setDistance(e.target.value)} >
                 {distances.map(distance => <option className='text-muted' value={distance.value}>{distance.label}</option>)}
               </select>
            </div>
-           <div className='form-group px-4' >
+           <div className='form-group  mb-3 w-100' >
               <label className='form-label '>Type</label>
-              <select defaultValue={type} className='form-select distance-input' onChange={(e) => setType(e.target.value)}>
+              <select defaultValue={type} className='form-select distance-input w-100' onChange={(e) => setType(e.target.value)}>
               {appartementOptions}
               </select>
            </div>
-           <div className='form-group'>
+           <div className='form-group mb-3 w-100'>
               <label className='form-label'>Budget</label>
-              <input defaultValue={budget} type='number' className='form-control' placeholder='15 000' onChange={(e) => setBudget(e.target.value)}  />
+              <input defaultValue={budget} type='number' className='form-control w-100' placeholder='15 000' onChange={(e) => setBudget(e.target.value)}  />
            </div>
-           <div >
+           {screen !== 'Mobile' &&<div >
               <button className='btn btn-warning search-btn ms-3' onClick={() => search()}>
                 <i className='fa fa-search'></i>
               </button>
-           </div>
+           </div>}
+           {screen === 'Mobile' &&<div  className='mt-5 w-100 text-center'>
+              <button className='btn btn-warning  ms-3 btn-block py-3' style={{width: '70%'}} onClick={() => search()}>
+                <span className='ms-2'>APPLIQUER LE FILTRE</span>
+              </button>
+           </div>}
         </div>
       </div>
     </div>

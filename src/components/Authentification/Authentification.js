@@ -9,7 +9,7 @@ export const  Authentification = () => {
     const auth = firebase.auth();
 	const [mode, setMode] = useState(1);
 	const [messageApi, contextHolder] = message.useMessage();
-    console.warn(auth.currentUser)
+ 
 	const {
 		register,
 		handleSubmit,
