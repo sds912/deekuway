@@ -7,7 +7,7 @@ import firebase from '../../services/firebaseConfig';
 
 const PostFilter = ({onPostListFilter, screen}) => {
 
-const [mode, setMode] = useState('location');
+const [mode, setMode] = useState('all');
 const [distances, setDistances] = useState([]);
 const [appartementOptions, setAppartementOptions] = useState([]);
 const [distance, setDistance] = useState(2);
@@ -96,6 +96,7 @@ const [type, setType] = useState('appartement');
     <div className='PostFilter'>
       <div className='search w-100'>
         <div className='d-flex'>
+           <button className={mode === 'all'? 'btn-mode btn-mode-active': 'btn-mode'} onClick={() => searchMode('all')}>Tous</button>
            <button className={mode === 'location'? 'btn-mode btn-mode-active': 'btn-mode'} onClick={() => searchMode('location')}>Location</button>
            <button className={mode === 'vente'? 'btn-mode btn-mode-active': 'btn-mode'} onClick={() => searchMode('vente')}>Vente</button>
         </div>
@@ -103,13 +104,15 @@ const [type, setType] = useState('appartement');
            <div className='form-group mb-3 w-100'>
               <label className='form-label'>Distance</label>
               <select defaultValue={distance} className='form-select w-100' onChange={(e) => setDistance(e.target.value)} >
+                <option disabled selected value={null}>Choisir la distance</option>
                 {distances.map(distance => <option className='text-muted' value={distance.value}>{distance.label}</option>)}
               </select>
            </div>
            <div className='form-group  mb-3 w-100' >
-              <label className='form-label '>Type</label>
+              <label className='form-label '>Type d'appartement</label>
               <select defaultValue={type} className='form-select distance-input w-100' onChange={(e) => setType(e.target.value)}>
-              {appartementOptions}
+                <option disabled selected value={null}>Choisir la type</option>
+                {appartementOptions}
               </select>
            </div>
            <div className='form-group mb-3 w-100'>

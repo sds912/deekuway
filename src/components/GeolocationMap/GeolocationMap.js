@@ -6,11 +6,11 @@ import userMarkerIcon from '../../assets/user-marker.png';
 import { useCallback } from 'react';
 import ReactSimpleImageViewer from 'react-simple-image-viewer';
 import { Avatar } from 'antd';
-import { MessageOutlined, PhoneOutlined, UserOutlined, WhatsAppOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, MessageOutlined, PhoneOutlined, UserOutlined, WhatsAppOutlined } from '@ant-design/icons';
 
 const defaultPosition = {lat: 14.698220, lng:-17.437160 }
 
-const GeolocationMap = ({ post, userLocation, screen}) => {
+const GeolocationMap = ({ post, userLocation, screen, closeModal}) => {
   const [map, setMap] = useState(null);
   const [mapUp, setMapUp] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState(null);
@@ -90,7 +90,13 @@ const GeolocationMap = ({ post, userLocation, screen}) => {
   }, [map, post, userLocation]);
 
   return (
-	<div className='GeolocationMap card p-2 card-body' style={{height: screen === 'Mobile' ? '100vh': '88vh', position: screen === 'Mobile' &&'absolute', left:'0', width: screen === 'Mobile' && '100vw'}}>
+	<div className='GeolocationMap card p-2 card-body' style={{height: screen === 'Mobile' ? '100vh': '88vh', position: screen === 'Mobile' &&'absolute', left:'0', width: screen === 'Mobile' && '100vw', top: screen === 'Mobile' && '0'}}>
+		<div className='d-flex justify-content-start align-items-center p-3'>
+          <div>
+			<button className='btn' style={{width:'40px'}} onClick={() => closeModal()}><ArrowLeftOutlined /></button>
+			</div>
+		  <div className='ms-2 fw-bold'>{post.title}</div>
+		</div>
 		{isViewerOpen && (
 				<ReactSimpleImageViewer
 				src={ post.images }
