@@ -7,16 +7,18 @@ import { useCallback } from 'react';
 import ReactSimpleImageViewer from 'react-simple-image-viewer';
 import { Avatar } from 'antd';
 import { ArrowLeftOutlined, MessageOutlined, PhoneOutlined, UserOutlined, WhatsAppOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 const defaultPosition = {lat: 14.698220, lng:-17.437160 }
 
-const GeolocationMap = ({ post, userLocation, screen, closeModal}) => {
+const GeolocationMap = ({ post, userLocation, screen}) => {
   const [map, setMap] = useState(null);
   const [mapUp, setMapUp] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [currentImage, setCurrentImage] = useState(0);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [directions, setDirections] = useState(null);
+  const navigate = useNavigate();
 
 
   const directionsCallback = (response) => {
@@ -93,7 +95,7 @@ const GeolocationMap = ({ post, userLocation, screen, closeModal}) => {
 	<div className='GeolocationMap card p-2 card-body' style={{height: screen === 'Mobile' ? '100vh': '88vh', position: screen === 'Mobile' &&'absolute', left:'0', width: screen === 'Mobile' && '100vw', top: screen === 'Mobile' && '0'}}>
 		<div className='d-flex justify-content-start align-items-center p-3'>
           <div>
-			<button className='btn' style={{width:'40px'}} onClick={() => closeModal()}><ArrowLeftOutlined /></button>
+			<button className='btn' style={{width:'40px'}} onClick={() => navigate('/')}><ArrowLeftOutlined /></button>
 			</div>
 		  <div className='ms-2 fw-bold'>{post.title}</div>
 		</div>

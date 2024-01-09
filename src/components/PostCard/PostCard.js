@@ -1,20 +1,28 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback,  useState } from 'react';
 import './PostCard.css';
 import { Avatar, Card, Space, Tag, Typography } from 'antd';
 import { HeartOutlined, UserOutlined } from '@ant-design/icons';
 import ReactSimpleImageViewer from 'react-simple-image-viewer';
 import firebase from '../../services/firebaseConfig';
+import { useNavigate } from 'react-router-dom';
+import sofa from '../../assets/sofa.svg';
+import bed from '../../assets/bed.svg';
+import kitchen from '../../assets/kitchen.svg';
+import bathroom from '../../assets/bathroom.svg';
+import toilet from '../../assets/toilet.svg';
 
 const { Text } = Typography;
 
 export const PostCard = ({postToHomePage, post, selectedPost, inFavorite}) => {
-
-	console.log(inFavorite)
 	const [currentImage, setCurrentImage] = useState(0);
 	const [isViewerOpen, setIsViewerOpen] = useState(false);
+	const navigate = useNavigate();
    
-	const onPostClicked = (item) => {
-		postToHomePage(item);
+	const onPostClicked = (post) => {
+		if(post !== null && post !== undefined && post.id !== undefined && post.id !== null){
+			postToHomePage(post);
+			navigate('/posts/'+post.id);
+		}
 	  };
 
 	  
@@ -89,7 +97,8 @@ export const PostCard = ({postToHomePage, post, selectedPost, inFavorite}) => {
 
 					<div>
 					<h3 style={{fontSize: 12, fontWeight: 500}}>{post.title}</h3>
-					<Text strong className='text-muted'  style={{fontSize: '11px'}}>CFA {post.price} | Publiée le {post.createdAt}</Text>
+					<div style={{fontSize: '11px'}} className='text-muted'> Publié le {new Date(post.createdAt.toDate()).toLocaleString()}</div>
+					<Text strong className='text-muted'  style={{fontSize: '11px'}}>CFA {post.price}</Text>
 					<div className='d-flex align-items-center my-2' >
 						<Avatar size={22} icon={<UserOutlined />} />
 						<span className='fw-bold ms-1 text-muted'  style={{fontSize: '11px'}}>{post.owner.name}</span>
@@ -97,9 +106,11 @@ export const PostCard = ({postToHomePage, post, selectedPost, inFavorite}) => {
 					<Text color='#108ee9' style={{fontSize: '11px'}}><i className='fa fa-map-marker'></i> {post.address}</Text>
 					<div className='mt-1'>
 						<Space>
-						<Tag color='#2db7f5'><i className='fa fa-bed'></i> {post.rooms}</Tag>
-						<Tag color='#f50'> <i className='fa fa-bath'></i> {post.bathRooms}</Tag>
-						<Tag color='#87d068'><i className='fa fa-money'></i> {post.mode}</Tag>
+						{post.rooms     > 0  && <span> <img src={bed} alt='bed' style={{width: '12px'}} /> {post.rooms}</span>}
+						{post.salon     > 0  && <span className='ms-3'> <img src={sofa} alt='sofa' style={{width: '12px'}} />  {post.salon}</span>}
+						{post.bathRooms > 0  && <span className='ms-3'> <img src={bathroom} alt='bathroom' style={{width: '12px'}} />  {post.bathRooms}</span>}
+						{post.toilet    > 0  && <span className='ms-3'> <img src={toilet} alt='bathroom' style={{width: '12px'}} />  {post.toilet}</span>}
+						{post.kitchen   > 0  && <span className='ms-3'> <img src={kitchen} alt='kitchen' style={{width: '12px'}} />  {post.kitchen}</span>}
 						</Space>
 					</div>
 					</div>

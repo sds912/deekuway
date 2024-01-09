@@ -37,7 +37,7 @@ export const  Authentification = () => {
 			auth.user.updateProfile({displayName: data.nom});
 			
 			const userRef=  firebase.firestore().collection('user');
-			userRef.add({...data, userId: auth.user.uid}).then(res => window.location.reload())
+			userRef.doc(auth.user.uid).set({...data, userId: auth.user.uid}).then(res => window.location.reload())
 			})
 		} catch (error) {
 			message.open({

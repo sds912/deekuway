@@ -1,52 +1,38 @@
 import React from 'react';
 import './HomePageMobile.css';
-import GeolocationMap from '../../components/GeolocationMap/GeolocationMap';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { Modal, Pagination, message } from 'antd';
 import PostListCarousel from '../../components/PostListCarousel/PostListCarousel';
 import PostListMobile from '../../components/PostListMobile/PostListMobile';
 import firebase from '../../services/firebaseConfig';
-import data from '../../assets/data.json';
-import { BackwardOutlined, SearchOutlined, SettingOutlined } from '@ant-design/icons';
+import {  SearchOutlined, SettingOutlined } from '@ant-design/icons';
 import Loader from '../../components/Loader/Loader';
 import PostFilter from '../../components/PostFilter/PostFilter';
-import { PostCard } from '../../components/PostCard/PostCard';
-import Carousel from 'react-multi-carousel';
+import { useMediaQuery } from 'react-responsive';
+import NavBar from '../../components/NavBar/NavBar';
+import { MobileNavBar } from '../../components/MobileNavBar/MobileNavBar';
+import { BottomNav } from '../../components/BottomNav/BottomNav';
 
 
 const  HomePageMobile = () => {
-  const responsive = {
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 2
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1
-    }
-  }
+
+	const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
 
 	const [post, setPost] = useState(null);
 	const [posts, setPosts] = useState([]);
-	const [reorderedPosts, setReorderedPosts] = useState([]);
 	const [pageSize, setPageSize] = useState(3);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(100);
-	const [userLocation, setUserLocation] = useState({ latitude: null, longitude: null });
 	const [messageApi, contextHolder] = message.useMessage();
-	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
-  const [mode, setMode] = useState('location');
+  const [mode, setMode] = useState('all');
+  const [type, setType] = useState('all');
   const [loading, setLoading] = useState(false);
-  const [selectedPostId, setSelectedPostId] = useState(null);
 
 	const [favorites, setFavorites] = useState([]);
 
-  const handleCancelModal = () => {
-    setIsModalVisible(false);
 
-  };
 
   const handleFilterCancelModal = () => {
     setIsFilterModalVisible(false);
@@ -56,41 +42,33 @@ const  HomePageMobile = () => {
 
   const handlePostFromPostList = (post) => {
    setPost(post);
-   setIsModalVisible(true)
-   setSelectedPostId(post);
-   setReorderedPosts(reorderPosts(post.id));
 
   };
 
-  const reorderPosts = (selectedPostId) => {
-    const selectedPostIndex = posts.findIndex((item) => item.id === selectedPostId);
-    if (selectedPostIndex !== -1) {
-      const selectedPost = posts[selectedPostIndex];
-      const reorderedPosts = [
-        selectedPost,
-        ...posts.slice(0, selectedPostIndex),
-        ...posts.slice(selectedPostIndex + 1),
-      ];
-      return reorderedPosts;
-    }
-    return posts;
-  };
+ 
 
-  const fetchData = async (mode = 'all', search = null) => {
+  const fetchData = async (mode = 'all', search = null, page = 1, size = 10) => {
     setLoading(true);
-    let query = firebase.firestore().collection('posts');
-  
-    if (mode === 'location') {
-      query = query.where('mode', '==', 'location');
-    } else if (mode === 'vente') {
-      query = query.where('mode', '==', 'vente');
-    }
-  
-    if (search !== null) {
-      query = query.where('title', '>=', search); // Changed '<=' to '>=' for search
-    }
+  let query = firebase.firestore().collection('posts');
+
+  if (mode === 'location') {
+    query = query.where('mode', '==', 'location');
+  } else if (mode === 'vente') {
+    query = query.where('mode', '==', 'vente');
+  }
+
+  if (search !== null) {
+    query = query.where('title', '>=', search); // Changed '<=' to '>=' for search
+  }
+
+  query = query.orderBy('createdAt');
+
+  const startAt = (page - 1) * size;
+  query = query.startAt(startAt).limit(size);
+
   
     query.onSnapshot((snapshot) => {
+      const modifiedPosts = [];
       snapshot.docChanges().forEach((change) => {
         const doc = change.doc;
         const postData = {
@@ -99,21 +77,19 @@ const  HomePageMobile = () => {
         };
   
         if (change.type === 'added') {
-          // Handle added document
-          setPosts((prevPosts) => [...prevPosts, postData]);
+          modifiedPosts.push(postData);
         } else if (change.type === 'modified') {
-          // Handle modified document
-          setPosts((prevPosts) =>
-            prevPosts.map((post) => (post.id === postData.id ? postData : post))
-          );
+          const index = modifiedPosts.findIndex((post) => post.id === postData.id);
+          if (index !== -1) {
+            modifiedPosts[index] = postData;
+          }
         } else if (change.type === 'removed') {
-          // Handle removed document
-          setPosts((prevPosts) =>
-            prevPosts.filter((post) => post.id !== postData.id)
-          );
+          const filteredPosts = modifiedPosts.filter((post) => post.id !== postData.id);
+          modifiedPosts = filteredPosts;
         }
       });
   
+      setPosts(modifiedPosts);
       setLoading(false);
       setMode(mode);
     });
@@ -124,42 +100,12 @@ const  HomePageMobile = () => {
     fetchData(mode, event.target.value);
   }
  
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-			
-          setUserLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-		  messageApi.open({
-			type: 'success',
-			content: `Bravo ! votre position a été relevé au lat: ${position.coords.latitude} lng: ${position.coords.longitude}`,
-		  });
-        },
-        (error) => {
-			messageApi.open({
-				type: 'error',
-				content: "Désolé ! nous ne pouvons pas relever votre position pour l'instant",
-			  });
-        }
-      );
-    } else {
-		messageApi.open({
-			type: 'error',
-			content: 'Geolocation is not supported by this browser',
-		  });
-    }
-  };
+
 
   useEffect(() => {
-   fetchData();
-   getLocation();
+   fetchData(mode);
    getUserFavorites();
- // Clean up the listener when unmounting
-    
-    
+ // Clean up the listener when unmounti
   },[]);
 
 
@@ -197,28 +143,42 @@ const  HomePageMobile = () => {
     setIsFilterModalVisible(true);
  }
 
- const handleCarouselChange = (nextSlide) => {
-  const selectedPost = posts[nextSlide];
-  if (selectedPost) { setPost(selectedPost); 
-  }
-};
+ const toggleType = (type) =>{
+  setType(type);
+ }
+
+ 
 
 	return(
-		<div className="HomePage container p-2 mt-5" style={{ backgroundColor: '#F4F4F4', position: 'relative', height: '100vh'}}>
+    <>
+     {!isTabletOrMobile &&<NavBar />}
+          {isTabletOrMobile &&<MobileNavBar />}
+		<div className="HomePage container p-2 mt-5 mb-5" style={{ backgroundColor: '#F4F4F4', position: 'relative', height: '100vh'}}>
+
       {loading && <Loader />}
+      <div className='d-flex justify-content-start align-items-center my-3 mt-4'>
+          <div className={mode === 'all' ? 'mode active': 'mode'} onClick={() => filterByMode('all')}>Tous</div>
+          <div className={mode === 'location' ? 'mode active': 'mode'} onClick={() => filterByMode('location')}>Location</div>
+          <div className={mode === 'vente' ? 'mode active' : 'mode'} onClick={() => filterByMode('vente')}>Vente</div>
+      </div>
       <div>
-        <div className='search-filter mt-4'>
+        <div className='search-filter mt-1 mb-3'>
           <SearchOutlined className='search-icon mx-2' />
           <input type='search' placeholder='Rechercher un appart ...' onKeyUp={search} />
           <button className='btn btn-dark filter-icon' onClick={openFilter}>
             <SettingOutlined />
           </button>
         </div>
-        <div className='d-flex justify-content-start align-items-center my-3'>
-          <div className={mode === 'all' ? 'mode active': 'mode'} onClick={() => filterByMode('all')}>Tous</div>
-          <div className={mode === 'location' ? 'mode active': 'mode'} onClick={() => filterByMode('location')}>Location</div>
-          <div className={mode === 'vente' ? 'mode active' : 'mode'} onClick={() => filterByMode('vente')}>Vente</div>
-        </div>
+        
+      </div>
+
+      <div className='d-flex mb-5' style={{overflowX:'auto'}}>
+        <div className={type === 'all'?'type type-active': 'type'} onClick={() => toggleType('all')} >Tous</div>
+        <div className={type === 'appartement'?'type type-active': 'type'} onClick={() => toggleType('appartement')}>Appart</div>
+        <div className={type === 'studio'?'type type-active': 'type'} onClick={() => toggleType('studio')}>Studio</div>
+        <div className={type === 'maison'?'type type-active': 'type'} onClick={() => toggleType('maison')}>Maison</div>
+        <div className={type === 'bureau'?'type type-active': 'type'} onClick={() => toggleType('bureau')}>Bureau</div>
+        <div className={type === 'magasin'?'type type-active': 'type'} onClick={() => toggleType('magasin')}>Magasin</div>
       </div>
 			<div style={{paddingBottom: '100px'}}>
 				{contextHolder}
@@ -227,40 +187,16 @@ const  HomePageMobile = () => {
         <h2 className='text-muted fw-bold pb-1 pt-3' style={{fontSize: '12.6px'}}>Derniéres Annonces</h2>
 				<PostListMobile postToHomePage={handlePostFromPostList}   posts={posts} selectedPost={post} favorites={favorites}  />
         <div className='w-100 text-center mt-3'>
-          <Pagination 
-          pageSize={pageSize}  
-          total={totalPage} 
-          current={currentPage} 
+        <Pagination
+          pageSize={pageSize}
+          total={totalPage * pageSize} // Set total count based on pageSize and totalPages
+          current={currentPage}
           onChange={onPageChange}
-          style={{borderColor: 'orange'}}
+          style={{ borderColor: 'orange' }}
           hideOnSinglePage={true}
-            />
+        />
         </div>
 			</div>
-			{post !== null &&
-        <Modal
-        title=''
-        maskClosable={true}
-        closable={false}
-        visible={isModalVisible}
-        onCancel={handleCancelModal}
-        footer={false}
-        style={{padding: 0, margin:0, top: 0, left: 0, right: 0, width: '100%',height:'100vh'}}
-      >
-        {post && userLocation &&<GeolocationMap post={post} userLocation={userLocation} screen={'Mobile'} closeModal={handleCancelModal} /> } 
-        
-        {reorderedPosts.length > 0 &&
-        <div style={{position: 'fixed', bottom: 0, left: 0, right: 0, marginLeft: 'auto', marginRight: 'auto', marginBottom:'35px', height:'120px', width: '95%', marginLeft: 'auto', marginRight:'auto'}}>
-        <Carousel 
-        responsive={responsive} 
-        arrows={false}
-        beforeChange={(nextSlide) => handleCarouselChange(nextSlide)} >
-          {reorderedPosts.map((item, index) =>
-          <PostCard key={index}  post={item} selectedPost={post} postToHomePage={null} inFavorite={favorites.includes(post.id)}  />   )}
-        </Carousel>
-        </div>}
-      </Modal>
-      }
 
       <Modal
         title='Filtrer par ...'
@@ -272,6 +208,10 @@ const  HomePageMobile = () => {
       </Modal>
      
 		</div>
+    {isTabletOrMobile && <BottomNav />}
+
+    </>
+
 	)
 	
 }

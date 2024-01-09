@@ -20,9 +20,36 @@ export const  PostForm = ({closeModel}) => {
 	const [step, setStep] = useState(1);
 	const [images, setImages] = useState([]);
 	const [loading, setLoading] = useState(false);
-
-
 	const {register, handleSubmit, setValue, getFieldState, watch, getValues, formState: { errors },} = useForm();
+	const [selectedType, setSelectedType] = useState(null);
+	const [selectedMode, setSelectedMode] = useState(null);
+	const [currentUser, setCurrentUser] =  useState();
+	const types = [
+		{
+		name: "Appart",
+		value: "appartement"
+	   },
+	   {
+		name: "Studio",
+		value: "studio"
+	   },
+	   {
+		name: "Chambre",
+		value: "chambre"
+	   },
+	   {
+		name: "Maison",
+		value: "maison"
+	   },
+	   {
+		name: "Bureau",
+		value: "bureau"
+	   },
+	   {
+		name: "Magasin",
+		value: "magasin"
+	   }
+  ];
 	
 
 
@@ -57,36 +84,46 @@ export const  PostForm = ({closeModel}) => {
 	}
 
 	useEffect(() =>{
-      console.log(mode)
+      setCurrentUser(auth.currentUser);
 	},[])
 	  const onAddPost = async (data) => {
-		setLoading(true);
-		 const imageUrls = await Promise.all(images.map(async (imageFile) => {
-			const storageRef = storage.ref(`images/${imageFile.name}`);
-			await storageRef.put(imageFile);
-			return await storageRef.getDownloadURL();
-		  }));
-		  const ownerInfo = {
-			email: auth.currentUser.email,
-			name: auth.currentUser.displayName,
-			phone: auth.currentUser.phoneNumber,
-			avatar: auth.currentUser.photoURL,
-			uid: auth.currentUser.uid
-		}
+		if(auth.currentUser){
+			const userRef = firebase.firestore().collection('user').doc(auth.currentUser.uid);
+			 const userData =  (await userRef.get()).data();
+			setLoading(true);
+			const imageUrls = await Promise.all(images.map(async (imageFile) => {
+			   const storageRef = storage.ref(`images/${imageFile.name}`);
+			   await storageRef.put(imageFile);
+			   return await storageRef.getDownloadURL();
+			 }));
+			 const ownerInfo = {
+			   email: userData.email,
+			   name: auth.currentUser.displayName,
+			   phone: userData.phone,
+			   avatar: auth.currentUser.photoURL,
+			   uid: auth.currentUser.uid
+		   }
+          
+		   const postRef = firestore.collection('posts');
+		   const postData = { 
+			   ...data, 
+			   images: imageUrls, 
+			   owner: ownerInfo,
+			   createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+		   postRef.add(postData)
+		   .then(response  => {
+			message.success("Votre annonce a été envoyé avec succès");
+			onCloseModel();
+			setLoading(false);
+		   })
+		   .catch(error => {
+			message.error("Erreur d'envoi");
+			onCloseModel();
+			setLoading(false);
+		   });
 
-        const postRef = firestore.collection('posts');
-		const postData = { ...data, images: imageUrls, owner: ownerInfo  };
-		postRef.add(postData)
-		.then(response  => {
-         message.success("Votre annonce a été envoyé avec succès");
-		 onCloseModel();
-		 setLoading(false);
-		})
-		.catch(error => {
-         message.error("Erreur d'envoi");
-		 onCloseModel();
-		 setLoading(false);
-		})
+		}
+	
 
 	  }
 
@@ -94,8 +131,9 @@ export const  PostForm = ({closeModel}) => {
         step < 4 && setStep(step+1)
 	  }
 
-	const prev = () => {
-        step > 1 && setStep(step-1)
+	const prev = (event) => {
+		event.stopPropagation();
+        step > 1 && setStep(step-1);
 	  }
 
 	const removeImage = (index) => {
@@ -117,32 +155,34 @@ export const  PostForm = ({closeModel}) => {
 						<label>Choisir le type d'annonce (Vente, Location)</label>
 						<div className='row mt-2'>
 							<div className='col'>
-								<label for='location' className='p-3 fw-bold location-option text-center' style={{display: 'block', width: '100%', backgroundColor: mode === 'location' ? 'orange': 'inherit'}}>
+								<label for='location' className='p-3 fw-bold location-option text-center' style={{display: 'block', width: '100%', backgroundColor: selectedMode === 'location' ? '#ffb703': 'transparent'}}>
 									Location
-									<input defaultValue={null} style={{visibility: 'hidden', position: 'absolute'}} id="location" value={'location'} type='radio' name='mode' {...register('mode', {required: true})} />
+									<input defaultValue={null} style={{visibility: 'hidden', position: 'absolute'}} id="location" value={'location'} type='radio' name='mode' {...register('mode', {required: true})} onChange={() => setSelectedMode('location')} />
 								</label>
 							</div> 
 							<div className='col'>
-								<label for='vente'  className='p-3 fw-bold vente-option text-center' style={{display: 'block', width: '100%', backgroundColor: mode === 'vente' ? 'orange': 'inherit'}}>
+								<label for='vente'  className='p-3 fw-bold vente-option text-center' style={{display: 'block', width: '100%', backgroundColor: selectedMode === 'vente' ? '#ffb703': 'transparent'}}>
 								Vente	
-								<input defaultValue={null} style={{visibility: 'hidden', position: 'absolute'}} id="vente" value={'vente'} type='radio' name='mode' {...register('mode', {required: true})} />
+								<input defaultValue={null} style={{visibility: 'hidden', position: 'absolute'}} id="vente" value={'vente'} type='radio' name='mode' {...register('mode', {required: true})} onChange={() => setSelectedMode('vente')} />
 								</label>
 							</div> 
 						</div>
 
 					</div>
-					<div className='form-group mt-3'>
+					<div className='form-group mt-5'>
                        <label className='form-label'>Choisir le type d'appartement</label>
-					   <select defaultValue={null} className='form-select w-100' {...register("type",  {required: true})}>
-						  <option selected value={null} disabled>Choisir le type</option>
-                          <option value={'appartement'}>Appartement</option>
-                          <option value={'maison'}>Maision</option>
-                          <option value={'studio'}>Studio</option>
-                          <option value={'chambre'}>Chambre</option>
-                          <option value={'salon'}>Salon</option>
-                          <option value={'bureau'}>Bureau</option>
-                          <option value={'magasin'}>Magasin</option>
-						</select>
+						<div className='row'>
+                           {types.map( t => <div className='col-4'>
+                              <label for="type" className='mt-3' 
+							   onClick={() => {
+								setSelectedType(t.value);
+								setValue('type', t.value);
+								}}
+							  style={{width: '100%', height: '45px', display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: '7px', border: '1px solid #e5e5e5', fontWeight: 'bold', backgroundColor: selectedType === t.value ? '#ffb703':  'transparent' }}>
+								{t.name}
+							  </label>
+						   </div>)}
+						</div>
 
 					</div>
 				</>}
@@ -186,7 +226,7 @@ export const  PostForm = ({closeModel}) => {
 					</div>
 					<div className='form-group w-100 mt-3'>
 						<label className='form-label'>Adresse de localisation</label>
-						{/*<PlacesAutocomplete
+						<PlacesAutocomplete
 							value={address}
 							onChange={handleChange}
 							onSelect={handleSelect}
@@ -227,7 +267,7 @@ export const  PostForm = ({closeModel}) => {
 								</div>
 							</div>
 							)}
-							</PlacesAutocomplete>*/}
+							</PlacesAutocomplete>
 					</div>
 					<div className='form-group w-100 mt-3'>
 						<label className='form-label'>Prix par (Mois, Jour)</label>
@@ -242,7 +282,7 @@ export const  PostForm = ({closeModel}) => {
 						{errors.price && <span className='text-danger'>Veillez renseigner le prix</span>}
 					</div>
 				</div>}
-				{step === 4 && mode !== null && type !== 'magasin'  &&<div>
+				{step === 4 && <div>
 				<div className='row'>
                    <div className='col-6'>
 					<div className='form-group  mt-3'>
@@ -261,7 +301,7 @@ export const  PostForm = ({closeModel}) => {
 				   <div className='col-6'>
 						<div className='form-group mt-3'>
 						   <label className='form-label'>Sallon(s)</label>
-						   <select className='form-select' {...register("sallon", {required: true})}>
+						   <select className='form-select' {...register("salon", {required: true})}>
 						        <option value={0} selected>0</option>
 								<option value={1}>1</option>
 								<option value={2}>2</option>
@@ -300,6 +340,7 @@ export const  PostForm = ({closeModel}) => {
 							{errors.toilette && <span className='text-danger'>Veillez renseigner nombre de salle de bain</span>}
 						</div>
 				   </div>
+				   
 				</div>
 				<div className='form-group w-100 mt-3'>
 					<label className='form-label'>Description </label>
@@ -310,16 +351,20 @@ export const  PostForm = ({closeModel}) => {
 				
 					<div className={step > 1 ?'mt-5 px-2 d-flex justify-content-between align-items-end': 'mt-5 px-2 d-flex justify-content-end align-items-end'}>
 						{step > 1 &&    
-						<button  onClick={() => prev()} className='btn btn-outline-dark'>
+						<button type='button'  onClick={(event) => prev(event)} className='btn btn-outline-dark'>
 							<ArrowLeftOutlined />
 							<span className='ms-3'>Précédent</span>
 						</button>}
-						{step < 4 && (mode !== undefined && type !== undefined && type !== null)  &&   
-						<button  onClick={() => next()} className='btn btn-outline-warning'>
+						{step < 4 &&<button type='button' disabled={!(
+							(step === 1 && (selectedMode && selectedType)) 
+							|| (step === 2 && images.length > 0)
+							|| (step === 3 )
+							|| (step === 4)
+							)}  onClick={() => next()} className='btn btn-outline-warning'>
 							<span className='me-3'>Suivant</span>
 							<ArrowRightOutlined />
 						</button>}
-						{step === 4 && <input type="submit" value="Publier" className='btn btn-warning' />}
+						{step === 4 && <button type="submit"  className='btn btn-warning' > Publier</button>}
 					</div>
 				</form>
 				

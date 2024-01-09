@@ -2,10 +2,21 @@
  position: fixed;
  bottom: 0;
  width: 100%;
- padding: 12px 20px;
+ padding: 8px 10px;
  background-color: #ffffff;
  box-shadow: 8px 6px 0px 4px #81818176
 
+}
+
+.nav-btn{
+    padding: 0 !important;
+    text-align: center !important;
+    display: flex !important;
+    background: none !important;
+    border: none !important;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
 }
 
 .plus-btn{
@@ -23,4 +34,15 @@
 
 .plus-btn:hover{
     opacity: .7;
+}
+
+.nav-bottom-link{
+    text-decoration: none !important;
+    text-align: center !important;
+    transition: all .5s;
+}
+
+.nav-bottom-active{
+    color: #219ebc !important;
+
 }

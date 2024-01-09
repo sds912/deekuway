@@ -40,7 +40,7 @@ const PostListCarousel = ({postToHomePage, posts, selectedPost}) => {
                 onClick={() => onPostClicked(post)}
               />
               <div style={{position: 'absolute', backgroundColor:"#3a3a3a78", bottom: '4px', fontSize: '12px', left: '0', right: '0', color: '#FFFFFF'}} className='fw-bold p-1 '>
-               CFA {post.price} | P. le {post.createdAt}
+               CFA {post.price} | P. le {new Date(post.createdAt.toDate()).toLocaleString()}
               </div>
             </div>
             

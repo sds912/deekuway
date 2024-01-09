@@ -36,9 +36,25 @@
 
 }
 
+.type{
+  padding: 4px 8px;
+  font-size: 13px;
+  font-weight: 700;
+  opacity: .4;
+  border: 1px solid #7d7d7d !important;
+  border-radius: 7px;
+  margin: auto 2px;
+
+}
+
 .active{
   opacity: 1 !important;
   border: none !important;
+}
+.type-active{
+  background-color: #219ebc;
+  color: #FFFFFF;
+  opacity: 1 !important;
 }
 
 :where(.css-dev-only-do-not-override-2q8sxy).ant-pagination .ant-pagination-item-active {

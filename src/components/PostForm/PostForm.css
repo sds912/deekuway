@@ -3,9 +3,10 @@
 }
 
 .location-option, .vente-option{
-    border: 1px solid orange;
+    border: 1px solid #e5e5e5;
     font-size: 22px;
     transition: all .5s;
+    border-radius: 7px;
 }
 .btn{
     width: 120px;
