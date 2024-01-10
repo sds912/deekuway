@@ -13,9 +13,7 @@ import toilet from '../../assets/toilet.svg';
 
 const { Text } = Typography;
 
-export const PostCard = ({postToHomePage, post, selectedPost, inFavorite}) => {
-	const [currentImage, setCurrentImage] = useState(0);
-	const [isViewerOpen, setIsViewerOpen] = useState(false);
+export const PostCard = ({postToHomePage, post, selectedPost, inFavorite, openImageViewer}) => {
 	const navigate = useNavigate();
    
 	const onPostClicked = (post) => {
@@ -26,16 +24,7 @@ export const PostCard = ({postToHomePage, post, selectedPost, inFavorite}) => {
 	  };
 
 	  
-  const openImageViewer = useCallback((event,index) => {
-	setCurrentImage(index);
-	setIsViewerOpen(true);
-	event.stopPropagation();
-  }, []);
 
-  const closeImageViewer = () => {
-	setCurrentImage(0);
-	setIsViewerOpen(false);
-  };
 
   const addToFavorites = async (event) => {
 	event.stopPropagation();
@@ -49,12 +38,12 @@ export const PostCard = ({postToHomePage, post, selectedPost, inFavorite}) => {
 	  if (!querySnapshot.empty) {
 		// Post already favorited, remove it from favorites
         await favoritesRef.where('id', '==', post.id).get().then(d => d.forEach(v => v.ref.delete()))
-		await postRef.doc(post.id).update({like:  (post.like - 1)})
+		await postRef.doc(post.id).update({like: (post.like - 1)})
 
 	  } else {
 		// Post not favorited, add it to favorites for the user
 		await favoritesRef.add({id:post.id});
-		await postRef.doc(post.id).update({like:  firebase.firestore.FieldValue.increment(1)})
+		await postRef.doc(post.id).update({like: firebase.firestore.FieldValue.increment(1)})
 
   
 		console.log('Added to favorites');
@@ -69,17 +58,7 @@ export const PostCard = ({postToHomePage, post, selectedPost, inFavorite}) => {
 
    return(
 		<div className="PostCard">
-			{isViewerOpen && (
-			  <div style={{marginTop: '4px !important'}}>	<ReactSimpleImageViewer
-				src={ post.images }
-				currentIndex={ currentImage }
-				disableScroll={ false }
-				closeOnClickOutside={ true }
-				onClose={ closeImageViewer }
-				 
-				/> </div>
-			)}
-			<Card
+			{post && <Card
 				bodyStyle={{padding: '6px', boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px', backgroundColor: post?.id === selectedPost?.id ? '#daffca': 'inherit', position: 'relative'}} 
 				onClick={() =>  onPostClicked(post)}>
 				<button
@@ -93,30 +72,33 @@ export const PostCard = ({postToHomePage, post, selectedPost, inFavorite}) => {
 				<Space direction="vertical">
 				<Space>
 					
-					{post.images.map((img, index) => <Avatar shape="square"  style={{width: 120, height: 130, display: index !== 0 && 'none', cursor:'pointer'}} src={img} onClick={(event) =>openImageViewer(event,index)} key={index} />)}
+					{post.images.map((img, index) => <Avatar shape="square"  style={{width: 120, height: 130, display: index !== 0 && 'none', cursor:'pointer'}} src={img} onClick={(event) =>openImageViewer(event,index, post)} key={index} />)}
 
 					<div>
-					<h3 style={{fontSize: 12, fontWeight: 500}}>{post.title}</h3>
-					<div style={{fontSize: '11px'}} className='text-muted'> Publié le {new Date(post.createdAt.toDate()).toLocaleString()}</div>
-					<Text strong className='text-muted'  style={{fontSize: '11px'}}>CFA {post.price}</Text>
+					<h3 style={{fontSize: 12, fontWeight: 500}}>{post.title.capitalize()}</h3>
+					<div style={{fontSize: '11px'}} className='text-muted'> Publié le {post.createdAt ? new Date(post.createdAt.toDate()).toLocaleString(): 'Inconnu'}</div>
+					<div>
+					 	<Text strong className='text-muted'  style={{fontSize: '12px'}}>CFA {post.price} / {post.priceBy}</Text>
+					</div>
+					
+					{/*
 					<div className='d-flex align-items-center my-2' >
 						<Avatar size={22} icon={<UserOutlined />} />
 						<span className='fw-bold ms-1 text-muted'  style={{fontSize: '11px'}}>{post.owner.name}</span>
-					</div>
+			         </div>
+					 */}
 					<Text color='#108ee9' style={{fontSize: '11px'}}><i className='fa fa-map-marker'></i> {post.address}</Text>
-					<div className='mt-1'>
-						<Space>
-						{post.rooms     > 0  && <span> <img src={bed} alt='bed' style={{width: '12px'}} /> {post.rooms}</span>}
-						{post.salon     > 0  && <span className='ms-3'> <img src={sofa} alt='sofa' style={{width: '12px'}} />  {post.salon}</span>}
-						{post.bathRooms > 0  && <span className='ms-3'> <img src={bathroom} alt='bathroom' style={{width: '12px'}} />  {post.bathRooms}</span>}
-						{post.toilet    > 0  && <span className='ms-3'> <img src={toilet} alt='bathroom' style={{width: '12px'}} />  {post.toilet}</span>}
-						{post.kitchen   > 0  && <span className='ms-3'> <img src={kitchen} alt='kitchen' style={{width: '12px'}} />  {post.kitchen}</span>}
-						</Space>
+					<div className='mt-1 w-100  d-flex'>
+						{post.rooms     > 0  && <div className='d-flex align-items-center'> <img src={bed} alt='bed' style={{width: '12px'}} className='me-2'  /> {post.rooms}</div>}
+						{post.salon     > 0  && <div className='ms-3 d-flex align-items-center'> <img src={sofa} alt='sofa' style={{width: '16px'}} className='me-2' />  {post.salon}</div>}
+						{post.bathRooms > 0  && <div className='ms-3 d-flex align-items-center'> <img src={bathroom} alt='bathroom' style={{width: '12px'}}  className='me-2'  />  {post.bathRooms}</div>}
+						{post.toilet    > 0  && <div className='ms-3 d-flex align-items-center'> <img src={toilet} alt='bathroom' style={{width: '12px'}} className='me-2'  />  {post.toilet}</div>}
+						{post.kitchen   > 0  && <div className='ms-3 d-flex align-items-center'> <img src={kitchen} alt='kitchen' style={{width: '12px'}} className='me-2'  />  {post.kitchen}</div>}
 					</div>
 					</div>
 				</Space>
 				</Space>
-            </Card>
+            </Card>}
 		</div>
 		)
 }

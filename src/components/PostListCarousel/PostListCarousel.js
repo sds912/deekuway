@@ -1,8 +1,9 @@
 import React from 'react';
 import Carousel from 'react-multi-carousel';
-import { Avatar, Card, Typography } from 'antd';
-import Meta from 'antd/es/card/Meta';
-const { Text } = Typography;
+import './PostListCarousel.css';
+import { LikeOutlined } from '@ant-design/icons';
+
+
 
 
 const PostListCarousel = ({postToHomePage, posts, selectedPost}) => {
@@ -13,7 +14,7 @@ const PostListCarousel = ({postToHomePage, posts, selectedPost}) => {
     },
     mobile: {
       breakpoint: { max: 464, min: 0 },
-      items: 2
+      items: 1
     }
   };
 
@@ -25,35 +26,29 @@ const PostListCarousel = ({postToHomePage, posts, selectedPost}) => {
   return (
     <>
     <div className='PostList'>
-      <Carousel responsive={responsive} shouldResetAutoplay={true} autoPlay={true} arrows={false} >
+      <Carousel 
+      responsive={responsive} 
+      shouldResetAutoplay={true} 
+      autoPlay={true} 
+      infinite={true}
+      arrows={false} >
         {posts.map(post =>
-        <Card
-        key={post.id}
-        bodyStyle={{padding: '5px', paddingTop: '0', position: 'relative', height:'85px', fontSize: '11.6px !important', boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px', backgroundColor: post?.id === selectedPost?.id ? '#daffca': 'inherit'}}
-          className='mx-2'
-          cover={
-            <div style={{position: 'relative', height: '90px', backgroundColor: '#FFFFFF'}}>
-              <img
-                alt={post.title}
-                src={post.images[0]}
-                style={{width: "100%"}}
-                onClick={() => onPostClicked(post)}
-              />
-              <div style={{position: 'absolute', backgroundColor:"#3a3a3a78", bottom: '4px', fontSize: '12px', left: '0', right: '0', color: '#FFFFFF'}} className='fw-bold p-1 '>
-               CFA {post.price} | P. le {new Date(post.createdAt.toDate()).toLocaleString()}
-              </div>
+        <div className='carousel-image mx-3' style={{backgroundImage: `url(${post.images[0]})`}}>
+          <div class="overlay p-4">
+            <div  style={{position: 'absolute', bottom: '12px', width: '60%'}}>
+                <h4 className='text-white'  style={{fontSize: "16px", fontWeight: 'bold'}}>{post.title.capitalize()}</h4>
+                <div className='text-white'  style={{fontSize: "12px"}}>{post.price} F cfa / {post.priceBy}</div>
+                <div className='text-white'  style={{fontSize: "10px"}}> <i className='fa fa-map-marker'></i> {post.address}</div>
+                <div className='text-white' style={{fontSize: "10px"}}>{new Date(post.createdAt.toDate()).toLocaleString()}</div>
             </div>
             
-          }
-        >
-          <Text className='mb-3 fw-bold' style={{fontSize: '11px',lineHeight: '12px'}}>{post.title}</Text>
-          <Meta
-          className='mt-3'
-          style={{position: 'absolute', bottom: "12px"}}
-            avatar={<Avatar src={post.owner.avatar} />}
-            title={<pan style={{fontSize: '11px'}}>{ post.owner.name}</pan>}
-          />
-        </Card>)}
+          </div>
+          <div className='text-white text-center' style={{position: "absolute", right: '8px', bottom: '8px'}}>
+                <LikeOutlined  style={{fontSize: '22px'}} />
+                <div style={{fontSize: '11px'}}>{post.like}</div>
+          </div>
+        </div>
+       )}
       </Carousel>
     
     </div>

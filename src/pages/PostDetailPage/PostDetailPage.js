@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import firebase from '../../services/firebaseConfig';
 import GeolocationMap from '../../components/GeolocationMap/GeolocationMap';
 import { Carousel, message } from 'antd';
 import { PostCard } from '../../components/PostCard/PostCard';
+import ReactSimpleImageViewer from 'react-simple-image-viewer';
 
 
 export const PostDetailPage = () => {
@@ -22,8 +23,10 @@ export const PostDetailPage = () => {
     const [post, setPost]  = useState();
     const [relatedPosts, setRelatedPosts]  = useState([]);
     const [userLocation, setUserLocation]  = useState();
-	const [messageApi, contextHolder] = message.useMessage();
+	  const [messageApi, contextHolder] = message.useMessage();
     const [loading, setLoading] = useState(false);
+    const [currentImage, setCurrentImage] = useState(0);
+    const [isViewerOpen, setIsViewerOpen] = useState(false);
 
 
 
@@ -60,6 +63,7 @@ export const PostDetailPage = () => {
       getLocation();
       if(param.id !== undefined && param.id !== null){
       const postRef = firebase.firestore().collection('posts').doc(param.id);
+     
       postRef.get().then(
         response => {
         const data = response.data();
@@ -120,18 +124,39 @@ export const PostDetailPage = () => {
             setPost(selectedPost); 
         }
       };
+
+      
+  const  openImageViewer = useCallback((event,index, post) => {
+	  setCurrentImage(index);
+    setPost(post);
+	  setIsViewerOpen(true);
+    event.stopPropagation();
+	}, []);
+  
+	const closeImageViewer = () => {
+	  setCurrentImage(0);
+	  setIsViewerOpen(false);
+	};
     return (
         <div>
+        {isViewerOpen && post && (  <ReactSimpleImageViewer
+				src={ post.images }
+				currentIndex={ currentImage }
+				disableScroll={ false }
+				closeOnClickOutside={ true }
+				onClose={ closeImageViewer }
+				/>
+			)}
 			{contextHolder}
             {post && userLocation && post.latitude && post.longitude &&<GeolocationMap post={post} userLocation={userLocation} screen={'Mobile'} /> } 
             {relatedPosts.length > 0 &&
-            <div style={{position: 'fixed', bottom: 0, left: 0, right: 0, marginLeft: 'auto', marginRight: 'auto', marginBottom:'4px', height:'120px', width: '95%', marginLeft: 'auto', marginRight:'auto'}}>
+            <div style={{position: 'fixed', bottom: 0, left: 0, right: 0, marginLeft: 'auto', marginRight: 'auto', marginBottom:'40px', height:'120px', width: '95%', marginLeft: 'auto', marginRight:'auto'}}>
             {relatedPosts && <Carousel 
                 //responsive={responsive} 
                 arrows={false}
                 beforeChange={(nextSlide) => handleCarouselChange(nextSlide)} >
                 {relatedPosts.map((item, index) =>
-                <PostCard key={index}  post={item} selectedPost={post} postToHomePage={() =>{}} inFavorite={false}  />   )}
+                <PostCard postToHomePage={() => {}} key={index}  post={item} selectedPost={post} openImageViewer={openImageViewer} inFavorite={false}  />   )}
             </Carousel>}
             </div>}
         </div>

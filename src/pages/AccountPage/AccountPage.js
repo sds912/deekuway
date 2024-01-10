@@ -6,6 +6,8 @@ import { Avatar, Modal, Pagination } from 'antd';
 import firebase from '../../services/firebaseConfig';
 import { EditOutlined } from '@ant-design/icons';
 import { EditProfilForm } from '../../components/EditProfilForm/EditProfilForm';
+import { BottomNav } from '../../components/BottomNav/BottomNav';
+import { useMediaQuery } from 'react-responsive';
 
 export const AccountPage = () =>{
 
@@ -14,6 +16,7 @@ export const AccountPage = () =>{
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(100);
 	const [isModalVisible, setIsModalVisible] = useState(false);
+	const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
 
 
 	const onPageChange = (page,size)=>{
@@ -27,10 +30,24 @@ export const AccountPage = () =>{
 	 const openEditProfil = () =>{
 		setIsModalVisible(true);
 	 }
-	useEffect(() => {
-       setPosts(data.posts);
+	useEffect(() =>  {
+      const postRef =  firebase.firestore().collection('posts');
+
+	  const query = postRef.where('owner.uid','==', firebase.auth().currentUser.uid);
+
+	   query.get().then(res =>{
+		const dataList = [];
+		res.docs.forEach( (d) => {
+			dataList.push({
+				id: d.id,
+				...d.data()
+			})
+		})
+		setPosts(dataList);
+	   })
 	},[])
 	return(
+		<>
 		<div className="AccountPage container py-5" >
 			<div className='d-flex justify-content-between align-items-center p-4 border-bottom'>
 				<div className='d-flex justify-content-start align-items-center px-2 py-3'>
@@ -46,9 +63,13 @@ export const AccountPage = () =>{
 			</div>
 			
            <h2 className='text-muted fw-bold pb-1 pt-3' style={{fontSize: '12.6px'}}>Mes Annonces</h2>
-           <PostListMobile posts={posts} />
+          { posts && <PostListMobile
+		   posts={posts} 
+		   postToHomePage={() =>{}} 
+		   favorites={[]} selectedPost={null} 
+		   openImageViewer={() => {}}/>}
 		   <div className='w-100 text-center mt-3'>
-          <Pagination 
+          {posts.length > 0 &&<Pagination 
           pageSize={pageSize}  
           total={totalPage} 
           current={currentPage} 
@@ -56,7 +77,7 @@ export const AccountPage = () =>{
           style={{borderColor: 'orange'}}
 		  className='mb-5'
           hideOnSinglePage={true}
-            />
+            />}
         </div>
 			<Modal
 				title='Editer mon profile'
@@ -66,6 +87,10 @@ export const AccountPage = () =>{
 			>
 				<EditProfilForm user={firebase.auth()?.currentUser} />
 			</Modal>
+
 		</div>
+		{isTabletOrMobile && <BottomNav />}
+
+		</>
 	)
 }

@@ -6,11 +6,10 @@ import './App.css';
 import 'react-multi-carousel/lib/styles.css';
 import { useMediaQuery } from 'react-responsive';
 import HomePageMobile from './pages/HomePageMobile/HomePageMobile';
-import { BottomNav } from './components/BottomNav/BottomNav';
 import { AccountPage } from './pages/AccountPage/AccountPage';
 import { PostDetailPage } from './pages/PostDetailPage/PostDetailPage';
-import AgenciesPage from './pages/AgenciesPage/AgenciesPage';
 import { MyFavoritesPage } from './pages/MyFavoritesPage/MyFavoritesPage';
+import { ServicesPage } from './pages/ServicesPage/ServicesPage';
 const { Content } = Layout;
 
 const App = () => {
@@ -27,7 +26,7 @@ const App = () => {
                 <Routes>
                   <Route path='/' Component={ isTabletOrMobile ? HomePageMobile : (isBigScreen || isDesktopOrLaptop) ? HomePage : null} />
                   <Route path='/posts/:id' Component={ PostDetailPage } />
-                  <Route path='/agencies' Component={ AgenciesPage } />
+                  <Route path='/services' Component={ ServicesPage } />
                   <Route path='/favorites' Component={ MyFavoritesPage } />
                   <Route path='/account/:idUser' Component={ isTabletOrMobile ? AccountPage : (isBigScreen || isDesktopOrLaptop) ? AccountPage : null} />
                 </Routes>

@@ -92,7 +92,7 @@ const GeolocationMap = ({ post, userLocation, screen}) => {
   }, [map, post, userLocation]);
 
   return (
-	<div className='GeolocationMap card p-2 card-body' style={{height: screen === 'Mobile' ? '100vh': '88vh', position: screen === 'Mobile' &&'absolute', left:'0', width: screen === 'Mobile' && '100vw', top: screen === 'Mobile' && '0'}}>
+	<div className='GeolocationMap' style={{height: screen === 'Mobile' ? '100vh': '88vh', position: screen === 'Mobile' &&'absolute', left:'0', width: screen === 'Mobile' && '100vw', top: screen === 'Mobile' && '0'}}>
 		<div className='d-flex justify-content-start align-items-center p-3'>
           <div>
 			<button className='btn' style={{width:'40px'}} onClick={() => navigate('/')}><ArrowLeftOutlined /></button>

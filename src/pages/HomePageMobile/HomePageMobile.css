@@ -14,15 +14,19 @@
   border-radius: 7px;
 }
 .search-filter input{
-  height: 38px;
+  height: 32px;
   border: none;
   width: 100%;
   outline: none;
 }
 
 .filter-icon{
-  height: 38px;
-   width: 45px;
+  height: 32px;
+   width: 40px !important;
+   color: #FFFFFF;
+   display: flex;
+   justify-content: center;
+   align-items: center;
 }
 
 .mode{
@@ -47,7 +51,7 @@
 
 }
 
-.active{
+.active-mode{
   opacity: 1 !important;
   border: none !important;
 }
@@ -55,6 +59,7 @@
   background-color: #219ebc;
   color: #FFFFFF;
   opacity: 1 !important;
+  border: none !important;
 }
 
 :where(.css-dev-only-do-not-override-2q8sxy).ant-pagination .ant-pagination-item-active {
