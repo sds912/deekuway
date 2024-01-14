@@ -4,6 +4,7 @@ import firebase from '../../services/firebaseConfig';
 import Loader from "../../components/Loader/Loader";
 import { BottomNav } from "../../components/BottomNav/BottomNav";
 import { useMediaQuery } from "react-responsive";
+import { MobileNavBar } from "../../components/MobileNavBar/MobileNavBar";
 
 export const  MyFavoritesPage = () => {
 
@@ -17,46 +18,22 @@ export const  MyFavoritesPage = () => {
 
     }
 
-    const fetchData = async (mode = 'all', search = null) => {
+    const fetchData = async (uid) => {
         setLoading(true);
-        let query = firebase.firestore().collection('posts');
+        let query = firebase.firestore().collection('favorites').where('owner.uid', "==", uid)
+       const dataList = [];
+       await query.get().then(res => {
+       res.docs.forEach(d => {
+          dataList.push({
+            id: d.id,
+            ...d.data()
+          })
+       })
+       })
+       .catch(err => setLoading(false))
+       setPosts(dataList);
+       setLoading(false);
       
-        if (mode === 'location') {
-          query = query.where('mode', '==', 'location');
-        } else if (mode === 'vente') {
-          query = query.where('mode', '==', 'vente');
-        }
-      
-        if (search !== null) {
-          query = query.where('title', '>=', search); // Changed '<=' to '>=' for search
-        }
-      
-        query.onSnapshot((snapshot) => {
-          snapshot.docChanges().forEach((change) => {
-            const doc = change.doc;
-            const postData = {
-              id: doc.id,
-              ...doc.data()
-            };
-      
-            if (change.type === 'added') {
-              // Handle added document
-              setPosts((prevPosts) => [...prevPosts, postData]);
-            } else if (change.type === 'modified') {
-              // Handle modified document
-              setPosts((prevPosts) =>
-                prevPosts.map((post) => (post.id === postData.id ? postData : post))
-              );
-            } else if (change.type === 'removed') {
-              // Handle removed document
-              setPosts((prevPosts) =>
-                prevPosts.filter((post) => post.id !== postData.id)
-              );
-            }
-          });
-      
-          setLoading(false);
-        });
       };
       
     
@@ -64,15 +41,22 @@ export const  MyFavoritesPage = () => {
     
     
       useEffect(() => {
-       fetchData();
+  firebase.auth().onAuthStateChanged(user =>{
+    if(user.uid){
+      fetchData(user.uid);
+    }
+  })
+        
      // Clean up the listener when unmounti
       },[]);
 
     return (
         <>
+       {isTabletOrMobile && <MobileNavBar />}
+
        { loading ? <Loader  /> : <div className="p-4">
           <h4>Mes annonces</h4>
-          <div>
+          <div style={{marginTop: '50px'}}>
             {posts && <PostListMobile posts={posts} postToHomePage={handlePost} favorites={[]}/>} 
           </div>
        </div>}

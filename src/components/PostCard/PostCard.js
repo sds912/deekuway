@@ -1,7 +1,7 @@
 import React, { useCallback,  useState } from 'react';
 import './PostCard.css';
 import { Avatar, Card, Space, Tag, Typography } from 'antd';
-import { HeartOutlined, UserOutlined } from '@ant-design/icons';
+import { HeartOutlined, LikeOutlined, UserOutlined } from '@ant-design/icons';
 import ReactSimpleImageViewer from 'react-simple-image-viewer';
 import firebase from '../../services/firebaseConfig';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +27,6 @@ export const PostCard = ({postToHomePage, post, selectedPost, inFavorite, openIm
 
 
   const addToFavorites = async (event) => {
-	event.stopPropagation();
   
 	try {
 	  const favoritesRef = firebase.firestore().collection('favorites'); // Using post.id as the document ID
@@ -37,12 +36,12 @@ export const PostCard = ({postToHomePage, post, selectedPost, inFavorite, openIm
      
 	  if (!querySnapshot.empty) {
 		// Post already favorited, remove it from favorites
-        await favoritesRef.where('id', '==', post.id).get().then(d => d.forEach(v => v.ref.delete()))
-		await postRef.doc(post.id).update({like: (post.like - 1)})
+        await favoritesRef.doc(firebase.auth().currentUser.uid).delete();
+		await postRef.doc(post.id).update({like: (post.like > 1 ? post.like - 1: 0)})
 
 	  } else {
 		// Post not favorited, add it to favorites for the user
-		await favoritesRef.add({id:post.id});
+		await favoritesRef.doc(firebase.auth().currentUser.uid).set(post);
 		await postRef.doc(post.id).update({like: firebase.firestore.FieldValue.increment(1)})
 
   
@@ -51,6 +50,8 @@ export const PostCard = ({postToHomePage, post, selectedPost, inFavorite, openIm
 	} catch (error) {
 	  console.error('Error adding/removing from favorites: ', error);
 	}
+	event.stopPropagation();
+
   };
 
 
@@ -66,7 +67,7 @@ export const PostCard = ({postToHomePage, post, selectedPost, inFavorite, openIm
 				  style={{position: 'absolute', top: '8px', right: '8px', fontSize:'22px', backgroundColor:'inherit', border: 'none'}}>
 					<div className='d-flex justify-content-start align-items-center'>
 						<div><span className='text-muted' style={{fontSize: '11px'}}>{post.like}</span></div>
-						<div className='ms-1'><HeartOutlined style={{color: inFavorite ? 'orange': null}}  /></div>
+						<div className='ms-1'><LikeOutlined style={{color: inFavorite ? 'orange': null}}  /></div>
 					</div>
 				</button>
 				<Space direction="vertical">

@@ -1,0 +1,13 @@
+.active-service{
+    transition: all 0.5s;
+    border-bottom: 2px solid #457b9d !important;
+    opacity: 1 !important;
+}
+
+.service:hover{
+    transition: all 0.5s;
+    opacity: .8;
+}
+.service{
+    opacity: .5;
+}

@@ -1,48 +1,65 @@
 .BottomNav {
- position: fixed;
- bottom: 0;
- width: 100%;
- padding: 8px 10px;
- background-color: #ffffff;
- box-shadow: 8px 6px 0px 4px #81818176
+    position: fixed;
+    bottom: 8px;
+    width: 95%;
+    padding: 5px 10px;
+    height: 50px;
+    background-color: #ffffff;
+    left: 0;
+    right: 0;
+   
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 40px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+   
+   }
+   
+   .nav-btn{
+       padding: 0 !important;
+       text-align: center !important;
+       display: flex !important;
+       background: none !important;
+       border: none !important;
+       align-items: center;
+       text-align: center;
+       justify-content: center;
+   }
+   
+   .plus-btn{
+       width: 40px;
+       height: 40px;
+       display: flex;
+       justify-content: center;
+       align-items: center;
+       color: #ffffff;
+       background-color: #02627a;
+       border-radius: 50%;
+       border: none;
+    
+   
+   }
+   
+   .plus-btn:hover{
+       opacity: .7;
+   }
+   
+   .nav-bottom-link{
+       text-decoration: none !important;
+       text-align: center !important;
+       transition: all .5s;
+   }
 
-}
 
-.nav-btn{
-    padding: 0 !important;
-    text-align: center !important;
-    display: flex !important;
-    background: none !important;
-    border: none !important;
-    align-items: center;
-    text-align: center;
-    justify-content: center;
-}
-
-.plus-btn{
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #ffffff;
-    background-color: orange;
-    border-radius: 50%;
-    border: none;
-
-}
-
-.plus-btn:hover{
-    opacity: .7;
-}
-
-.nav-bottom-link{
-    text-decoration: none !important;
-    text-align: center !important;
-    transition: all .5s;
-}
-
-.nav-bottom-active{
-    color: #219ebc !important;
-
-}
+   .nav-bottom-active{
+       display: flex;
+       padding: 12px 16px;
+       width: 60px;
+       height: 40px;
+       background-color: #02627a !important;
+       color: #ffffff !important;
+       border-radius: 20px;
+       transition: background-color 0.5s !important;
+       justify-content: center;
+       align-items: center;
+   }

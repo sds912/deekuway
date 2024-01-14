@@ -50,14 +50,19 @@ const [type, setType] = useState('appartement');
     // Construct the query based on selected filters
     let query = firebase.firestore().collection('posts');
 
+    if (mode !== null && mode !== 'all') {
+      query = query.where('mode', '==', mode); 
+    }
+    /*
     if (distance !== null) {
       query = query.where('distance', '>=', distance); 
     }
+    */
     if (type !== null) {
       query = query.where('type', '==', type); 
     }
-    if (budget !== null) {
-      query = query.where('price', '<=', parseInt(budget));
+    if (budget !== null && budget !== '') {
+      query = query.where('price', '<', budget);
     }
 
     query.get().then((querySnapshot) => {
@@ -65,6 +70,7 @@ const [type, setType] = useState('appartement');
         id: doc.id,
         ...doc.data()
       }));
+      console.log(filteredData)
       onPostListFilter(filteredData);
     }).catch((error) => {
       console.error('Error fetching filtered data:', error);
@@ -96,9 +102,9 @@ const [type, setType] = useState('appartement');
     <div className='PostFilter'>
       <div className='search w-100'>
         <div className='d-flex'>
-           <button className={mode === 'all'? 'btn-mode btn-mode-active': 'btn-mode'} onClick={() => searchMode('all')}>Tous</button>
-           <button className={mode === 'location'? 'btn-mode btn-mode-active': 'btn-mode'} onClick={() => searchMode('location')}>Location</button>
-           <button className={mode === 'vente'? 'btn-mode btn-mode-active': 'btn-mode'} onClick={() => searchMode('vente')}>Vente</button>
+           <button className={mode === 'all'? 'btn-mode btn-mode-active': 'btn-mode'} onClick={() => setMode('all')}>Tous</button>
+           <button className={mode === 'location'? 'btn-mode btn-mode-active': 'btn-mode'} onClick={() => setMode('location')}>Location</button>
+           <button className={mode === 'vente'? 'btn-mode btn-mode-active': 'btn-mode'} onClick={() => setMode('vente')}>Vente</button>
         </div>
         <div className={ screen === 'Mobile'? 'bg-white p-2' :'d-flex justify-content-start align-items-end bg-white p-2'}>
            <div className='form-group mb-3 w-100'>
@@ -126,7 +132,7 @@ const [type, setType] = useState('appartement');
            </div>}
            {screen === 'Mobile' &&<div  className='mt-5 w-100 text-center'>
               <button className='btn btn-warning  ms-3 btn-block py-3' style={{width: '70%'}} onClick={() => search()}>
-                <span className='ms-2'>APPLIQUER LE FILTRE</span>
+                <span className='ms-2 fw-bold'>APPLIQUER LE FILTRE</span>
               </button>
            </div>}
         </div>

@@ -2,12 +2,11 @@ import React, { useCallback } from 'react';
 import './HomePageMobile.css';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { Modal, Pagination, message } from 'antd';
+import { Modal, Pagination, Skeleton, message } from 'antd';
 import PostListCarousel from '../../components/PostListCarousel/PostListCarousel';
 import PostListMobile from '../../components/PostListMobile/PostListMobile';
 import firebase from '../../services/firebaseConfig';
 import {  SearchOutlined } from '@ant-design/icons';
-import Loader from '../../components/Loader/Loader';
 import PostFilter from '../../components/PostFilter/PostFilter';
 import { useMediaQuery } from 'react-responsive';
 import NavBar from '../../components/NavBar/NavBar';
@@ -15,6 +14,7 @@ import { MobileNavBar } from '../../components/MobileNavBar/MobileNavBar';
 import { BottomNav } from '../../components/BottomNav/BottomNav';
 import filter from '../../assets/filter.svg';
 import ReactSimpleImageViewer from 'react-simple-image-viewer';
+import { PostListSkeleton } from '../../components/PostListSkeleton/PostListSkeleton';
 
 
 const  HomePageMobile = () => {
@@ -22,10 +22,11 @@ const  HomePageMobile = () => {
 	const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
 	const [post, setPost] = useState(null);
 	const [posts, setPosts] = useState([]);
-	const [pageSize, setPageSize] = useState(3);
+	const [boostedPosts, setBoostedPosts] = useState([]);
+	const [pageSize, setPageSize] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(100);
-	const [messageApi, contextHolder] = message.useMessage();
+  const [totalPage, setTotalPage] = useState(0);
+	const [ messageApi ,contextHolder] = message.useMessage();
 	const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [mode, setMode] = useState('all');
   const [type, setType] = useState('all');
@@ -58,15 +59,25 @@ const  HomePageMobile = () => {
   if (type !== null && type !== 'all') {
     query = query.where('type', '==', type);
   }
-  
-  query = query.orderBy('createdAt');
 
-  const startAt = (page - 1) * size;
-  query = query.startAt(startAt).limit(size);
+  query = query.orderBy('createdAt', 'desc');
+  const startAtIndex =  (page - 1) * size;
+  if( startAtIndex > 1 && posts.length > 0 && startAtIndex >= 0 && posts.length >= startAtIndex){
+ 
+   query = query.startAfter( posts[startAtIndex-1].createdAt)
+
+  
+  }
+
+  query =  query.limit(size);
+
+ 
   query.onSnapshot((snapshot) => {
+
       const modifiedPosts = [];
       snapshot.docChanges().forEach((change) => {
         const doc = change.doc;
+        console.log(doc.data())
         const postData = {
           id: doc.id,
           ...doc.data()
@@ -81,26 +92,65 @@ const  HomePageMobile = () => {
         } else if (change.type === 'removed') {
           const filteredPosts = modifiedPosts.filter((post) => post.id !== postData.id);
           modifiedPosts = filteredPosts;
+        } else{
+          modifiedPosts.push(postData);
+
         }
       });
   
       setPosts(modifiedPosts);
       setMode(mode);
-    });
     setLoading(false);
 
+    });
+
   };
+
+  const loadBoostedPosts = async (mode = null, size = 10) => {
+    const boostedPostsRef = firebase.firestore().collection('posts');
+    let query = boostedPostsRef
+    .where('boosted', '==', true);
+    if(mode !== null && mode !== 'all'){
+    query = query.where('mode', '==', mode);
+    }
+    query.limit(size);
+    const postData = [];
+    (await query.get()).docs.forEach(doc => {
+      postData.push({
+        id: doc.id,
+        ...doc.data()
+      })
+    })
+    setBoostedPosts(postData);
+  }
   
 
   const search = (event) => {
     fetchData(mode, event.target.value, currentPage, pageSize, null);
   }
+
+  const loadPageTotal = (mode = null, type = null) => {
+    let postRef = firebase.firestore().collection('posts');
+    if(mode !== null && mode !== 'all'){
+    postRef = postRef.where('mode', '==', mode);
+    }
+    if(type !== null && type !== 'all'){
+      postRef = postRef.where('type', '==', type);
+      }
+    postRef.get().then(res => {
+     
+     setTotalPage(res.docs.length);
+    })
+
+    
+  }
  
 
 
   useEffect(() => {
-   fetchData(mode);
-   getUserFavorites();
+   fetchData(mode,null, currentPage, pageSize);
+   loadBoostedPosts(mode);
+   loadPageTotal();
  // Clean up the listener when unmounti
   },[]);
 
@@ -128,12 +178,13 @@ const  HomePageMobile = () => {
     
 
  const filterByMode = (mode) => {
+  loadPageTotal(mode);
   fetchData(mode);
  }
 
- const onPageChange = (page,size)=>{
+ const onPageChange = (page)=>{
     setCurrentPage(page);
-    fetchData(mode, search, currentPage, pageSize);
+    fetchData(mode, null, page, pageSize, null);
   }
 
  const openFilter = () => {
@@ -143,6 +194,7 @@ const  HomePageMobile = () => {
  const toggleType = (type) =>{
   setType(type);
   fetchData(mode, null, currentPage, pageSize, type);
+  loadPageTotal(type)
  }
 
  const openImageViewer = useCallback((event,index, post) => {
@@ -173,10 +225,9 @@ const  HomePageMobile = () => {
 				/> </div>
 			)}
      {!isTabletOrMobile &&<NavBar />}
-          {isTabletOrMobile &&<MobileNavBar />}
+    {isTabletOrMobile &&<MobileNavBar />}
+    <div style={{height: '20px'}}></div>
 		<div className="HomePage container p-2 mt-5 mb-5" style={{ backgroundColor: '#F4F4F4', position: 'relative', height: '100vh'}}>
-
-      {loading && <Loader />}
       <div className='d-flex justify-content-start align-items-center my-3 mt-4'>
           <div className={mode === 'all' ? 'mode active-mode': 'mode'} onClick={() => filterByMode('all')}>Tous</div>
           <div className={mode === 'location' ? 'mode active-mode': 'mode'} onClick={() => filterByMode('location')}>Location</div>
@@ -193,7 +244,7 @@ const  HomePageMobile = () => {
         
       </div>
 
-      <div className='d-flex mb-4 type-buttons' style={{overflowX:'auto'}}>
+      <div className='d-flex mb-4 type-buttons py-3' style={{overflowX:'auto'}}>
         <div className={type === 'all'?'type type-active': 'type'} onClick={() => toggleType('all')} >Tous</div>
         <div className={type === 'appartement'?'type type-active': 'type'} onClick={() => toggleType('appartement')}>Appart</div>
         <div className={type === 'studio'?'type type-active': 'type'} onClick={() => toggleType('studio')}>Studio</div>
@@ -201,20 +252,25 @@ const  HomePageMobile = () => {
         <div className={type === 'bureau'?'type type-active': 'type'} onClick={() => toggleType('bureau')}>Bureau</div>
         <div className={type === 'magasin'?'type type-active': 'type'} onClick={() => toggleType('magasin')}>Magasin</div>
       </div>
-			<div style={{paddingBottom: '100px'}}>
+			 <div style={{paddingBottom: '100px'}}>
 				{contextHolder}
-				{posts && <PostListCarousel postToHomePage={handlePostFromPostList}  posts={posts} selectedPost={post}  />}
+				{boostedPosts && !loading && <PostListCarousel  posts={boostedPosts}  />}
+        {loading &&  <div className='d-flex justify-content-center'>
+         <Skeleton.Image style={{width: '95vw', height: '160px', borderRadius: '20px'}} /> 
+        </div>}
         <h2 className='text-muted fw-bold pb-1 pt-5' style={{fontSize: '22px'}}>Derniéres Annonces</h2>
-				<PostListMobile postToHomePage={handlePostFromPostList}   posts={posts} selectedPost={post} favorites={favorites} openImageViewer={openImageViewer}  />
+				{!loading && <PostListMobile postToHomePage={handlePostFromPostList}   posts={posts} selectedPost={post} favorites={favorites} openImageViewer={openImageViewer}  />}
+        {loading &&  <PostListSkeleton />}
         <div className='w-100 text-center mt-3'>
+        {totalPage > 5 && 
         <Pagination
           pageSize={pageSize}
-          total={totalPage * pageSize} // Set total count based on pageSize and totalPages
+          total={totalPage} // Set total count based on pageSize and totalPages
           current={currentPage}
           onChange={onPageChange}
           style={{ borderColor: 'orange' }}
           hideOnSinglePage={true}
-        />
+        />}
         </div>
 			</div>
 

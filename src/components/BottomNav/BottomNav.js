@@ -38,56 +38,54 @@ export const BottomNav = () => {
 
 
     return(
-		<div className="BottomNav border-top">
-			<div className='d-flex justify-content-between align-items-center'>
-				<div style={{width: '36%'}} className='d-flex justify-content-between align-items-center'>
-					<div>
-					<Link to={'/'} className={ location.pathname ===  '/' ? 'nav-bottom-active text-center nav-bottom-link ': 'text-center nav-bottom-link text-muted' } >
-						<span className='nav-btn' ><HomeOutlined style={{fontSize: '22px'}}  /></span>
-						<span className='mt-3' style={{fontSize: '12px'}}>Acceuil</span>
-					</Link>
-					
-					</div>
-					<div className='text-center'>
-					<Link to={'/favorites'} className={ location.pathname ===  '/favorites' ? 'nav-bottom-active text-center nav-bottom-link': 'text-center nav-bottom-link text-muted'} >
-						<span className='nav-btn' ><HeartOutlined style={{fontSize: '22px'}}  /></span>
-						<span className='mt-3' style={{fontSize: '12px'}}>Favories</span>
-					</Link>
-					</div>
+		
+
+		<div className="BottomNav">
+		<div className='d-flex justify-content-between align-items-center'>
+			<div style={{width: '30%'}} className='d-flex justify-content-between align-items-center'>
+				<div className='text-center'>
+				<Link to={'/'} className={ location.pathname ===  '/' ? 'nav-bottom-active text-center nav-bottom-link ': 'text-center nav-bottom-link text-muted' } >
+					<span className='nav-btn' ><HomeOutlined style={{fontSize: '22px'}}  /></span>
+				</Link>
+				
 				</div>
-				<div>
-					<button className='plus-btn' onClick={() => openPostOrConnect()}><PlusOutlined style={{fontSize: '22px'}}  /></button>
-				</div>
-				<div style={{width: '36%'}} className='d-flex justify-content-between align-items-center'>
-				<div>
-				 <Link to={'/services'} className={ location.pathname ===  '/services' ? 'nav-bottom-active text-center nav-bottom-link': 'text-center nav-bottom-link text-muted'} >
-					<span className='nav-btn' ><i class="fa fa-briefcase" style={{fontSize: '22px'}}  aria-hidden="true"></i></span>
-					<span className=' mt-3' style={{fontSize: '12px'}}>Agences</span>
+				<div className='text-center'>
+				<Link to={'/favorites'} className={ location.pathname ===  '/favorites' ? 'nav-bottom-active text-center nav-bottom-link': 'text-center nav-bottom-link text-muted'} >
+					<span className='nav-btn' ><HeartOutlined style={{fontSize: '22px'}}  /></span>
 				</Link>
 				</div>
-				<div onClick={() => redirectToAccount()} className={ location.pathname.includes('account') ? 'nav-bottom-active text-center nav-bottom-link': 'text-center nav-bottom-link text-muted'}>
-					<span className='nav-btn'><UserOutlined style={{fontSize: '22px'}}  /></span>
-					<span className='mt-3' style={{fontSize: '12px'}}>Mon compte</span>
-
-				</div>
-				</div>
-				
 			</div>
-			<Modal
-				title="Authentification"
-				visible={isModalVisible}
-				onCancel={handleCancelModal}
-				footer={false}>
-				<Authentification />
-           </Modal>
-			<Modal
-				title="Ajouter une annonce"
-				visible={isPostModalVisible}
-				onCancel={handlePostCancelModal}
-				maskClosable={true}
-				bodyStyle={{padding:'4px'}}
-				footer={false}>
-				<PostForm closeModel={handlePostCancelModal} />
-			</Modal>
+			<div>
+				<button className='plus-btn' onClick={() => openPostOrConnect()}><PlusOutlined style={{fontSize: '22px'}}  /></button>
+			</div>
+			<div style={{width: '30%'}} className='d-flex justify-content-between align-items-center'>
+			<div>
+			<Link to={'/services'} className={ location.pathname ===  '/services' ? 'nav-bottom-active text-center nav-bottom-link': 'text-center nav-bottom-link text-muted'} >
+				<span className='nav-btn' ><i className='fa fa-suitcase' style={{fontSize: '22px'}}  aria-hidden="true" /></span>
+			</Link>
+			</div>
+			<div onClick={() => redirectToAccount()} className={ location.pathname.includes('account') ? 'nav-bottom-active text-center nav-bottom-link': 'text-center nav-bottom-link text-muted'}>
+				<span className='nav-btn'><UserOutlined style={{fontSize: '22px'}}  /></span>
+
+			</div>
+			</div>
+			
+		</div>
+		<Modal
+			title="Authentification"
+			visible={isModalVisible}
+			onCancel={handleCancelModal}
+			footer={false}>
+			<Authentification />
+		</Modal>
+		<Modal
+			title="Ajouter une annonce"
+			visible={isPostModalVisible}
+			onCancel={handlePostCancelModal}
+			maskClosable={true}
+			bodyStyle={{padding:'4px'}}
+			footer={false}>
+			<PostForm closeModel={handlePostCancelModal} />
+		</Modal>
 		</div>)
 }

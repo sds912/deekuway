@@ -2,11 +2,14 @@ import React from 'react';
 import Carousel from 'react-multi-carousel';
 import './PostListCarousel.css';
 import { LikeOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 
 
 
-const PostListCarousel = ({postToHomePage, posts, selectedPost}) => {
+const PostListCarousel = ({posts}) => {
+
+  const navigate = useNavigate();
   const responsive = {
     tablet: {
       breakpoint: { max: 1024, min: 464 },
@@ -20,7 +23,7 @@ const PostListCarousel = ({postToHomePage, posts, selectedPost}) => {
 
   
   const onPostClicked = (post) => {
-    postToHomePage(post);
+    navigate('/posts/'+post.id);
   };
 
   return (
@@ -33,7 +36,7 @@ const PostListCarousel = ({postToHomePage, posts, selectedPost}) => {
       infinite={true}
       arrows={false} >
         {posts.map(post =>
-        <div className='carousel-image mx-3' style={{backgroundImage: `url(${post.images[0]})`}}>
+        <div className='carousel-image mx-3' style={{backgroundImage: `url(${post.images[0]})`}} onClick={() => onPostClicked(post)} >
           <div class="overlay p-4">
             <div  style={{position: 'absolute', bottom: '12px', width: '60%'}}>
                 <h4 className='text-white'  style={{fontSize: "16px", fontWeight: 'bold'}}>{post.title.capitalize()}</h4>

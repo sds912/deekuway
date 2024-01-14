@@ -9,6 +9,7 @@ import PlacesAutocomplete, {
   } from 'react-places-autocomplete';
 import { ArrowLeftOutlined, ArrowRightOutlined, CloseCircleOutlined, EnvironmentOutlined, FileAddOutlined, FileImageOutlined} from '@ant-design/icons';
 import Loader from '../Loader/Loader';
+import { getValue } from '@testing-library/user-event/dist/utils';
   
 
 export const  PostForm = ({closeModel}) => {
@@ -109,6 +110,9 @@ export const  PostForm = ({closeModel}) => {
 			   ...data, 
 			   images: imageUrls, 
 			   owner: ownerInfo,
+			   mode: selectedMode,
+			   type: selectedType,
+			   price: parseInt(getValue('price')),
 			   createdAt: firebase.firestore.FieldValue.serverTimestamp() };
 		   postRef.add(postData)
 		   .then(response  => {
