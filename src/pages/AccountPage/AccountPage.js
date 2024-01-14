@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './AccountPage.css';
 import PostListMobile from '../../components/PostListMobile/PostListMobile';
-import data from '../../assets/data.json';
 import { Avatar, Modal, Pagination } from 'antd';
 import firebase from '../../services/firebaseConfig';
 import { EditOutlined } from '@ant-design/icons';
@@ -12,9 +11,9 @@ import { useMediaQuery } from 'react-responsive';
 export const AccountPage = () =>{
 
 	const [posts, setPosts] = useState([]);
-	const [pageSize, setPageSize] = useState(3);
+	const [pageSize, setPageSize] = useState(5);
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalPage, setTotalPage] = useState(100);
+    const [totalPage, setTotalPage] = useState(0);
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
 
@@ -30,21 +29,44 @@ export const AccountPage = () =>{
 	 const openEditProfil = () =>{
 		setIsModalVisible(true);
 	 }
-	useEffect(() =>  {
-      const postRef =  firebase.firestore().collection('posts');
 
-	  const query = postRef.where('owner.uid','==', firebase.auth().currentUser.uid);
-
-	   query.get().then(res =>{
-		const dataList = [];
-		res.docs.forEach( (d) => {
-			dataList.push({
-				id: d.id,
-				...d.data()
-			})
+	 const loadPageTotal = (mode = null, type = null) => {
+		let postRef = firebase.firestore().collection('posts');
+		if(mode !== null && mode !== 'all'){
+		postRef = postRef.where('mode', '==', mode);
+		}
+		if(type !== null && type !== 'all'){
+		  postRef = postRef.where('type', '==', type);
+		  }
+		postRef.get().then(res => {
+		 
+		 setTotalPage(res.docs.length);
 		})
-		setPosts(dataList);
-	   })
+	
+		
+	  }
+	 
+	useEffect(() =>  {
+	  loadPageTotal();	
+	  firebase.auth().onAuthStateChanged(user => {
+		const postRef =  firebase.firestore().collection('posts');
+
+		let query = postRef.where('owner.uid','==', user.uid);
+  
+		query = query.limit(5);
+  
+		 query.get().then(res =>{
+		  const dataList = [];
+		  res.docs.forEach( (d) => {
+			  dataList.push({
+				  id: d.id,
+				  ...d.data()
+			  })
+		  })
+		  setPosts(dataList);
+		 })
+	  })
+     
 	},[])
 	return(
 		<>
@@ -67,7 +89,9 @@ export const AccountPage = () =>{
 		   posts={posts} 
 		   postToHomePage={() =>{}} 
 		   favorites={[]} selectedPost={null} 
-		   openImageViewer={() => {}}/>}
+		   openImageViewer={() => {}}
+		   screen = {'account'}
+		    />}
 		   <div className='w-100 text-center mt-3'>
           {posts.length > 0 &&<Pagination 
           pageSize={pageSize}  

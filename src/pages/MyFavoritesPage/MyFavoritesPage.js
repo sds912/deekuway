@@ -53,10 +53,10 @@ export const  MyFavoritesPage = () => {
     return (
         <>
        {isTabletOrMobile && <MobileNavBar />}
-
+      
        { loading ? <Loader  /> : <div className="p-4">
-          <h4>Mes annonces</h4>
-          <div style={{marginTop: '50px'}}>
+          <h4 style={{marginTop: '60px'}}>Mes annonces</h4>
+          <div style={{marginTop: '20px'}}>
             {posts && <PostListMobile posts={posts} postToHomePage={handlePost} favorites={[]}/>} 
           </div>
        </div>}

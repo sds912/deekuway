@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import './PostFilter.css'
 import firebase from '../../services/firebaseConfig';
+import Loader from '../Loader/Loader';
 
 
 const PostFilter = ({onPostListFilter, screen}) => {
@@ -12,7 +13,8 @@ const [distances, setDistances] = useState([]);
 const [appartementOptions, setAppartementOptions] = useState([]);
 const [distance, setDistance] = useState(2);
 const [budget, setBudget] = useState(null);
-const [type, setType] = useState('appartement');
+const [type, setType] = useState('all');
+const [loading, setLoading] = useState(false);
 
 
 
@@ -47,6 +49,8 @@ const [type, setType] = useState('appartement');
 
 
   const search = () => {
+    
+    setLoading(true);
     // Construct the query based on selected filters
     let query = firebase.firestore().collection('posts');
 
@@ -58,47 +62,36 @@ const [type, setType] = useState('appartement');
       query = query.where('distance', '>=', distance); 
     }
     */
-    if (type !== null) {
+    if (type !== null && type !== 'all') {
       query = query.where('type', '==', type); 
     }
-    if (budget !== null && budget !== '') {
-      query = query.where('price', '<', budget);
+   if(budget !== null && budget !== ''){
+    const budgetFloat = parseFloat(budget);
+    if (budget !== null && !isNaN(budgetFloat)) {
+      query = query.where('price', '<=', budgetFloat);
     }
 
+   }
+ 
+    query  = query.limit(5); 
     query.get().then((querySnapshot) => {
       const filteredData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data()
       }));
-      console.log(filteredData)
+      setLoading(false);
       onPostListFilter(filteredData);
+      
     }).catch((error) => {
       console.error('Error fetching filtered data:', error);
     });
   };
 
-  const searchMode = (mode) =>{
-    let query = firebase.firestore().collection('posts');
 
-    if (distance !== null) {
-      query = query.where('mode', '==', mode);
-    }
-   
-
-    query.get().then((querySnapshot) => {
-      const filteredData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setMode(mode);
-      onPostListFilter(filteredData);
-
-    }).catch((error) => {
-      console.error('Error fetching filtered data:', error);
-    });
-  }
 
   return (
+    <>
+    {loading && <Loader />}
     <div className='PostFilter'>
       <div className='search w-100'>
         <div className='d-flex'>
@@ -118,6 +111,7 @@ const [type, setType] = useState('appartement');
               <label className='form-label '>Type d'appartement</label>
               <select defaultValue={type} className='form-select distance-input w-100' onChange={(e) => setType(e.target.value)}>
                 <option disabled selected value={null}>Choisir la type</option>
+                <option  selected value={null}>Tous</option>
                 {appartementOptions}
               </select>
            </div>
@@ -138,7 +132,7 @@ const [type, setType] = useState('appartement');
         </div>
       </div>
     </div>
-  );
+    </>);
 };
 
 export default PostFilter;

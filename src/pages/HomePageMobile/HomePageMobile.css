@@ -54,16 +54,17 @@
 .active-mode{
   opacity: 1 !important;
   border: none !important;
+  color: #02627a !important;
 }
 .type-active{
-  background-color: #219ebc;
+  background-color: #02627a;
   color: #FFFFFF;
   opacity: 1 !important;
   border: none !important;
 }
 
 :where(.css-dev-only-do-not-override-2q8sxy).ant-pagination .ant-pagination-item-active {
-  border-color: orange !important;
+  border-color: #02627a !important;
 }
 
 

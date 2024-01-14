@@ -5,13 +5,13 @@ import markerIcon from '../../assets/marker.png';
 import userMarkerIcon from '../../assets/user-marker.png';
 import { useCallback } from 'react';
 import ReactSimpleImageViewer from 'react-simple-image-viewer';
-import { Avatar } from 'antd';
+import { Avatar, message } from 'antd';
 import { ArrowLeftOutlined, MessageOutlined, PhoneOutlined, UserOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
 const defaultPosition = {lat: 14.698220, lng:-17.437160 }
 
-const GeolocationMap = ({ post, userLocation, screen}) => {
+const GeolocationMap = ({ post, screen}) => {
   const [map, setMap] = useState(null);
   const [mapUp, setMapUp] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState(null);
@@ -19,6 +19,10 @@ const GeolocationMap = ({ post, userLocation, screen}) => {
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [directions, setDirections] = useState(null);
   const navigate = useNavigate();
+ const [messageApi, contextHolder] = message.useMessage();
+ const [userLocation, setUserLocation]  = useState(null);
+
+
 
 
   const directionsCallback = (response) => {
@@ -64,41 +68,66 @@ const GeolocationMap = ({ post, userLocation, screen}) => {
 	}
   }
 
+  const getLocation = () => {
+	if (navigator.geolocation) {
+	  navigator.geolocation.getCurrentPosition(
+		(position) => {
+			
+		  setUserLocation({
+			latitude: position.coords.latitude,
+			longitude: position.coords.longitude,
+		  });
+
+		  if (map) {
+			if(post){
+				map.panTo({ lat:post?.latitude, lng: post?.longitude });
+			} else if(userLocation.latitude !== null){
+				map.panTo({ lat: position.coords.latitude, lng: position.coords.longitude});
+			}else{
+				map.panTo(defaultPosition);
+			}
+		  if (window.google && window.google.maps) {
+			setMapUp(true);
+		  }
+		  if (post && userLocation) {
+			const directionsService = new window.google.maps.DirectionsService();
+			directionsService.route(
+			  {
+				destination: {lat: post?.latitude, lng: post?.longitude},
+				origin: { lat: position.coords.latitude, lng: position.coords.longitude},
+				travelMode: 'DRIVING' // Change travel mode as needed (DRIVING, WALKING, BICYCLING, TRANSIT)
+			  },
+			  directionsCallback
+			);
+		  }
+		} 
+		  messageApi.open({
+			type: 'success',
+			content: `Bravo ! votre position a été relevé au lat: ${position.coords.latitude} lng: ${position.coords.longitude}`,
+		  });
+		},
+		(error) => {
+			messageApi.open({
+				type: 'error',
+				content: "Désolé ! nous ne pouvons pas relever votre position pour l'instant",
+			  });
+		}
+	  );
+	} else {
+		messageApi.open({
+			type: 'error',
+			content: 'Geolocation is not supported by this browser',
+		  });
+	}
+  };
+
   // Update the map center whenever the lat or lng changes
   useEffect(() => {
-    if (map) {
-		if(post){
-			map.panTo({ lat:post?.latitude, lng: post?.longitude });
-		} else if(userLocation.latitude !== null){
-			map.panTo({ lat: userLocation.latitude, lng: userLocation.longitude});
-		}else{
-			map.panTo(defaultPosition);
-		}
-	  if (window.google && window.google.maps) {
-		setMapUp(true);
-	  }
-	  if (post && userLocation) {
-		const directionsService = new window.google.maps.DirectionsService();
-		directionsService.route(
-		  {
-			destination: {lat: post?.latitude, lng: post?.longitude},
-			origin: { lat: userLocation.latitude, lng: userLocation.longitude},
-			travelMode: 'DRIVING' // Change travel mode as needed (DRIVING, WALKING, BICYCLING, TRANSIT)
-		  },
-		  directionsCallback
-		);
-	  }
-    } 
-  }, [map, post, userLocation]);
+	getLocation();
+  }, [map,post]);
 
   return (
-	<div className='GeolocationMap' style={{height: screen === 'Mobile' ? '100vh': '88vh', position: screen === 'Mobile' &&'absolute', left:'0', width: screen === 'Mobile' && '100vw', top: screen === 'Mobile' && '0'}}>
-		<div className='d-flex justify-content-start align-items-center p-3'>
-          <div>
-			<button className='btn' style={{width:'40px'}} onClick={() => navigate('/')}><ArrowLeftOutlined /></button>
-			</div>
-		  <div className='ms-2 fw-bold'>{post.title}</div>
-		</div>
+	<div  className='GeolocationMap bg-white' style={{height: screen === 'Mobile' ? '100vh': '88vh', position: screen === 'Mobile' &&'absolute', left:'0', width: screen === 'Mobile' && '100vw', top: screen === 'Mobile' && '0'}}>
 		{isViewerOpen && (
 				<ReactSimpleImageViewer
 				src={ post.images }
@@ -108,7 +137,7 @@ const GeolocationMap = ({ post, userLocation, screen}) => {
 				onClose={ closeImageViewer }
 				/>
 			)}
-			<GoogleMap
+			{userLocation && post && <GoogleMap
 				mapContainerStyle={{ width: '100%', height: '100%' }}
 				center={post !== null ?{lat: post?.latitude, lng: post?.longitude}: userLocation ? { lat: userLocation.latitude, lng: userLocation.longitude}: defaultPosition}
 				zoom={16}
@@ -168,7 +197,7 @@ const GeolocationMap = ({ post, userLocation, screen}) => {
 						scaledSize:  new window.google.maps.Size(50, 50)
 						}}
 					/>} 				
-			</GoogleMap>
+			</GoogleMap>}
 	</div>
   );
 };

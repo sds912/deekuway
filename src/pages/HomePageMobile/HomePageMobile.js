@@ -43,7 +43,7 @@ const  HomePageMobile = () => {
    setPost(post);
   };
 
-  const fetchData = async (mode = 'all', search = null, page = 1, size = 10, type = null) => {
+  const fetchData = async (mode = 'all', search = null, page = 1, size = 10, type = null, budget = null) => {
   setLoading(true);
   let query = firebase.firestore().collection('posts');
 
@@ -60,6 +60,13 @@ const  HomePageMobile = () => {
     query = query.where('type', '==', type);
   }
 
+  
+  const budgetFloat = parseFloat(budget);
+  if (budget !== null && !isNaN(budgetFloat)) {
+    query = query.where('price', '<=', budgetFloat);
+  }
+
+
   query = query.orderBy('createdAt', 'desc');
   const startAtIndex =  (page - 1) * size;
   if( startAtIndex > 1 && posts.length > 0 && startAtIndex >= 0 && posts.length >= startAtIndex){
@@ -71,39 +78,15 @@ const  HomePageMobile = () => {
 
   query =  query.limit(size);
 
- 
-  query.onSnapshot((snapshot) => {
-
-      const modifiedPosts = [];
-      snapshot.docChanges().forEach((change) => {
-        const doc = change.doc;
-        console.log(doc.data())
-        const postData = {
-          id: doc.id,
-          ...doc.data()
-        };
-        if (change.type === 'added') {
-          modifiedPosts.push(postData);
-        } else if (change.type === 'modified') {
-          const index = modifiedPosts.findIndex((post) => post.id === postData.id);
-          if (index !== -1) {
-            modifiedPosts[index] = postData;
-          }
-        } else if (change.type === 'removed') {
-          const filteredPosts = modifiedPosts.filter((post) => post.id !== postData.id);
-          modifiedPosts = filteredPosts;
-        } else{
-          modifiedPosts.push(postData);
-
-        }
-      });
-  
-      setPosts(modifiedPosts);
-      setMode(mode);
+ const postData = [];
+   (await query.get()).docs.forEach(doc => {
+      postData.push({
+        id: doc.id,
+        ...doc.data()
+      })
+     })
+    setPosts(postData);
     setLoading(false);
-
-    });
-
   };
 
   const loadBoostedPosts = async (mode = null, size = 10) => {
@@ -178,6 +161,7 @@ const  HomePageMobile = () => {
     
 
  const filterByMode = (mode) => {
+  setMode(mode);
   loadPageTotal(mode);
   fetchData(mode);
  }
@@ -259,7 +243,7 @@ const  HomePageMobile = () => {
          <Skeleton.Image style={{width: '95vw', height: '160px', borderRadius: '20px'}} /> 
         </div>}
         <h2 className='text-muted fw-bold pb-1 pt-5' style={{fontSize: '22px'}}>Derniéres Annonces</h2>
-				{!loading && <PostListMobile postToHomePage={handlePostFromPostList}   posts={posts} selectedPost={post} favorites={favorites} openImageViewer={openImageViewer}  />}
+				{!loading && <PostListMobile postToHomePage={handlePostFromPostList}   posts={posts} selectedPost={post} favorites={favorites} openImageViewer={openImageViewer} screen={'home'}  />}
         {loading &&  <PostListSkeleton />}
         <div className='w-100 text-center mt-3'>
         {totalPage > 5 && 
@@ -280,7 +264,11 @@ const  HomePageMobile = () => {
         onCancel={handleFilterCancelModal}
         footer={false}
       >
-        <PostFilter onPostListFilter={(posts) => { setPost(posts); setIsFilterModalVisible(false)}} screen='Mobile' />
+        <PostFilter onPostListFilter={(posts) => {
+         setPosts(posts);
+         setIsFilterModalVisible(false);
+         loadPageTotal();
+        }} screen='Mobile' />
       </Modal>
      
 		</div>

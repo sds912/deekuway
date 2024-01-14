@@ -2,7 +2,7 @@ import React from 'react';
 import { List } from 'antd';
 import { PostCard } from '../PostCard/PostCard';
 
-const PostListMobile = ({postToHomePage, posts, selectedPost, favorites, openImageViewer}) => {
+const PostListMobile = ({postToHomePage, posts, selectedPost, favorites, openImageViewer, screen}) => {
   return (
     <List
       grid={{ gutter: 16, column: 1 }}
@@ -14,7 +14,8 @@ const PostListMobile = ({postToHomePage, posts, selectedPost, favorites, openIma
           post={item} 
           selectedPost={selectedPost} 
           inFavorite={favorites.includes(item.id)}
-          openImageViewer={openImageViewer} />
+          openImageViewer={openImageViewer}
+          screen={screen} />
         </List.Item>)}/>
   );
 };
