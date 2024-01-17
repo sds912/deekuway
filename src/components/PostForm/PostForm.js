@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import firebase from '../../services/firebaseConfig'; 
 import { message } from 'antd';
@@ -7,9 +7,9 @@ import PlacesAutocomplete, {
 	geocodeByAddress,
 	getLatLng,
   } from 'react-places-autocomplete';
-import { ArrowLeftOutlined, ArrowRightOutlined, CloseCircleOutlined, EnvironmentOutlined, FileAddOutlined, FileImageOutlined} from '@ant-design/icons';
 import Loader from '../Loader/Loader';
-import { getValue } from '@testing-library/user-event/dist/utils';
+import { ArrowLeftOutlined, ArrowRightOutlined, CloseCircleOutlined, EnvironmentOutlined, FileAddOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
   
 
 export const  PostForm = ({closeModel}) => {
@@ -21,10 +21,9 @@ export const  PostForm = ({closeModel}) => {
 	const [step, setStep] = useState(1);
 	const [images, setImages] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const {register, handleSubmit, setValue, getFieldState, watch, getValues, formState: { errors },} = useForm();
+	const {register, handleSubmit, setValue,  getValues, formState: { errors },} = useForm();
 	const [selectedType, setSelectedType] = useState(null);
 	const [selectedMode, setSelectedMode] = useState(null);
-	const [currentUser, setCurrentUser] =  useState();
 	const types = [
 		{
 		name: "Appart",
@@ -50,12 +49,10 @@ export const  PostForm = ({closeModel}) => {
 		name: "Magasin",
 		value: "magasin"
 	   }
-  ];
+       ];
+
+    const navigate = useNavigate();
 	
-
-
-    const mode = watch('mode')
-	const type = watch('type');
 
 	const handleChange = (address) => {
 	  setAddress(address);
@@ -76,7 +73,7 @@ export const  PostForm = ({closeModel}) => {
         setValue('address', address);
 		setAddress(address);
 	  } catch (error) {
-		console.error('Error:', error);
+		message.error(error);
 	  }
 	};
 
@@ -84,49 +81,51 @@ export const  PostForm = ({closeModel}) => {
 		closeModel()
 	}
 
-	useEffect(() =>{
-      setCurrentUser(auth.currentUser);
-	},[])
 	  const onAddPost = async (data) => {
-		if(auth.currentUser){
-			const userRef = firebase.firestore().collection('user').doc(auth.currentUser.uid);
-			 const userData =  (await userRef.get()).data();
-			setLoading(true);
-			const imageUrls = await Promise.all(images.map(async (imageFile) => {
-			   const storageRef = storage.ref(`images/${imageFile.name}`);
-			   await storageRef.put(imageFile);
-			   return await storageRef.getDownloadURL();
-			 }));
-			 const ownerInfo = {
-			   email: userData.email,
-			   name: auth.currentUser.displayName,
-			   phone: userData.phone,
-			   avatar: auth.currentUser.photoURL,
-			   uid: auth.currentUser.uid
-		   }
-          
-		   const postRef = firestore.collection('posts');
-		   const postData = { 
-			   ...data, 
-			   images: imageUrls, 
-			   owner: ownerInfo,
-			   mode: selectedMode,
-			   type: selectedType,
-			   price: parseInt(getValue('price')),
-			   createdAt: firebase.firestore.FieldValue.serverTimestamp() };
-		   postRef.add(postData)
-		   .then(response  => {
-			message.success("Votre annonce a été envoyé avec succès");
-			onCloseModel();
-			setLoading(false);
-		   })
-		   .catch(error => {
-			message.error("Erreur d'envoi");
-			onCloseModel();
-			setLoading(false);
-		   });
-
-		}
+		setLoading(true);
+		firebase.auth().onAuthStateChanged( async user => {
+			if(user){
+			const userRef = firebase.firestore().collection('user').doc(user.uid);
+			const userData =  (await userRef.get()).data();
+		    const imageUrls = await Promise.all(images.map(async (imageFile) => {
+			  const storageRef = storage.ref(`images/${imageFile.name}`);
+			  await storageRef.put(imageFile);
+			  return await storageRef.getDownloadURL();
+			}));
+			const ownerInfo = {
+			  email: userData.email,
+			  name: auth.currentUser.displayName,
+			  phone: userData.phone,
+			  avatar: auth.currentUser.photoURL,
+			  uid: auth.currentUser.uid
+		  }
+		 
+		  const postRef = firestore.collection('posts');
+		  const postData = { 
+			  ...data, 
+			  images: imageUrls, 
+			  owner: ownerInfo,
+			  mode: selectedMode,
+			  type: selectedType,
+			  price: parseFloat(getValues('price')),
+			  createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+		  postRef.add(postData)
+		  .then(response  => {
+		   message.success("Votre annonce a été envoyé avec succès");
+		   onCloseModel();
+		   setLoading(false);
+		  })
+		  .catch(error => {
+		   message.error("Erreur d'envoi");
+		   onCloseModel();
+		   setLoading(false);
+		  });
+			} else{
+				setLoading(false);
+				navigate('/auth');
+			}
+		});
+	
 	
 
 	  }
@@ -159,13 +158,13 @@ export const  PostForm = ({closeModel}) => {
 						<label>Choisir le type d'annonce (Vente, Location)</label>
 						<div className='row mt-2'>
 							<div className='col'>
-								<label for='location' className='p-3 fw-bold location-option text-center' style={{display: 'block', width: '100%', backgroundColor: selectedMode === 'location' ? '#ffb703': 'transparent'}}>
+								<label for='location' className='p-3 fw-bold location-option text-center' style={{display: 'block', width: '100%', backgroundColor: selectedMode === 'location' ? '#ffb703': ''}}>
 									Location
 									<input defaultValue={null} style={{visibility: 'hidden', position: 'absolute'}} id="location" value={'location'} type='radio' name='mode' {...register('mode', {required: true})} onChange={() => setSelectedMode('location')} />
 								</label>
 							</div> 
 							<div className='col'>
-								<label for='vente'  className='p-3 fw-bold vente-option text-center' style={{display: 'block', width: '100%', backgroundColor: selectedMode === 'vente' ? '#ffb703': 'transparent'}}>
+								<label for='vente'  className='p-3 fw-bold vente-option text-center' style={{display: 'block', width: '100%', backgroundColor: selectedMode === 'vente' ? '#ffb703': ''}}>
 								Vente	
 								<input defaultValue={null} style={{visibility: 'hidden', position: 'absolute'}} id="vente" value={'vente'} type='radio' name='mode' {...register('mode', {required: true})} onChange={() => setSelectedMode('vente')} />
 								</label>
@@ -177,12 +176,12 @@ export const  PostForm = ({closeModel}) => {
                        <label className='form-label'>Choisir le type d'appartement</label>
 						<div className='row'>
                            {types.map( t => <div className='col-4'>
-                              <label for="type" className='mt-3' 
+                              <label for="type" className='mt-3 type-item' 
 							   onClick={() => {
 								setSelectedType(t.value);
 								setValue('type', t.value);
 								}}
-							  style={{width: '100%', height: '45px', display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: '7px', border: '1px solid #e5e5e5', fontWeight: 'bold', backgroundColor: selectedType === t.value ? '#ffb703':  'transparent' }}>
+							  style={{width: '100%', height: '45px', display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: '7px', border: '1px solid #e5e5e5', fontWeight: 'bold', backgroundColor: selectedType === t.value ? '#ffb703':  ''}}>
 								{t.name}
 							  </label>
 						   </div>)}

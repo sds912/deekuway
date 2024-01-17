@@ -5,6 +5,7 @@ import PostList from '../../components/PostList/PostList';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { message } from 'antd';
+import NavBar from '../../components/NavBar/NavBar';
 
 const  HomePage = () => {
 	const [post, setPost] = useState(null);
@@ -47,7 +48,8 @@ const handlePostFromPostList = (post) => {setPost(post);};
   },[]);
 
 	return(
-
+       <>
+	   <NavBar />
 		<div className="HomePage container p-4 px-0 pt-2 " style={{height: '100vh !important'}}>
 			{contextHolder}
 			<div className='row px-0'>
@@ -59,6 +61,7 @@ const handlePostFromPostList = (post) => {setPost(post);};
 			    </div>
 			</div>
 		</div>
+		</>
 	)
 	
 }

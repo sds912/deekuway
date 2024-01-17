@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import './Authentification.css';
-import { useForm } from 'react-hook-form';
-import firebase from '../../services/firebaseConfig'; 
-import { message } from 'antd';
+import React, { useState } from "react";
+import firebase from '../../services/firebaseConfig';
+import { message } from "antd";
+import { useForm } from "react-hook-form";
+import './RegisterForm.css';
 
-
-export const  Authentification = ({closeModal}) => {
+export const RegisterForm = () => {
     const auth = firebase.auth();
 	const [mode, setMode] = useState(1);
 	const [messageApi, contextHolder] = message.useMessage();
@@ -16,18 +15,7 @@ export const  Authentification = ({closeModal}) => {
 		watch,
 		formState: { errors },
 	  } = useForm()
-	  const onLogin = async (data) => {
-		try {
-			await auth.signInWithEmailAndPassword(data.email, data.password);
-            closeModal();
-			message.success('Bravo ! Connection réussie !');
-		  } catch (error) {
-			message.open({
-				type: "error",
-				content: "Erreur de connection:" + error
-			})
-		  }
-	  }
+	
 
 	  const onRegister = async (data) => {
 		try {
@@ -41,7 +29,6 @@ export const  Authentification = ({closeModal}) => {
 			const userRef=  firebase.firestore().collection('user');
 			await userRef.doc(auth.user.uid).set({...data, userId: auth.user.uid});
 			message.success('Bravo ! Inscription réussie !');
-            closeModal();
 
 			})
 		} catch (error) {
@@ -50,10 +37,20 @@ export const  Authentification = ({closeModal}) => {
 				content: "Erreur d'inscription:" + error
 			})
 			}
-            closeModal();
-
 		}
 	  
+       const profiles = [
+        {
+            id: 1,
+            name: 'Je Recherche un appart',
+            icon: ''
+        },
+        {
+            id: 2,
+            name: 'Je loue des appart',
+            icon: ''
+        }
+       ] 
 
     const confirmation = watch('confirmation');
 	const password = watch('password');
@@ -61,36 +58,25 @@ export const  Authentification = ({closeModal}) => {
 	return(
 		<div className="container">
 			{contextHolder}
-			{mode === 1 ? 
-			<div>
-				<div className='my-3'>
-					<h4 className='fw-bold'>Se connecter</h4>
-				</div>
-				<form onSubmit={handleSubmit(onLogin)}>
-					<div className='form-group w-100'>
-						<input type="text"  {...register("email", {required: true})} className='form-control w-100' />
-						{errors.email && <span className='text-danger'>Veillez renseigner votre email</span>}
-					</div>
-					<div className='form-group w-100 mt-4'>
-					<input type="password" {...register("password", { required: true })}  className='form-control w-100' />
-					{errors.password && <span className='text-danger'>Veillez renseigner le mot de passe</span>}
-					</div>
-					<div className='w-100 mt-5'>
-						<input type="submit" value="Se connecter" className='btn btn-warning btn-block'  />
-					</div>
-				</form>
-				<div>
-					<p>Pas encore de compte ? <button className='btn' onClick={() =>setMode(2)}>S'inscrire</button></p>
-				</div>
-			</div> : 
+			 
 			<div>
 				<div className='my-3'>
 					<h4 className='fw-bold'>S'inscrire</h4>
 				</div>
+				
+                <label className='form-label'>Je m'inscrie en tant que : </label>
+                <div className="row">
+                    {profiles.map( p => 
+                    <div className="col-6">
+                        <div className="border p-3 text-center mt-3 fw-bold" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80px'}}>
+                            {p.name}
+                        </div>
+                    </div>)}
+                </div>
 				<form onSubmit={handleSubmit(onRegister)}>
 					<div className='form-group w-100'>
 					   <label className='form-label'>Nom complet</label>
-						<input type="text"  {...register("nom", {required: true})} className='form-control w-100' />
+						<input type="text"  {...register("nom", {required: true})} className='form-control  w-100' />
 						{errors.nom && <span className='text-danger'>Veillez renseigner votre nom complet</span>}
 					</div>
 					<div className='form-group w-100 mt-3'>
@@ -109,18 +95,18 @@ export const  Authentification = ({closeModal}) => {
 						{errors.password && <span className='text-danger'>Veillez renseigner le mot de passe</span>}
 					</div>
 					<div className='form-group w-100 mt-3'>
+					   <label className='form-label'>Confirmer votre mot de passe</label>
 						<input type="password" {...register("confirmation", { required: true })}  className='form-control w-100' />
 						{(errors.confirmation || (confirmation !== password)) && <span className='text-danger'>Veillez confirmer le mot de passe</span>}
 					</div>
-					<div className='mt-5'>
-						<input type="submit" value="S'inscrire" className='btn btn-warning' />
+					<div className='mt-5 pt-4'>
+						<input type="submit" value="S'inscrire" className='btn btn-warning fw-bold' />
 					</div>
 				</form>
-				<div>
+				<div className="mt-3">
 					<p>J'ai un compte ? <button className='btn' onClick={() =>setMode(1)}>Se connecter</button></p>
 				</div>
-			</div>}
+			</div>
 		</div>
 	)
-	
 }

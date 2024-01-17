@@ -4,7 +4,6 @@ import { HeartOutlined, HomeOutlined, PlusOutlined, UserOutlined } from '@ant-de
 import { Modal } from 'antd';
 import { PostForm } from '../PostForm/PostForm';
 import  firebase from '../../services/firebaseConfig';
-import { Authentification } from '../Authentification/Authentification';
 import { useNavigate,Link, useLocation } from 'react-router-dom';
 
 export const BottomNav = () => {
@@ -21,16 +20,15 @@ export const BottomNav = () => {
 	  };
 
 	const openPostOrConnect = () => {
-		if(firebase.auth().currentUser){
-		  setPostIsModalVisible(true);
-		}else{
-		  setIsModalVisible(true);
-		}
-	  };
+		firebase.auth().onAuthStateChanged(user => {
+			if(user){
+				setPostIsModalVisible(true);
+			  }else{
+				navigate('/login');
+			  }
+		})
 	
-	  const handleCancelModal = () => {
-		setIsModalVisible(false);
-	  };
+	  }
   
 	  const handlePostCancelModal = () => {
 		setPostIsModalVisible(false);
@@ -71,13 +69,6 @@ export const BottomNav = () => {
 			</div>
 			
 		</div>
-		<Modal
-			title="Authentification"
-			visible={isModalVisible}
-			onCancel={handleCancelModal}
-			footer={false}>
-			<Authentification />
-		</Modal>
 		<Modal
 			title="Ajouter une annonce"
 			visible={isPostModalVisible}

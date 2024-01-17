@@ -8,6 +8,18 @@
     transition: all .5s;
     border-radius: 7px;
 }
+
+.location-option:hover, .vente-option:hover{
+    transition: all 0.5s;  
+    background-color: #dab30647 ;
+    cursor: pointer;
+  }
 .btn{
     width: 120px;
+}
+
+.type-item:hover{
+  transition: all 0.5s;  
+  background-color: #dab30647 ;
+  cursor: pointer;
 }

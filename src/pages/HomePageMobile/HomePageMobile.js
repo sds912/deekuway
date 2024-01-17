@@ -15,7 +15,12 @@ import { BottomNav } from '../../components/BottomNav/BottomNav';
 import filter from '../../assets/filter.svg';
 import ReactSimpleImageViewer from 'react-simple-image-viewer';
 import { PostListSkeleton } from '../../components/PostListSkeleton/PostListSkeleton';
+import { useDispatch, useSelector } from 'react-redux';
+import { countPage, getAllPost } from '../../features/post-slice';
 
+const appartkeywords = ["appement", "appart", "Appart", "apartment", "appartment", "appar"];
+const studiokeywords = ["studio", "stuio", "Studio"];
+const chambrekeywords = ["Chambre", "Chmbre", "chambres"];
 
 const  HomePageMobile = () => {
 
@@ -44,50 +49,52 @@ const  HomePageMobile = () => {
   };
 
   const fetchData = async (mode = 'all', search = null, page = 1, size = 10, type = null, budget = null) => {
-  setLoading(true);
-  let query = firebase.firestore().collection('posts');
-
-  if (mode === 'location') {
-    query = query.where('mode', '==', 'location');
-  } else if (mode === 'vente') {
-    query = query.where('mode', '==', 'vente');
-  }
-  if (search !== null) {
-    query = query.where('title', '>=', search);
-  }
-
-  if (type !== null && type !== 'all') {
-    query = query.where('type', '==', type);
-  }
-
+    setLoading(true);
+    let query = firebase.firestore().collection('posts');
   
-  const budgetFloat = parseFloat(budget);
-  if (budget !== null && !isNaN(budgetFloat)) {
-    query = query.where('price', '<=', budgetFloat);
-  }
-
-
-  query = query.orderBy('createdAt', 'desc');
-  const startAtIndex =  (page - 1) * size;
-  if( startAtIndex > 1 && posts.length > 0 && startAtIndex >= 0 && posts.length >= startAtIndex){
- 
-   query = query.startAfter( posts[startAtIndex-1].createdAt)
-
+    if (mode === 'location') {
+      query = query.where('mode', '==', 'location');
+    } else if (mode === 'vente') {
+      query = query.where('mode', '==', 'vente');
+    }
   
-  }
+    if (search !== null && search !== '') {
+      // Move orderBy to the beginning
+      query = query.orderBy('title', 'desc').where('title', '>=', search);
+    }
+  
+    if (type !== null && type !== 'all') {
+      query = query.where('type', '==', type);
+    }
+  
+    const budgetFloat = parseFloat(budget);
+    if (budget !== null && !isNaN(budgetFloat)) {
+      query = query.where('price', '<=', budgetFloat);
+    }
 
-  query =  query.limit(size);
-
- const postData = [];
-   (await query.get()).docs.forEach(doc => {
+    if(search === null){
+      // Move orderBy to the end
+      query = query.orderBy('createdAt', 'desc');
+    }
+  
+    const startAtIndex = (page - 1) * size;
+    if (startAtIndex > 1 && posts.length > 0 && startAtIndex >= 0 && posts.length >= startAtIndex) {
+      query = query.startAfter(posts[startAtIndex - 1].createdAt);
+    }
+  
+    query = query.limit(size);
+  
+    const postData = [];
+    (await query.get()).docs.forEach((doc) => {
       postData.push({
         id: doc.id,
-        ...doc.data()
-      })
-     })
+        ...doc.data(),
+      });
+    });
     setPosts(postData);
     setLoading(false);
   };
+  
 
   const loadBoostedPosts = async (mode = null, size = 10) => {
     const boostedPostsRef = firebase.firestore().collection('posts');
@@ -109,7 +116,27 @@ const  HomePageMobile = () => {
   
 
   const search = (event) => {
-    fetchData(mode, event.target.value, currentPage, pageSize, null);
+    if(containsKeyword(event.target.value, appartkeywords)){
+      fetchData(mode, null, currentPage, pageSize, 'appartement', null);
+    } else if(containsKeyword(event.target.value, studiokeywords)){
+      fetchData(mode, null, currentPage, pageSize, 'studio', null);
+    } else{
+      
+      fetchData(null, null, currentPage, pageSize, null, null);
+
+    }
+  }
+
+  const  containsKeyword =  (inputString, keywords) => {
+    
+  
+    // Convert the input string to lowercase for case-insensitive matching
+    const lowerCaseInput = inputString.toLowerCase();
+  
+    // Check if any keyword is present in the lowercased input string
+    const containsKeyword = keywords.some(keyword => lowerCaseInput.includes(keyword.toLowerCase()));
+  
+    return containsKeyword;
   }
 
   const loadPageTotal = (mode = null, type = null) => {
@@ -136,27 +163,6 @@ const  HomePageMobile = () => {
    loadPageTotal();
  // Clean up the listener when unmounti
   },[]);
-
-
-  const getUserFavorites = () => {
-    const favoritesRef = firebase.firestore().collection('favorites');
-  
-    favoritesRef.onSnapshot((snapshot) => {
-      let updatedFavorites = [];
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === 'added' || change.type === 'modified') {
-          updatedFavorites.push(change.doc.data().id);
-        } else if (change.type === 'removed') {
-          const removedId = change.doc.data().id;
-          updatedFavorites = updatedFavorites.filter(id => id !== removedId);
-        }
-      });
-      setFavorites(updatedFavorites);
-    }, (error) => {
-      console.error('Error retrieving favorites: ', error);
-      setFavorites([]);
-    });
-  };
   
     
 

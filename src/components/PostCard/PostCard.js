@@ -18,7 +18,7 @@ export const PostCard = ({postToHomePage, post, selectedPost, inFavorite, openIm
 
 	  
 	  const onPostClicked = (post) => {
-		if (post !== null && post !== undefined && post.id !== undefined && post.id !== null) {
+		if (post !== null && post !== undefined && post.id !== undefined && post.id !== null && screen === 'home') {
 		  postToHomePage(post);
 		  navigate('/posts/' + post.id);
 		}

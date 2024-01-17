@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './NavBar.css';
 import { Avatar, Modal } from 'antd';
 import { BellOutlined, UserOutlined } from '@ant-design/icons';
@@ -11,14 +11,18 @@ const NavBar = () => {
 
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [isPostModalVisible, setPostIsModalVisible] = useState(false);
+	const [currentUser, setCurrentUser] = useState(null);
 
 
     const openPostOrConnect = () => {
-      if(firebase.auth().currentUser){
-        setPostIsModalVisible(true);
-      }else{
-        setIsModalVisible(true);
-      }
+      firebase.auth().onAuthStateChanged(user => {
+        if(user){
+          setPostIsModalVisible(true);
+        }else{
+          setIsModalVisible(true);
+        }
+      })
+     
     };
   
     const handleCancelModal = () => {
@@ -33,6 +37,10 @@ const NavBar = () => {
       setIsModalVisible(false);
     };
 
+    useEffect(() => {
+      firebase.auth().onAuthStateChanged(setCurrentUser);
+    },[])
+
   return (
     <div className='d-flex bg-light p-2 justify-content-between align-items-center px-5'>
        <div>
@@ -40,9 +48,9 @@ const NavBar = () => {
        </div>
        
        <div>
-          <button className='btn btn-warning me-5' onClick={openPostOrConnect}>Créer une annonce</button>
+          <button className='btn btn-warning me-5' style={{width: '130px'}} onClick={openPostOrConnect}>Publier une annonce</button>
           <BellOutlined />
-          {firebase.auth().currentUser && <Avatar size={26} icon={<UserOutlined />} className='ms-3' />}
+          {currentUser && <Avatar size={26} icon={<UserOutlined />} className='ms-3' />}
           
        </div>
        <Modal
@@ -52,7 +60,7 @@ const NavBar = () => {
         footer={false}
         style={{top: 20}}
       >
-        <Authentification />
+        <Authentification closeModal={handleCancelModal} />
       </Modal>
 
       <Modal
@@ -61,8 +69,9 @@ const NavBar = () => {
         onCancel={handlePostCancelModal}
         footer={false}
         style={{top: 20}}
+        
       >
-        <PostForm />
+        <PostForm closeModel={handlePostCancelModal} />
       </Modal>
     </div>
   );

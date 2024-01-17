@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { UserOutlined } from '@ant-design/icons';
 import firebase from '../../services/firebaseConfig';
 import PostFilter from '../PostFilter/PostFilter';
+import { PostCard } from '../PostCard/PostCard';
 
 const { Text } = Typography;
 
@@ -118,10 +119,9 @@ const PostList = ({postToHomePage}) => {
                         <Avatar shape="square" style={{width: 180, height: 130}} src={item.images[0]} />
                       <div>
                         <h3 style={{fontSize: 18, fontWeight: 500}}>{item.title}</h3>
-                        <Text strong>CFA {item.price}</Text>
-                        <div className='d-flex align-items-center my-2' >
-                          <Avatar size={22} icon={<UserOutlined />} />
-                          <span className='fw-bold ms-1 text-muted'>{item.owner.name}</span>
+                        <div style={{fontSize: '11px'}} className='text-muted'> Publié le {item.createdAt ? new Date(item.createdAt.toDate()).toLocaleString(): 'Inconnu'}</div>
+                        <div>
+                          <Text strong className='text-muted'  style={{fontSize: '12px'}}>CFA {item.price} / {item.priceBy}</Text>
                         </div>
                         <div className='mt-1'>
                           <Space>

@@ -107,7 +107,7 @@ const handleCancelModal = () => {
 				/>
 			)}
 			{contextHolder}
-             <div  style={{height: '380px', width: '100%', zIndex: '4', position: 'relative'}}>
+             <div  style={{height: '340px', width: '100%', zIndex: '4', position: 'relative'}}>
               {post && 
               <div style={{position: 'absolute', top:'0', height: '380px', width: '100%',}}> 
                <Carousel

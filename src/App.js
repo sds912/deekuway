@@ -7,11 +7,13 @@ import 'react-multi-carousel/lib/styles.css';
 import { useMediaQuery } from 'react-responsive';
 import HomePageMobile from './pages/HomePageMobile/HomePageMobile';
 import { AccountPage } from './pages/AccountPage/AccountPage';
-import { PostDetailPage } from './pages/PostDetailPage/PostDetailPage';
 import { MyFavoritesPage } from './pages/MyFavoritesPage/MyFavoritesPage';
 import { ServicesPage } from './pages/ServicesPage/ServicesPage';
-import ServiceDetailPage from './pages/ServiceDetailPage/ServiceDetailPage';
 import { PostDetailPage2 } from './pages/PostDetailPage2/PostDetailPage2';
+import { Authentification } from './components/Authentification/Authentification';
+import { ServiceDetailPage } from './pages/ServiceDetailPage/ServiceDetailPage';
+import { RegisterPage } from './pages/RegisterPage/RegisterPage';
+import { LoginPage } from './pages/LoginPage/LoginPage';
 const { Content } = Layout;
 
 const App = () => {
@@ -31,6 +33,9 @@ const App = () => {
                   <Route path='/services' Component={ ServicesPage } />
                   <Route path='/services/:id' Component={ ServiceDetailPage } />
                   <Route path='/favorites' Component={ MyFavoritesPage } />
+                  <Route path='/auth' Component={ Authentification } />
+                  <Route path='/register'  Component={ RegisterPage}/>
+                  <Route path='/login'  Component={ LoginPage }/>
                   <Route path='/account/:idUser' Component={ isTabletOrMobile ? AccountPage : (isBigScreen || isDesktopOrLaptop) ? AccountPage : null} />
                 </Routes>
             </div>
