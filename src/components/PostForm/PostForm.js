@@ -270,7 +270,7 @@ export const  PostForm = ({closeModel}) => {
 								</div>
 							</div>
 							)}
-							</PlacesAutocomplete>
+						</PlacesAutocomplete>
 					</div>
 					<div className='form-group w-100 mt-3'>
 						<label className='form-label'>Prix par (Mois, Jour)</label>

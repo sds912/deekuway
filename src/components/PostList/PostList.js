@@ -5,143 +5,54 @@ import { UserOutlined } from '@ant-design/icons';
 import firebase from '../../services/firebaseConfig';
 import PostFilter from '../PostFilter/PostFilter';
 import { PostCard } from '../PostCard/PostCard';
+import sofa from '../../assets/sofa.svg';
+import bed from '../../assets/bed.svg';
+import kitchen from '../../assets/kitchen.svg';
+import bathroom from '../../assets/bathroom.svg';
+import toilet from '../../assets/toilet.svg';
 
 const { Text } = Typography;
 
-const PostList = ({postToHomePage}) => {
-  const [posts, setPosts] = useState([]);
-  const [post, setPost] = useState(null);
-  const [pageSize, setPageSize] = useState(5);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [startAfterDoc, setStartAfterDoc] = useState(1);
-  const [total, setTotal] = useState(0);
-  
-  const onPostClicked = (post) => {
-    postToHomePage(post);
-    setPost(post);
-  };
-
-  useEffect(() => {
-    countPosts();
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    let query = firebase.firestore().collection('posts')
-                 .orderBy('createdAt') // assuming you have a 'createdAt' field
-                 .limit(pageSize);
-  
-    if (startAfterDoc) {
-      query = query.startAfter(startAfterDoc);
-    }
-  
-    const snapshot = await query.get();
-  
-    const updatedPosts = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-  
-    setPosts(updatedPosts);
-  
-    const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+const PostList = ({postToHomePage, posts, display='grid'}) => {
  
-    setStartAfterDoc(lastVisible);
-  };
-  
-
- const handlePostFilter = (data) =>{
-    setPosts(data);
-  }
-
-  const handlePageChange = async (page, pageSize) => {
-    setCurrentPage(page);
-    const pageOffset = (page - 1) * pageSize;
-    console.log(posts)
-    let query = firebase.firestore().collection('posts')
-                 .orderBy('createdAt')
-                 .limit(pageSize)
-                 .startAt(startAfterDoc || 0)
-                 
-  
-    const snapshot = await query.get();
-  
-    const updatedPosts = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-  
-    setPosts(updatedPosts);
-  
-    const lastVisible = snapshot.docs[snapshot.docs.length - 1];
-    setStartAfterDoc(lastVisible);
-  };
-  
-  
-  const handlePageSizeChange = (size) => {
-    setPageSize(size);
-    // Fetch data based on new page size
-  };
-
-  const countPosts = async () => {
-    const postRef = firebase.firestore().collection('posts');
-  
-    try {
-      const snapshot = await postRef.get();
-      const postCount = snapshot.size; // Number of documents in the collection
-      setTotal(postCount);
-      return postCount;
-    } catch (error) {
-      console.error('Error getting documents:', error);
-      return 0;
-    }
-  };
-  
-
-  
-
-
   return (
     <>
-		<PostFilter onPostListFilter={handlePostFilter} />
     <div className='PostList'>
-      <div className='custom-scrollbar p-3' style={{height: 'calc(100vh - 180px)', overflowY: 'auto'}}>
+      <div className='custom-scrollbar p-3' style={{minHeight: 'calc(100vh - 180px)', overflowY: 'auto'}}>
           <List
-            grid={{ gutter: 16, column: 1 }}
+            grid={{ gutter: 16, column: display === 'grid' ? 3 : 1 }}
             dataSource={posts}
-            renderItem={item => (
+            renderItem={post => (
               <List.Item  >
                 <Card 
-                bodyStyle={{padding: '6px', boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px', backgroundColor: post?.id === item?.id ? '#daffca': 'inherit'}} 
-                onClick={() =>  onPostClicked(item)}>
-                  <Space direction="vertical">
-                    <Space>
-                        <Avatar shape="square" style={{width: 180, height: 130}} src={item.images[0]} />
+                bodyStyle={{padding: '6px', boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px' }} 
+                onClick={() =>  {}}>
+                  <Space className='w-100'  direction={display === 'grid' ? 'vertical': 'horizontal'} >
+                        <Avatar className='w-100' shape="square" style={{width: display ==='grid' ? '100%' :180, height: display ==='grid'? 140 : 130}} src={post.images[0]} />
                       <div>
-                        <h3 style={{fontSize: 18, fontWeight: 500}}>{item.title}</h3>
-                        <div style={{fontSize: '11px'}} className='text-muted'> Publié le {item.createdAt ? new Date(item.createdAt.toDate()).toLocaleString(): 'Inconnu'}</div>
+                        <h3 style={{fontSize: 18, fontWeight: 500}}>{post.title}</h3>
+                        <div style={{fontSize: '11px'}} className='text-muted'> Publié le {post.createdAt ? new Date(post.createdAt.toDate()).toLocaleString(): 'Inconnu'}</div>
                         <div>
-                          <Text strong className='text-muted'  style={{fontSize: '12px'}}>CFA {item.price} / {item.priceBy}</Text>
+                          <Text strong className='text-muted'  style={{fontSize: '12px'}}>CFA {post.price} / {post.priceBy}</Text>
+                          <div style={{height: '50px'}}>
+                            <Text color='#108ee9'><i className='fa fa-map-marker'></i> {post.address}</Text>
+                          </div>
                         </div>
-                        <div className='mt-1'>
-                          <Space>
-                            <Tag color='#2db7f5'><i className='fa fa-bed'></i> {item.rooms}</Tag>
-                            <Tag color='#f50'> <i className='fa fa-bath'></i> {item.bathRooms}</Tag>
-                            <Tag color='#87d068'><i className='fa fa-thumb-tack'></i> {item.distance} km</Tag>
-                            <Text color='#108ee9'><i className='fa fa-map-marker'></i> {item.address}</Text>
-                          </Space>
+                        <div className='mt-1 w-100  d-flex'>
+                          {post.rooms     > 0  && <div className='d-flex align-items-center'> <img src={bed} alt='bed' style={{width: '12px'}} className='me-2'  /> {post.rooms}</div>}
+                          {post.salon     > 0  && <div className='ms-3 d-flex align-items-center'> <img src={sofa} alt='sofa' style={{width: '16px'}} className='me-2' />  {post.salon}</div>}
+                          {post.bathRooms > 0  && <div className='ms-3 d-flex align-items-center'> <img src={bathroom} alt='bathroom' style={{width: '12px'}}  className='me-2'  />  {post.bathRooms}</div>}
+                          {post.toilet    > 0  && <div className='ms-3 d-flex align-items-center'> <img src={toilet} alt='bathroom' style={{width: '12px'}} className='me-2'  />  {post.toilet}</div>}
+                          {post.kitchen   > 0  && <div className='ms-3 d-flex align-items-center'> <img src={kitchen} alt='kitchen' style={{width: '12px'}} className='me-2'  />  {post.kitchen}</div>}
                         </div>
                       </div>
-                    </Space>
                   </Space>
                 </Card>
               </List.Item>
             )}
           />
       </div>
-      <div className='p-3 text-center'>
-        <Pagination defaultCurrent={1} current={currentPage} total={total} onChange={handlePageChange} pageSize={10} />
-      </div>
+     
     </div>
     </>
   );

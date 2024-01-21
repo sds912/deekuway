@@ -48,7 +48,10 @@ const NavBar = () => {
        </div>
        
        <div>
-          <button className='btn btn-warning me-5' style={{width: '130px'}} onClick={openPostOrConnect}>Publier une annonce</button>
+          <button className='btn fw-bold text-white me-5 p-3' style={{
+            width: '150px',
+            backgroundColor: '#02627a'
+            }} onClick={openPostOrConnect}>Publier une annonce</button>
           <BellOutlined />
           {currentUser && <Avatar size={26} icon={<UserOutlined />} className='ms-3' />}
           

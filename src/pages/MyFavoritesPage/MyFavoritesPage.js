@@ -9,14 +9,9 @@ import { MobileNavBar } from "../../components/MobileNavBar/MobileNavBar";
 export const  MyFavoritesPage = () => {
 
 	const [posts, setPosts] = useState([]);
-    const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 	const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
-
     
-
-   const handlePost = (post) => {
-
-    }
 
     const fetchData = async (uid) => {
         setLoading(true);
@@ -36,28 +31,33 @@ export const  MyFavoritesPage = () => {
       
       };
       
-    
-
-    
-    
       useEffect(() => {
-  firebase.auth().onAuthStateChanged(user =>{
-    if(user.uid){
-      fetchData(user.uid);
-    }
-  })
-        
-     // Clean up the listener when unmounti
+        loadData();
       },[]);
+
+      const loadData = () => {
+        firebase.auth().onAuthStateChanged(user =>{
+          if(user.uid){
+            fetchData(user.uid);
+          }
+        })
+      }
 
     return (
         <>
        {isTabletOrMobile && <MobileNavBar />}
-      
+       <div>
+        <h4>Mes recherches</h4>
+       </div>
        { loading ? <Loader  /> : <div className="p-4">
-          <h4 style={{marginTop: '60px'}}>Mes annonces</h4>
+          <h4 style={{marginTop: '60px'}}>Mes annonces favories</h4>
           <div style={{marginTop: '20px'}}>
-            {posts && <PostListMobile posts={posts} postToHomePage={handlePost} favorites={[]}/>} 
+            {posts && <PostListMobile 
+            posts={posts} 
+            postToHomePage={() => {}} 
+            favorites={[]} 
+            reloadData={loadData}
+            screen={'favorite'} />} 
           </div>
        </div>}
        {isTabletOrMobile  &&  <BottomNav />}

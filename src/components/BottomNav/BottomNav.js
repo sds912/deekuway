@@ -8,7 +8,6 @@ import { useNavigate,Link, useLocation } from 'react-router-dom';
 
 export const BottomNav = () => {
 	let navigate = useNavigate();
-	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [isPostModalVisible, setPostIsModalVisible] = useState(false);
 	const location = useLocation();
 

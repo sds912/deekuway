@@ -47,27 +47,31 @@ export const AccountPage = () =>{
 	  }
 	 
 	useEffect(() =>  {
-	  loadPageTotal();	
-	  firebase.auth().onAuthStateChanged(user => {
-		const postRef =  firebase.firestore().collection('posts');
+	 loadData();
+      
+	},[]);
 
-		let query = postRef.where('owner.uid','==', user.uid);
-  
-		query = query.limit(5);
-  
-		 query.get().then(res =>{
-		  const dataList = [];
-		  res.docs.forEach( (d) => {
-			  dataList.push({
-				  id: d.id,
-				  ...d.data()
-			  })
-		  })
-		  setPosts(dataList);
-		 })
-	  })
-     
-	},[])
+	const loadData = () => {
+		loadPageTotal();	
+		firebase.auth().onAuthStateChanged(user => {
+		  const postRef =  firebase.firestore().collection('posts');
+		  let query = postRef.where('owner.uid','==', user.uid);
+		  query = query.limit(5);
+	
+		   query.get().then(res =>{
+			const dataList = [];
+			res.docs.forEach( (d) => {
+				dataList.push({
+					id: d.id,
+					...d.data()
+				})
+			})
+			setPosts(dataList);
+		   })
+		})
+	}
+
+
 	return(
 		<>
 		<div className="AccountPage container py-5" >
@@ -89,6 +93,7 @@ export const AccountPage = () =>{
 		   posts={posts} 
 		   postToHomePage={() =>{}} 
 		   favorites={[]} selectedPost={null} 
+		   reloadData={loadData}
 		   openImageViewer={() => {}}
 		   screen = {'account'}
 		    />}

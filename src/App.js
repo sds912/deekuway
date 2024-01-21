@@ -9,11 +9,11 @@ import HomePageMobile from './pages/HomePageMobile/HomePageMobile';
 import { AccountPage } from './pages/AccountPage/AccountPage';
 import { MyFavoritesPage } from './pages/MyFavoritesPage/MyFavoritesPage';
 import { ServicesPage } from './pages/ServicesPage/ServicesPage';
-import { PostDetailPage2 } from './pages/PostDetailPage2/PostDetailPage2';
 import { Authentification } from './components/Authentification/Authentification';
 import { ServiceDetailPage } from './pages/ServiceDetailPage/ServiceDetailPage';
 import { RegisterPage } from './pages/RegisterPage/RegisterPage';
 import { LoginPage } from './pages/LoginPage/LoginPage';
+import { PostDetailPage } from './pages/PostDetailPage/PostDetailPage';
 const { Content } = Layout;
 
 const App = () => {
@@ -29,7 +29,7 @@ const App = () => {
             <div style={{width: '100%' }}>
                 <Routes>
                   <Route path='/' Component={ isTabletOrMobile ? HomePageMobile : (isBigScreen || isDesktopOrLaptop) ? HomePage : null} />
-                  <Route path='/posts/:id' Component={ PostDetailPage2 } />
+                  <Route path='/posts/:id' Component={ PostDetailPage } />
                   <Route path='/services' Component={ ServicesPage } />
                   <Route path='/services/:id' Component={ ServiceDetailPage } />
                   <Route path='/favorites' Component={ MyFavoritesPage } />

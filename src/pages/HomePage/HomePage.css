@@ -2,4 +2,21 @@
   width: 100vw;
 }
 
+.btn-filter{
+
+  background-color: #FFFFFF;
+  border: 1px solid #CCCCCC;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  font-size: 22px !important;
+  color: #02627a;
+
+}
+
+.btn-filter-active{
+  background-color: #02627a !important;
+  color: #FFFFFF !important;
+}
+
 

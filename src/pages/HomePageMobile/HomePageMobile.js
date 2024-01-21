@@ -91,6 +91,7 @@ const  HomePageMobile = () => {
         ...doc.data(),
       });
     });
+    console.log(postData)
     setPosts(postData);
     setLoading(false);
   };
@@ -116,28 +117,14 @@ const  HomePageMobile = () => {
   
 
   const search = (event) => {
-    if(containsKeyword(event.target.value, appartkeywords)){
-      fetchData(mode, null, currentPage, pageSize, 'appartement', null);
-    } else if(containsKeyword(event.target.value, studiokeywords)){
-      fetchData(mode, null, currentPage, pageSize, 'studio', null);
-    } else{
+  
       
       fetchData(null, null, currentPage, pageSize, null, null);
 
-    }
+  
   }
 
-  const  containsKeyword =  (inputString, keywords) => {
-    
-  
-    // Convert the input string to lowercase for case-insensitive matching
-    const lowerCaseInput = inputString.toLowerCase();
-  
-    // Check if any keyword is present in the lowercased input string
-    const containsKeyword = keywords.some(keyword => lowerCaseInput.includes(keyword.toLowerCase()));
-  
-    return containsKeyword;
-  }
+
 
   const loadPageTotal = (mode = null, type = null) => {
     let postRef = firebase.firestore().collection('posts');
@@ -158,9 +145,9 @@ const  HomePageMobile = () => {
 
 
   useEffect(() => {
-   fetchData(mode,null, currentPage, pageSize);
+  fetchData(mode,null, currentPage, pageSize);
    loadBoostedPosts(mode);
-   loadPageTotal();
+  loadPageTotal();
  // Clean up the listener when unmounti
   },[]);
   
@@ -210,7 +197,7 @@ const  HomePageMobile = () => {
 				currentIndex={ currentImage }
 				disableScroll={ false }
 				closeOnClickOutside={ true }
-				onClose={ closeImageViewer }
+				onClose={ () => closeImageViewer() }
 				 
 				/> </div>
 			)}
@@ -226,8 +213,8 @@ const  HomePageMobile = () => {
       <div>
         <div className='search-filter mt-1 mb-3'>
           <SearchOutlined className='search-icon mx-2' />
-          <input type='search' placeholder='Rechercher un appart ...' onKeyUp={search} />
-          <button className='btn btn-dark filter-icon'  onClick={openFilter}>
+          <input type='search' placeholder='Rechercher un appart ...' onKeyUp={() => search()} />
+          <button className='btn filter-icon'  onClick={openFilter}>
           <img style={{width:'32px'}} src={filter} alt='filter' />
           </button>
         </div>
@@ -249,7 +236,13 @@ const  HomePageMobile = () => {
          <Skeleton.Image style={{width: '95vw', height: '160px', borderRadius: '20px'}} /> 
         </div>}
         <h2 className='text-muted fw-bold pb-1 pt-5' style={{fontSize: '22px'}}>Derniéres Annonces</h2>
-				{!loading && <PostListMobile postToHomePage={handlePostFromPostList}   posts={posts} selectedPost={post} favorites={favorites} openImageViewer={openImageViewer} screen={'home'}  />}
+				{!loading && <PostListMobile 
+        postToHomePage={handlePostFromPostList}   
+        posts={posts} selectedPost={post} 
+        favorites={favorites} 
+        openImageViewer={openImageViewer} 
+        reloadData={() => fetchData(mode, null, currentPage, pageSize, type)}
+        screen={'home'}  />}
         {loading &&  <PostListSkeleton />}
         <div className='w-100 text-center mt-3'>
         {totalPage > 5 && 
