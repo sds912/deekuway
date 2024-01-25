@@ -1,45 +1,7 @@
 .PostFilter {
+    max-height: 80vh;
+    overflow-y: auto;
+    width: 100%;
+    overflow-x: hidden;
 }
 
-.form-select ,.form-control{
-    border: 0 !important;
-    border-radius: 0;
-}
-
-.form-select{
-    width: 150px;
-}
-
-
-
-.form-control{
-    width: 230px;
-}
-
-.distance-input{
-    border-left: .5px solid #CCC !important;
-    border-right: .5px solid #CCC !important;
-}
-
-.search-btn{
-    border-radius: 0;
-    color: #FFFFFF;
-    height: 46px;
-    width: 50px;
-}
-
-.btn-mode{
-    border: none;
-    padding: 10px 20px;
-    width: 110px;
-    background-color: #FFFFFF;
-}
-
-.btn-mode:hover{
-    opacity: .7;
-}
-
-.btn-mode-active{
-    background-color: #02627a !important;
-    color: #FFFFFF;
-}

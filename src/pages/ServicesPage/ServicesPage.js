@@ -12,7 +12,7 @@ import Meta from 'antd/es/card/Meta';
 import { StarOutlined } from '@ant-design/icons';
 import { MobileNavBar } from '../../components/MobileNavBar/MobileNavBar';
 
-export const  ServicesPage = ()  => {
+export const  ServicesPage = ({screen})  => {
 
   const [services, setServices] = useState([]);
 	const isTabletOrMobile =  useMediaQuery({ query: '(max-width: 1224px)' });

@@ -8,6 +8,8 @@ export const RegisterForm = () => {
     const auth = firebase.auth();
 	const [mode, setMode] = useState(1);
 	const [messageApi, contextHolder] = message.useMessage();
+	const [step, setStep] = useState(1);
+	const [profile, setProfile] = useState(null);
  
 	const {
 		register,
@@ -42,13 +44,17 @@ export const RegisterForm = () => {
        const profiles = [
         {
             id: 1,
-            name: 'Je Recherche un appart',
-            icon: ''
+            name: 'Je suis Locataire',
+			icon: '',
+            description: "J'utilise cette plateforme pour rechercher des appartements, studios, chambres... à louer ou à acheter",
+			profile: 'client'
         },
         {
             id: 2,
-            name: 'Je loue des appart',
-            icon: ''
+            name: 'Je suis Bayeur',
+            icon: '',
+			description: "J'utilise cette plateforme pour mettre en location ou ventre des appartements, studios, chambres... ",
+			profile: 'owner'
         }
        ] 
 
@@ -60,52 +66,55 @@ export const RegisterForm = () => {
 			{contextHolder}
 			 
 			<div>
-				<div className='my-3'>
-					<h4 className='fw-bold'>S'inscrire</h4>
-				</div>
-				
-                <label className='form-label'>Je m'inscrie en tant que : </label>
-                <div className="row">
+             
+				<form onSubmit={handleSubmit(onRegister)}>
+				{step === 1 && <div className="row">
+					<p className="mt-3 fw-bold text-muted">
+						Choisir le profile qui vous décri le plus 
+					</p>
                     {profiles.map( p => 
-                    <div className="col-6">
-                        <div className="border p-3 text-center mt-3 fw-bold" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80px'}}>
-                            {p.name}
+                    <div className="col-12">
+                        <div className="border  text-center  fw-bold p-4 active" onClick={() => {
+							setProfile(p.profile);
+							setStep(2);
+						}}>
+                           <h3 className="fw-bold border-bottom pb-4 text-uppercase">{p.name}</h3>
+						   <p className="text-center mt-4">{p.description}</p>
                         </div>
                     </div>)}
-                </div>
-				<form onSubmit={handleSubmit(onRegister)}>
-					<div className='form-group w-100'>
-					   <label className='form-label'>Nom complet</label>
+                </div>}
+				{step === 2 && <div>
+				<div className='form-group w-100'>
+					   <label className='form-label fw-bold'>Nom complet</label>
 						<input type="text"  {...register("nom", {required: true})} className='form-control  w-100' />
 						{errors.nom && <span className='text-danger'>Veillez renseigner votre nom complet</span>}
 					</div>
 					<div className='form-group w-100 mt-3'>
-						<label className='form-label'>Email</label>
+						<label className='form-label fw-bold'>Email</label>
 						<input type="text"  {...register("email", {required: true})} className='form-control w-100' />
 						{errors.password && <span className='text-danger'>Veillez renseigner votre email</span>}
 					</div>
 					<div className='form-group w-100 mt-3'>
-						<label className='form-label'>Téléphone</label>
+						<label className='form-label fw-bold'>Téléphone</label>
 						<input type="text"  {...register("phone", {required: true})} className='form-control w-100' />
 						{errors.password && <span className='text-danger'>Veillez renseigner votre numéro</span>}
 					</div>
 					<div className='form-group w-100 mt-3'>
-					   <label className='form-label'>Mot de passe</label>
-						<input type="text"  {...register("password", {required: true})} className='form-control w-100' />
+					   <label className='form-label fw-bold'>Mot de passe</label>
+						<input type="password"  {...register("password", {required: true})} className='form-control w-100' />
 						{errors.password && <span className='text-danger'>Veillez renseigner le mot de passe</span>}
 					</div>
 					<div className='form-group w-100 mt-3'>
-					   <label className='form-label'>Confirmer votre mot de passe</label>
+					   <label className='form-label fw-bold'>Confirmer votre mot de passe</label>
 						<input type="password" {...register("confirmation", { required: true })}  className='form-control w-100' />
 						{(errors.confirmation || (confirmation !== password)) && <span className='text-danger'>Veillez confirmer le mot de passe</span>}
 					</div>
-					<div className='mt-5 pt-4'>
-						<input type="submit" value="S'inscrire" className='btn btn-warning fw-bold' />
+					<div className='mt-5 pt-4 w-100 text-center'>
+						<input type="submit" value="S'inscrire" style={{width: '230px'}} className='btn btn-primary fw-bold' />
 					</div>
+				</div>}
+					
 				</form>
-				<div className="mt-3">
-					<p>J'ai un compte ? <button className='btn' onClick={() =>setMode(1)}>Se connecter</button></p>
-				</div>
 			</div>
 		</div>
 	)

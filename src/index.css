@@ -22,5 +22,20 @@ code {
   z-index: 2800 !important;
 }
 
+.form-control, .form-select{
+  border-radius: 4px !important;
+}
+
+.btn-primary{
+  background-color: #02627a !important;
+  outline: none !important;
+  border: none !important;
+  padding: 8px 8px !important;
+}
+
+.btn-outline-primary{
+  border: 1px solid #02627a !important;
+}
+
         
         

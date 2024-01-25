@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import './HomePage.css';
+import './MyFavoritesWPage.css';
 import PostList from '../../components/PostList/PostList';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -10,10 +10,8 @@ import { SearchOutlined } from '@ant-design/icons';
 import firebase from '../../services/firebaseConfig';
 import { useMediaQuery } from '@uidotdev/usehooks';
 import { Link, useLocation } from 'react-router-dom';
-import GeolocationMap from '../../components/GeolocationMap/GeolocationMap';
-import data from '../../assets/data.json';
 
-const  HomePage = () => {
+const  MyFavoritesWPage = () => {
 	const [post, setPost] = useState(null);
 	const [display, setDispaly] = useState('grid');
 	const [userLocation, setUserLocation] = useState({ latitude: null, longitude: null });
@@ -128,59 +126,6 @@ const  HomePage = () => {
     
   };
 
-
-  const searchByFilter = async (searchParams, page = 1, size = 10) => {
-    setLoading(true);
-    let query = firebase.firestore().collection('posts');
-  
-    const { mode, minPrice, maxPrice, property, bedRooms, otherRooms } = searchParams;
-
-  
-  
-    if (mode && mode.length > 0) {
-      query = query.where('mode', 'in', mode);
-    }
-
-    if(bedRooms && bedRooms.length > 0){
-        query = query.where('bedRooms', 'in', bedRooms);
-    }
-  
-    if (minPrice && maxPrice) {
-      const minPriceFloat = parseFloat(minPrice);
-      const maxPriceFloat = parseFloat(maxPrice);
-      
-      if (!isNaN(minPriceFloat) && !isNaN(maxPriceFloat)) {
-        query = query.where('price', '>=', minPriceFloat).where('price', '<=', maxPriceFloat);
-      }
-    }
-  
-    if (property && property.length > 0) {
-      query = query.where('type', 'in', property);
-    }
-  
-
-    if (otherRooms && otherRooms.length > 0) {
-       console.log(otherRooms)
-        query = query.where('otherRooms', 'array-contains-any', otherRooms);
-
-    }
- 
-  
-    const postData = [];
-    (await query.get()).docs.forEach((doc) => {
-      postData.push({
-        id: doc.id,
-        ...doc.data(),
-      });
-    });
-    console.log(postData);
-    setPosts(postData);
-    setLoading(false);
-  };
-  
-
-  
-
   
  
 
@@ -261,7 +206,6 @@ const  HomePage = () => {
  
 
 	return (
-       <div>
        <div className='bg-white'>
 	   <div 
 	   className='bg-muted'
@@ -274,7 +218,7 @@ const  HomePage = () => {
 			}}>
 	   <NavBar />
 	   		<div  className='d-flex justify-content-between align-items-center  px-5'>
-				<div className='d-flex justify-content-start align-items-center p-4'>
+         <div className='d-flex justify-content-start align-items-center p-4'>
 				 <Link style={{
           textDecoration: 'none',
           color: '#000000'
@@ -283,10 +227,6 @@ const  HomePage = () => {
           textDecoration: 'none',
           color: '#000000'
          }} to={'/favorites'} ><div className={location.pathname === '/favorites' ?'navbar-item navbar-item-active mx-4': 'navbar-item mx-4'}>Mes favories</div> </Link> 
-         	 <Link style={{
-          textDecoration: 'none',
-          color: '#000000'
-         }} to={'/services'} ><div className={location.pathname === '/services' ?'navbar-item navbar-item-active mx-4': 'navbar-item mx-4'}>Services</div> </Link> 
 				</div>
 				<div className='d-flex justify-content-end align-items-center'>
             <button title='vue en liste' className={display === 'list' ?'mx-3 btn-filter btn-filter-active': 'mx-3 btn-filter'} onClick={() => setDispaly('list')}>
@@ -298,9 +238,7 @@ const  HomePage = () => {
 				   <button className='mx-3 btn-filter' title='Actualiser ma position' onClick={() =>{ getLocation()}}>
 					<i className='fa fa-map-marker'></i>
 				   </button>
-				   <Select  className="fw-bold" onChange={(value) =>{
-            filterByMode(value);
-           }} defaultValue={'all'} style={{width: '110px'}}> 
+				   <Select  className="fw-bold" onChange={() =>{}} defaultValue={'all'} style={{width: '110px'}}>
             <Select.Option value={'all'}   >Tous</Select.Option>
             <Select.Option value={'location'}>Location</Select.Option>
             <Select.Option value={'vente'}>Vente</Select.Option>
@@ -310,42 +248,14 @@ const  HomePage = () => {
 			</div>
 	   </div>
 	 
-		<div className="HomePage container-fluid"> 
+		<div className="HomePage container-fluid  pt-2 mt-3">
 			{contextHolder}
 			
 			<div className='row px-3'>
-				<div className='col-md-3' >
-          <div style={{
-            position: 'fixed'
-          }}>
-					  <PostFilterSide onSubmitFilter={searchByFilter} />
-          </div>
-				</div>
-				<div className='col-12 col-md-9 p-2 ' style={{marginTop: '140px', zIndex: '1'}} >
-
-          { display === 'list' && <div className='row'>
-            <div className='col-6'>
-					    <PostList display={display} posts={posts} postToHomePage={(post) => setPost(post)} screen={'home'}  /> 
-            </div>
-            <div className='col-6' style={{
-              position: 'relative',
-              height: 'calc(100vh - 180px)',
-
-            }}>
-              <div className='card card-body' style={{
-                width: '36%',
-                height: 'calc(100vh - 180px)',
-                position: 'fixed',
-                top: '150px',
-                right:'20px'
-              }}>
-              <GeolocationMap post={post} />
-              </div>
-            </div>
-
-          </div>}
-					{ display === 'grid' && <PostList display={display} posts={posts} postToHomePage={(post) => setPost(post)} screen={'home'}  />}
-         
+				<div className='col-12 p-2 ' style={{marginTop: '140px', zIndex: '1'}} >
+					{
+					<PostList display={display} posts={posts} postToHomePage={() => {}} screen={'favorites'}  /> 
+					}
 					 <div className='p-3 text-center'>
 					 {totalPage > 5 && 
 					<Pagination
@@ -361,9 +271,8 @@ const  HomePage = () => {
 			</div>
 		</div>
 		</div>
-    </div>
 	);
 	
 }
 
-export default HomePage;
+export default MyFavoritesWPage;

@@ -4,14 +4,30 @@
 
 .location-option, .vente-option{
     border: 1px solid #e5e5e5;
-    font-size: 22px;
+    font-size: 16px;
     transition: all .5s;
     border-radius: 7px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+
 }
 
+.location-option-active{
+  background-color: #02627a;
+  color: #e5e5e5;
+}
+
+.vente-option-active{
+  background-color: #02627a;
+  color: #e5e5e5;
+}
+
+
 .location-option:hover, .vente-option:hover{
-    transition: all 0.5s;  
-    background-color: #dab30647 ;
+    opacity: .6;
     cursor: pointer;
   }
 .btn{

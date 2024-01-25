@@ -17,6 +17,7 @@ import ReactSimpleImageViewer from 'react-simple-image-viewer';
 import { PostListSkeleton } from '../../components/PostListSkeleton/PostListSkeleton';
 import { useDispatch, useSelector } from 'react-redux';
 import { countPage, getAllPost } from '../../features/post-slice';
+import data from '../../assets/data.json';
 
 const appartkeywords = ["appement", "appart", "Appart", "apartment", "appartment", "appar"];
 const studiokeywords = ["studio", "stuio", "Studio"];
@@ -147,7 +148,7 @@ const  HomePageMobile = () => {
   useEffect(() => {
   fetchData(mode,null, currentPage, pageSize);
    loadBoostedPosts(mode);
-  loadPageTotal();
+   loadPageTotal();
  // Clean up the listener when unmounti
   },[]);
   
@@ -263,11 +264,14 @@ const  HomePageMobile = () => {
         onCancel={handleFilterCancelModal}
         footer={false}
       >
-        <PostFilter onPostListFilter={(posts) => {
+        <div className='mt-5'>
+        <PostFilter  onPostListFilter={(posts) => {
          setPosts(posts);
          setIsFilterModalVisible(false);
          loadPageTotal();
         }} screen='Mobile' />
+        </div>
+       
       </Modal>
      
 		</div>

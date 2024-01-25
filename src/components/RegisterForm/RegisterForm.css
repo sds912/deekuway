@@ -2,3 +2,14 @@
     border: .6px solid #e2e1e1 !important;
     height: 46px;
 }
+
+.active{
+    background-color: #02627a !important;
+    color: #F4F4F4 !important;
+    cursor: pointer;
+    transition: all 0.6s;
+}
+.active:hover{
+    opacity: .8;
+
+}

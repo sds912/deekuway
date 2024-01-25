@@ -1,103 +1,259 @@
 {
     "posts" : [
         {
-            "id": 1,
-            "images": [
-                "https://media.jumiadeals.com/sn_live/d886748ee66569ba9a940d5.desktop-gallery-large.jpg",
-                "https://media.jumiadeals.com/sn_live/6a5adb9a466569ba9b8ad78.desktop-gallery-large.jpg"
-            ],
-            "title": "Modern Apartment near the Beach",
-            "price": 25000,
-            "rooms": 2,
-            "beds": 1,
-            "distance": 2,
-            "type": "appartement",
-            "publishedDate": "2023-11-30",
-            "address": "Avenue Cheikh Anta Diop, Dakar, Senegal",
-            "latitude": 14.6928,
-            "longitude": -17.4467,
-            "owner": {
-                "name": "Papa Diop",
-                "phone": "774445543",
-                "email": "dioppape@gmail.com"
-            },
+            "id": "1",
             "mode": "location",
-            "createdAt": "12 01 2023"
-
-        },
-        {
-            "id": 2,
-            "images": [
-                "https://media.jumiadeals.com/sn_live/29b5e8b4726569b9c34ea7c.desktop-gallery-large.jpg",
-                "https://media.jumiadeals.com/sn_live/864384b4026569b9c07eea9.desktop-gallery-large.jpg"
-            ],
-            "title": "Spacious House with Garden View",
-            "price": 25000,
-            "rooms": 4,
-            "beds": 3,
-            "distance": 6,
             "type": "appartement",
-            "publishedDate": "2023-11-29",
-            "address": "Rue El Hadji Malick Sy, Dakar, Senegal",
-            "latitude": 14.6922,
-            "longitude": -17.4528,
-            "owner": {
-                "name": "Papa Diop",
-                "phone": "774445543",
-                "email": "dioppape@gmail.com"
-            },
-            "mode": "vente",
-            "createdAt": "12 01 2023"
-
-        },
-        {
-            "id": 3,
             "images": [
-                "https://i.roamcdn.net/hz/ed/listing-gallery-full-1920w/bbddaa410ae75cec5cc586fc70fab4be/-/horizon-files-prod/ed/picture/qwezq276/980c4a69877e52b41a5d84b79239230f43bd4bdd.jpg",
-                "https://i.roamcdn.net/hz/ed/listing-gallery-full-1920w/bbddaa410ae75cec5cc586fc70fab4be/-/horizon-files-prod/ed/picture/qwezq276/980c4a69877e52b41a5d84b79239230f43bd4bdd.jpg"
+               "post.jpg"
             ],
-            "title": "Cozy Studio Apartment",
-            "price": 25000,
-            "rooms": 1,
-            "beds": 1,
-            "distance": 6,
-            "type": "studio",
-            "publishedDate": "2023-11-28",
-            "address": "Rue Mousse Diop, Dakar, Senegal",
-            "latitude": 14.6814,
-            "longitude": -17.4634,
+            "title": "Appartement à louer",
+            "price": "230000",
+            "priceBy": "mois",
+            "bedRooms": "2",
+            "otherRooms": [
+                "sallon",
+                "bedroom",
+                "toilet",
+                "balcon"
+            ],
+            "description": "je loue un appartement ",
             "owner": {
-                "name": "Papa Diop",
-                "phone": "774445543",
-                "email": "dioppape@gmail.com"
-            },
+                "name": "pape",
+                "phone": "777443663",
+                "email": "senghor.pape912@hotmail.com"
+            }
+        }, {
+            "id": "1",
             "mode": "location",
-            "createdAt": "12 01 2023"
-        },
-        {
-            "id": 4,
+            "type": "appartement",
             "images": [
-                "https://i.roamcdn.net/hz/ed/listing-gallery-full-1920w/bbddaa410ae75cec5cc586fc70fab4be/-/horizon-files-prod/ed/picture/qwezq276/980c4a69877e52b41a5d84b79239230f43bd4bdd.jpg",
-                "https://i.roamcdn.net/hz/ed/listing-gallery-full-1920w/bbddaa410ae75cec5cc586fc70fab4be/-/horizon-files-prod/ed/picture/qwezq276/980c4a69877e52b41a5d84b79239230f43bd4bdd.jpg"
+               "post.jpg"
             ],
-            "title": "Cozy Studio Apartment",
-            "price": 25000,
-            "rooms": 1,
-            "beds": 1,
-            "distance": 4,
-            "type": "maison",
-            "publishedDate": "2023-11-28",
-            "address": "Rue Mousse Diop, Dakar, Senegal",
-            "latitude": 14.6814,
-            "longitude": -17.4634,
+            "title": "Appartement à louer",
+            "price": "230000",
+            "priceBy": "mois",
+            "bedRooms": "2",
+            "otherRooms": [
+                "sallon",
+                "bedroom",
+                "toilet",
+                "balcon"
+            ],
+            "description": "je loue un appartement ",
             "owner": {
-                "name": "Papa Diop",
-                "phone": "774445543",
-                "email": "dioppape@gmail.com"
-            },
-            "mode": "vente",
-            "createdAt": "12 01 2023"
-
+                "name": "pape",
+                "phone": "777443663",
+                "email": "senghor.pape912@hotmail.com"
+            }
+        }, {
+            "id": "1",
+            "mode": "location",
+            "type": "appartement",
+            "images": [
+               "post.jpg"
+            ],
+            "title": "Appartement à louer",
+            "price": "230000",
+            "priceBy": "mois",
+            "bedRooms": "2",
+            "otherRooms": [
+                "sallon",
+                "bedroom",
+                "toilet",
+                "balcon"
+            ],
+            "description": "je loue un appartement ",
+            "owner": {
+                "name": "pape",
+                "phone": "777443663",
+                "email": "senghor.pape912@hotmail.com"
+            }
+        }, {
+            "id": "1",
+            "mode": "location",
+            "type": "appartement",
+            "images": [
+               "post.jpg"
+            ],
+            "title": "Appartement à louer",
+            "price": "230000",
+            "priceBy": "mois",
+            "bedRooms": "2",
+            "otherRooms": [
+                "sallon",
+                "bedroom",
+                "toilet",
+                "balcon"
+            ],
+            "description": "je loue un appartement ",
+            "owner": {
+                "name": "pape",
+                "phone": "777443663",
+                "email": "senghor.pape912@hotmail.com"
+            }
+        }, {
+            "id": "1",
+            "mode": "location",
+            "type": "appartement",
+            "images": [
+               "post.jpg"
+            ],
+            "title": "Appartement à louer",
+            "price": "230000",
+            "priceBy": "mois",
+            "bedRooms": "2",
+            "otherRooms": [
+                "sallon",
+                "bedroom",
+                "toilet",
+                "balcon"
+            ],
+            "description": "je loue un appartement ",
+            "owner": {
+                "name": "pape",
+                "phone": "777443663",
+                "email": "senghor.pape912@hotmail.com"
+            }
+        }, {
+            "id": "1",
+            "mode": "location",
+            "type": "appartement",
+            "images": [
+               "post.jpg"
+            ],
+            "title": "Appartement à louer",
+            "price": "230000",
+            "priceBy": "mois",
+            "bedRooms": "2",
+            "otherRooms": [
+                "sallon",
+                "bedroom",
+                "toilet",
+                "balcon"
+            ],
+            "description": "je loue un appartement ",
+            "owner": {
+                "name": "pape",
+                "phone": "777443663",
+                "email": "senghor.pape912@hotmail.com"
+            }
+        }, {
+            "id": "1",
+            "mode": "location",
+            "type": "appartement",
+            "images": [
+               "post.jpg"
+            ],
+            "title": "Appartement à louer",
+            "price": "230000",
+            "priceBy": "mois",
+            "bedRooms": "2",
+            "otherRooms": [
+                "sallon",
+                "bedroom",
+                "toilet",
+                "balcon"
+            ],
+            "description": "je loue un appartement ",
+            "owner": {
+                "name": "pape",
+                "phone": "777443663",
+                "email": "senghor.pape912@hotmail.com"
+            }
+        }, {
+            "id": "1",
+            "mode": "location",
+            "type": "appartement",
+            "images": [
+               "post.jpg"
+            ],
+            "title": "Appartement à louer",
+            "price": "230000",
+            "priceBy": "mois",
+            "bedRooms": "2",
+            "otherRooms": [
+                "sallon",
+                "bedroom",
+                "toilet",
+                "balcon"
+            ],
+            "description": "je loue un appartement ",
+            "owner": {
+                "name": "pape",
+                "phone": "777443663",
+                "email": "senghor.pape912@hotmail.com"
+            }
+        }, {
+            "id": "1",
+            "mode": "location",
+            "type": "appartement",
+            "images": [
+               "post.jpg"
+            ],
+            "title": "Appartement à louer",
+            "price": "230000",
+            "priceBy": "mois",
+            "bedRooms": "2",
+            "otherRooms": [
+                "sallon",
+                "bedroom",
+                "toilet",
+                "balcon"
+            ],
+            "description": "je loue un appartement ",
+            "owner": {
+                "name": "pape",
+                "phone": "777443663",
+                "email": "senghor.pape912@hotmail.com"
+            }
+        }, {
+            "id": "1",
+            "mode": "location",
+            "type": "appartement",
+            "images": [
+               "post.jpg"
+            ],
+            "title": "Appartement à louer",
+            "price": "230000",
+            "priceBy": "mois",
+            "bedRooms": "2",
+            "otherRooms": [
+                "sallon",
+                "bedroom",
+                "toilet",
+                "balcon"
+            ],
+            "description": "je loue un appartement ",
+            "owner": {
+                "name": "pape",
+                "phone": "777443663",
+                "email": "senghor.pape912@hotmail.com"
+            }
+        }, {
+            "id": "1",
+            "mode": "location",
+            "type": "appartement",
+            "images": [
+               "post.jpg"
+            ],
+            "title": "Appartement à louer",
+            "price": "230000",
+            "priceBy": "mois",
+            "bedRooms": "2",
+            "otherRooms": [
+                "sallon",
+                "bedroom",
+                "toilet",
+                "balcon"
+            ],
+            "description": "je loue un appartement ",
+            "owner": {
+                "name": "pape",
+                "phone": "777443663",
+                "email": "senghor.pape912@hotmail.com"
+            }
         }
+        
     ] 
 }

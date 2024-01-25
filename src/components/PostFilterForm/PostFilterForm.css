@@ -1,4 +1,4 @@
-input[type="checkbox"]:checked {
+input[type=checkbox]:checked {
     background-color: #02627a !important;
     border-color: #02627a;
   }
@@ -35,4 +35,22 @@ input[type="checkbox"]:checked {
 
   .option:hover{
     opacity: 0.7;
+  }
+
+  .chevron-btn{
+      width: 26px;
+      height: 26px;
+      border-radius: 18px;
+      background-color: #02627a;
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      align-items: center;
+      color: #FFFFFF;
+      transition: all 0.6s;
+      cursor: pointer;
+  }
+
+  .chevron-btn:hover{
+    opacity: 0.6;
   }

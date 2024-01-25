@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './PostCard.css';
 import { Avatar, Card, Dropdown, Modal, Space, Tag, Typography, message } from 'antd';
-import {CloseCircleOutlined, DeleteOutlined, EditOutlined, ExclamationCircleOutlined, LikeOutlined, MoreOutlined} from '@ant-design/icons';
+import {CheckCircleFilled, CheckCircleOutlined, CloseCircleOutlined, DeleteOutlined, EditOutlined, ExclamationCircleOutlined, LikeOutlined, MoreOutlined} from '@ant-design/icons';
 import firebase from '../../services/firebaseConfig';
 import { useNavigate } from 'react-router-dom';
 import sofa from '../../assets/sofa.svg';
@@ -253,7 +253,7 @@ export const PostCard = ({
 					src={img} 
 					onClick={(event) =>openImageViewer(event,index, post)} key={index} /> 
 					)}
-				    <Tag style={{position: 'absolute',  left: '12px', top: '12px', fontSize: '7px !important'}} color="#108ee9">{post.mode.toUpperCase()}</Tag>
+				    <Tag style={{position: 'absolute',  left: '12px', top: '12px', fontSize: '7px !important'}} color="#108ee9">{post.type.toUpperCase()}</Tag>
 
 					<div>
 					<h3 style={{fontSize: 12, fontWeight: 500}}>{post.title.capitalize()}</h3>
@@ -263,11 +263,11 @@ export const PostCard = ({
 					</div>
 					<Text color='#108ee9' style={{fontSize: '11px'}}><i className='fa fa-map-marker'></i> {post.address}</Text>
 					<div className='mt-1 w-100  d-flex'>
-						{post.rooms     > 0  && <div className='d-flex align-items-center'> <img src={bed} alt='bed' style={{width: '12px'}} className='me-2'  /> {post.rooms}</div>}
-						{post.salon     > 0  && <div className='ms-3 d-flex align-items-center'> <img src={sofa} alt='sofa' style={{width: '16px'}} className='me-2' />  {post.salon}</div>}
-						{post.bathRooms > 0  && <div className='ms-3 d-flex align-items-center'> <img src={bathroom} alt='bathroom' style={{width: '12px'}}  className='me-2'  />  {post.bathRooms}</div>}
-						{post.toilet    > 0  && <div className='ms-3 d-flex align-items-center'> <img src={toilet} alt='bathroom' style={{width: '12px'}} className='me-2'  />  {post.toilet}</div>}
-						{post.kitchen   > 0  && <div className='ms-3 d-flex align-items-center'> <img src={kitchen} alt='kitchen' style={{width: '12px'}} className='me-2'  />  {post.kitchen}</div>}
+						{post.bedRooms  && <div className='d-flex align-items-center'> <img src={bed} alt='bed' style={{width: '12px'}} className='me-2'  /> {post.bedRooms}</div>}
+						{post.otherRooms && post.otherRooms.includes('sallon')   && <div className='ms-3 d-flex align-items-center'> <img src={sofa} alt='sofa' style={{width: '16px'}} className='me-2' /><CheckCircleOutlined color='green' /></div>}
+						{post.otherRooms && post.otherRooms.includes('bathroom')   && <div className='ms-3 d-flex align-items-center'> <img src={bathroom} alt='bathroom' style={{width: '12px'}}  className='me-2'  /> 1 </div>}
+						{post.otherRooms && post.otherRooms.includes('toilet')   && <div className='ms-3 d-flex align-items-center'> <img src={toilet} alt='bathroom' style={{width: '12px'}} className='me-2'  />  1</div>}
+						{post.otherRooms && post.otherRooms.includes('kitchen')   && <div className='ms-3 d-flex align-items-center'> <img src={kitchen} alt='kitchen' style={{width: '12px'}} className='me-2'  />  1</div>}
 					</div>
 					</div>
 				</Space>

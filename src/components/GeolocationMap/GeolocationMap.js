@@ -127,7 +127,7 @@ const GeolocationMap = ({ post, screen}) => {
   }, [map,post]);
 
   return (
-	<div  className='GeolocationMap bg-white' style={{height: screen === 'Mobile' ? '100vh': '88vh', position: screen === 'Mobile' &&'absolute', left:'0', width: screen === 'Mobile' && '100vw', top: screen === 'Mobile' && '0'}}>
+	<div  className='GeolocationMap bg-white' style={{height: screen === 'Mobile' ? '100vh': '100%', width: screen === 'Mobile' && '100vw', top: screen === 'Mobile' && '0'}}>
 		{isViewerOpen && (
 				<ReactSimpleImageViewer
 				src={ post.images }
@@ -197,6 +197,14 @@ const GeolocationMap = ({ post, screen}) => {
 						scaledSize:  new window.google.maps.Size(50, 50)
 						}}
 					/>} 				
+			</GoogleMap>}
+			{!(userLocation && post) &&<GoogleMap
+			 center={defaultPosition}
+			 zoom={8}
+			 mapContainerStyle={{ width: '100%', height: '100%' }}
+
+			>
+
 			</GoogleMap>}
 	</div>
   );

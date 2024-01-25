@@ -28,3 +28,14 @@
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: darkgray;
 }
+
+.facilities-state{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    border-radius: 8px;
+    background-color: #f1f1f1;
+    padding: 2px 4px;
+
+}

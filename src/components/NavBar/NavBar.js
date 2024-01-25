@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './NavBar.css';
-import { Avatar, Modal } from 'antd';
-import { BellOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Modal, message } from 'antd';
+import { BellOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Authentification } from '../Authentification/Authentification';
 import  firebase from '../../services/firebaseConfig';
 import { PostForm } from '../PostForm/PostForm';
+import logo from '../../assets/logo.png';
+import { useNavigate } from 'react-router-dom';
 
 
 const NavBar = () => {
@@ -12,6 +14,9 @@ const NavBar = () => {
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [isPostModalVisible, setPostIsModalVisible] = useState(false);
 	const [currentUser, setCurrentUser] = useState(null);
+  const navigate = useNavigate();
+ const [messageApi, contextHolder] = message.useMessage();
+
 
 
     const openPostOrConnect = () => {
@@ -37,6 +42,7 @@ const NavBar = () => {
       setIsModalVisible(false);
     };
 
+  
     useEffect(() => {
       firebase.auth().onAuthStateChanged(setCurrentUser);
     },[])
@@ -44,7 +50,7 @@ const NavBar = () => {
   return (
     <div className='d-flex bg-light p-2 justify-content-between align-items-center px-5'>
        <div>
-        <span>Deekuway</span>
+       <img width={65} src={logo} alt='logo' />
        </div>
        
        <div>
@@ -52,8 +58,23 @@ const NavBar = () => {
             width: '150px',
             backgroundColor: '#02627a'
             }} onClick={openPostOrConnect}>Publier une annonce</button>
-          <BellOutlined />
-          {currentUser && <Avatar size={26} icon={<UserOutlined />} className='ms-3' />}
+          <BellOutlined style={{fontSize: '22px'}} />
+          {currentUser && <Avatar  icon={<UserOutlined />} className='mx-4' />}
+          {currentUser && <LockOutlined 
+          onClick={() => {
+           firebase.auth().signOut()
+           .then(res => {
+            message.success("Vous êtes déconnecté(e) ")
+           })
+           .catch(error => {
+            message.error("Une erreur c'est produit")
+           })
+          }} size={36} /> }
+          <button className='btn btn-outline' onClick={() => {
+            navigate('/login')
+          }}>
+            Se connecter
+          </button>
           
        </div>
        <Modal

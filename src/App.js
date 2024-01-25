@@ -14,6 +14,8 @@ import { ServiceDetailPage } from './pages/ServiceDetailPage/ServiceDetailPage';
 import { RegisterPage } from './pages/RegisterPage/RegisterPage';
 import { LoginPage } from './pages/LoginPage/LoginPage';
 import { PostDetailPage } from './pages/PostDetailPage/PostDetailPage';
+import MyFavoritesWPage from './pages/MyFavoritesWPage/MyFavoritesWPage';
+import { PostDetailWPage } from './pages/PostDetailWPage/PostDetailWPage';
 const { Content } = Layout;
 
 const App = () => {
@@ -29,10 +31,10 @@ const App = () => {
             <div style={{width: '100%' }}>
                 <Routes>
                   <Route path='/' Component={ isTabletOrMobile ? HomePageMobile : (isBigScreen || isDesktopOrLaptop) ? HomePage : null} />
-                  <Route path='/posts/:id' Component={ PostDetailPage } />
+                  <Route path='/posts/:id' Component={ isTabletOrMobile ? PostDetailPage : PostDetailWPage } />
                   <Route path='/services' Component={ ServicesPage } />
                   <Route path='/services/:id' Component={ ServiceDetailPage } />
-                  <Route path='/favorites' Component={ MyFavoritesPage } />
+                  <Route path='/favorites' Component={ isTabletOrMobile ? MyFavoritesPage: MyFavoritesWPage } />
                   <Route path='/auth' Component={ Authentification } />
                   <Route path='/register'  Component={ RegisterPage}/>
                   <Route path='/login'  Component={ LoginPage }/>
