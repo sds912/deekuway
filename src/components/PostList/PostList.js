@@ -2,8 +2,9 @@ import React from 'react';
 import { List } from 'antd';
 import './PostList.css'
 import 'moment/locale/fr';
-import { Zoom } from 'react-reveal';
+
 import { PostCardW } from '../PostCardW/PostCardW';
+import { Zoom } from 'react-awesome-reveal';
 
 const PostList = ({
   postToHomePage, 

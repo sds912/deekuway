@@ -6,12 +6,10 @@ import sofa from '../../assets/sofa.svg';
 import bed from '../../assets/bed.svg';
 import kitchen from '../../assets/kitchen.svg';
 import bathroom from '../../assets/bathroom.svg';
-import toilet from '../../assets/toilet.svg';
 import { useNavigate } from 'react-router-dom';
 import { saveAlreadyViewPost } from '../../services/localStorageService';
 import { CloseCircleOutlined, DeleteOutlined, EditOutlined, ExclamationCircleOutlined, EyeFilled, EyeOutlined, LikeOutlined, MoreOutlined } from '@ant-design/icons';
 import { Avatar, Card, Dropdown, Modal, Space, Tag, Typography, message } from 'antd';
-import { useState } from 'react';
 
 
 export const PostCardW = ({

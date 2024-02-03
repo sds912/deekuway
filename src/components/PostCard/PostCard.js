@@ -11,9 +11,9 @@ import bathroom from '../../assets/bathroom.svg';
 import toilet from '../../assets/toilet.svg';
 import Loader from '../Loader/Loader';
 import { saveAlreadyViewPost } from '../../services/localStorageService';
-import { Zoom } from 'react-reveal';
 import moment from 'moment';
 import 'moment/locale/fr';
+import { Zoom } from 'react-awesome-reveal';
 
 
 const { Text } = Typography;

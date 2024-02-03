@@ -3,7 +3,9 @@ import Carousel from 'react-multi-carousel';
 import './PostListCarousel.css';
 import { LikeOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { Tag, Typography } from 'antd';
 
+const { Text } = Typography;
 
 
 
@@ -39,10 +41,19 @@ const PostListCarousel = ({posts}) => {
         <div className='carousel-image mx-3' style={{backgroundImage: `url(${post.images[0]})`}} onClick={() => onPostClicked(post)} >
           <div className="overlay p-4">
             <div  style={{position: 'absolute', bottom: '12px', width: '60%'}}>
-                <h4 className='text-white'  style={{fontSize: "16px", fontWeight: 'bold'}}>{post.title.capitalize()}</h4>
-                <div className='text-white'  style={{fontSize: "12px"}}>{post.price} F cfa / {post.priceBy}</div>
-                <div className='text-white'  style={{fontSize: "10px"}}> <i className='fa fa-map-marker'></i> {post.address}</div>
-                <div className='text-white' style={{fontSize: "10px"}}>{new Date(post.createdAt.toDate()).toLocaleString()}</div>
+                <div>
+                  <Tag color='#FA8E44'>{post.mode.toUpperCase()}</Tag> <Tag color='#96577F'>{post.type.toUpperCase()}</Tag>
+                </div>
+                <div className='mt-3'>
+					        <Text strong className='text-warning'  style={{fontSize: '15px', textTransform:'uppercase'}}>CFA {post.price} / {post.priceBy}</Text>
+                </div>
+                <Text 
+                style={{fontSize: '12px', color: '#FFFFFF'}}>
+                  <i 
+                  style={{fontSize: '22px'}} 
+                  className='fa fa-map-marker text-warning me-2'></i> 
+                  {post.address}
+                </Text>
             </div>
             
           </div>
