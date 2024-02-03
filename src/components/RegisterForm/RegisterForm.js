@@ -3,6 +3,7 @@ import firebase from '../../services/firebaseConfig';
 import { message } from "antd";
 import { useForm } from "react-hook-form";
 import './RegisterForm.css';
+import { FirebaseErrorMessage } from "../../outils/error_handling";
 
 export const RegisterForm = () => {
     const auth = firebase.auth();
@@ -33,6 +34,7 @@ export const RegisterForm = () => {
 			message.success('Bravo ! Inscription réussie !');
 
 			})
+			.catch(error => FirebaseErrorMessage(error.code, message))
 		} catch (error) {
 			message.open({
 				type: "error",
@@ -73,7 +75,7 @@ export const RegisterForm = () => {
 						Choisir le profile qui vous décri le plus 
 					</p>
                     {profiles.map( p => 
-                    <div className="col-12">
+                    <div className="col-12 mt-3">
                         <div className="border  text-center  fw-bold p-4 active" onClick={() => {
 							setProfile(p.profile);
 							setStep(2);

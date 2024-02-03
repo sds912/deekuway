@@ -6,10 +6,10 @@ const PostListMobile = ({
   postToHomePage, 
   posts, 
   selectedPost, 
-  favorites, 
   openImageViewer, 
   screen,
- reloadData}) => {
+  reloadData,
+  allReadyViewPost}) => {
   return (
     <List
       grid={{ gutter: 16, column: 1 }}
@@ -20,10 +20,11 @@ const PostListMobile = ({
           postToHomePage={postToHomePage} 
           post={item} 
           selectedPost={selectedPost} 
-          inFavorite={favorites.includes(item.id)}
+          inFavorite={false}
           openImageViewer={openImageViewer}
           reloadData={reloadData}
-          screen={screen} />
+          screen={screen}
+          allReadyViewPost={allReadyViewPost} />
         </List.Item>)}/>
   );
 };

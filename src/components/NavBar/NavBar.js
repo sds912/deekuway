@@ -1,13 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import './NavBar.css';
-import { Avatar, Modal, message } from 'antd';
-import { BellOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Dropdown, Modal, Space, message } from 'antd';
+import { BellOutlined, DeleteOutlined, EditOutlined, LockOutlined, MoreOutlined, ProfileOutlined, UnlockFilled, UserOutlined } from '@ant-design/icons';
 import { Authentification } from '../Authentification/Authentification';
 import  firebase from '../../services/firebaseConfig';
 import { PostForm } from '../PostForm/PostForm';
 import logo from '../../assets/logo.png';
 import { useNavigate } from 'react-router-dom';
+import { PRIMARY, SECONDARY, WARNING } from './../../app-constant';
 
+const items = [
+  {
+    label: <div>
+    <UserOutlined />
+    <span  className='ms-2'>Mon compte</span> 
+    </div>,
+    key: 'account',
+  },
+  {
+    type: 'divider',
+  },
+  {
+    label: <div className='text-danger'>
+    <UnlockFilled />
+    <span className='ms-2'>Se déconnecter</span>
+    
+    </div>,
+    key: 'disconnect',
+  }
+  
+  ];
 
 const NavBar = () => {
 
@@ -24,7 +46,7 @@ const NavBar = () => {
         if(user){
           setPostIsModalVisible(true);
         }else{
-          setIsModalVisible(true);
+          navigate('login');
         }
       })
      
@@ -54,12 +76,39 @@ const NavBar = () => {
        </div>
        
        <div>
-          <button className='btn fw-bold text-white me-5 p-3' style={{
+
+          <button className='btn fw-bold text-white me-5 ' style={{
             width: '150px',
-            backgroundColor: '#02627a'
-            }} onClick={openPostOrConnect}>Publier une annonce</button>
+            height: '36px',
+            backgroundColor: WARNING
+            }} onClick={openPostOrConnect}>
+              Publier une annonce</button>
           <BellOutlined style={{fontSize: '22px'}} />
-          {currentUser && <Avatar  icon={<UserOutlined />} className='mx-4' />}
+          {currentUser && 
+          <Dropdown
+						menu={{
+						items,
+						onClick: (e) => {
+              if(e.key === 'account'){
+							  navigate('/account/'+currentUser.uid);
+						  } if(e.key === 'disconnect'){
+                console.log('ok')
+							  firebase.auth().signOut().then(() =>{
+                  message.success('vous êtes déconnecté avec succès')
+                })
+                .catch(error =>{
+                  message.error("Erreur de déconnexion")
+                })
+						  }
+						}
+						}}
+						trigger={['click']}>
+						<span className='pr-3' onClick={(e) => e.preventDefault()}>
+						<Space>
+              <Avatar  icon={<UserOutlined />} className='mx-4' />
+						</Space>
+						</span>
+					</Dropdown>}
           {currentUser && <LockOutlined 
           onClick={() => {
            firebase.auth().signOut()
@@ -70,11 +119,12 @@ const NavBar = () => {
             message.error("Une erreur c'est produit")
            })
           }} size={36} /> }
+          {!currentUser && 
           <button className='btn btn-outline' onClick={() => {
             navigate('/login')
           }}>
             Se connecter
-          </button>
+          </button>}
           
        </div>
        <Modal

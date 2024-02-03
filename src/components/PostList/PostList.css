@@ -1,5 +1,5 @@
 .active{
-    border: 2px solid #daffca !important;
+    border: 2px solid #96577F !important;
 }
 
 
@@ -38,4 +38,12 @@
     background-color: #f1f1f1;
     padding: 2px 4px;
 
+}
+
+.post-image{
+  transition: .5s;
+}
+.post-card:hover .post-image{
+   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+   border: 3px solid #FA8E44;
 }

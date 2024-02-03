@@ -198,7 +198,8 @@ const GeolocationMap = ({ post, screen}) => {
 						}}
 					/>} 				
 			</GoogleMap>}
-			{!(userLocation && post) &&<GoogleMap
+			{
+			!(userLocation && post) &&<GoogleMap
 			 center={defaultPosition}
 			 zoom={8}
 			 mapContainerStyle={{ width: '100%', height: '100%' }}

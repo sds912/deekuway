@@ -12,6 +12,8 @@ import kitchen from '../../assets/kitchen.svg';
 import bathroom from '../../assets/bathroom.svg';
 import toilet from '../../assets/toilet.svg';
 import GeolocationMap from '../../components/GeolocationMap/GeolocationMap';
+import PostList from '../../components/PostList/PostList';
+import PostListMobile from './../../components/PostListMobile/PostListMobile';
 
 export const PostDetailPage = () => {
     const responsive = {
@@ -60,7 +62,10 @@ export const PostDetailPage = () => {
         setPost({
             id: response.id,
             ...data
-        })
+        });
+        if(data){
+            loadRelatedPosts(data.mode, data.type, response.id);
+        }
       })
 
          
@@ -68,6 +73,33 @@ export const PostDetailPage = () => {
     }, []);
 
   
+   const loadRelatedPosts = (mode, type, uid) => {
+    const postRef = firebase
+    .firestore()
+    .collection('posts')
+    .where('mode', '==', mode)
+    .where('type','==', type)
+    .limit(10);
+    
+    postRef.get().then(
+      response => {
+    const dataList = [];
+
+     response.docs.forEach(doc => {
+        if(doc.id !== uid){
+            dataList.push({
+                id: doc.id,
+                ...doc.data()
+              })
+        }
+     
+     })
+
+     console.log(dataList)
+    setRelatedPosts(dataList);
+     
+    })
+    }
     const handleCarouselChange = (nextSlide) => {
         const selectedPost = relatedPosts[nextSlide - 1];
         if (selectedPost) { 
@@ -112,7 +144,7 @@ const handleCancelModal = () => {
               <div style={{position: 'absolute', top:'0', height: '380px', width: '100%',}}> 
                <Carousel
                 responsive={responsive} 
-                arrows={false}
+                arrows={true}
                 infinite={true}
                 autoPlay={true}
                 showDots={true}
@@ -225,6 +257,13 @@ const handleCancelModal = () => {
                         </button>
 					</div>
               </div>
+           </div>
+           <div className='container'>
+              <PostListMobile
+                posts={relatedPosts}
+                allReadyViewPost={[]}
+                display='grid'
+               />
            </div>
         </div>}
         {post && <Modal

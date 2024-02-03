@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Layout } from 'antd';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage/HomePage';
@@ -16,12 +16,16 @@ import { LoginPage } from './pages/LoginPage/LoginPage';
 import { PostDetailPage } from './pages/PostDetailPage/PostDetailPage';
 import MyFavoritesWPage from './pages/MyFavoritesWPage/MyFavoritesWPage';
 import { PostDetailWPage } from './pages/PostDetailWPage/PostDetailWPage';
+import moment from 'moment';
 const { Content } = Layout;
 
 const App = () => {
   const isDesktopOrLaptop = useMediaQuery({query: '(min-width: 1224px)'})
 	const isBigScreen =       useMediaQuery({ query: '(min-width: 1824px)' })
 	const isTabletOrMobile =  useMediaQuery({ query: '(max-width: 1224px)' })
+  useEffect(() =>{
+    moment.locale('fr');
+   },[])
   return (
     <div className='App'>
       <Router>

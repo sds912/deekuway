@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { set, useForm } from 'react-hook-form';
 import firebase from '../../services/firebaseConfig'; 
 import { message } from 'antd';
 import './PostForm.css';
@@ -21,7 +21,15 @@ export const  PostForm = ({closeModel}) => {
 	const [step, setStep] = useState(1);
 	const [images, setImages] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const {register, handleSubmit, setValue, watch, reset,  getValues, formState: { errors },} = useForm();
+	const {register, 
+		handleSubmit, 
+		setValue, 
+		watch, 
+		reset,  
+		getValues, 
+		formState: { errors, touchedFields },
+		trigger
+	} = useForm();
 	const [selectedType, setSelectedType] = useState(null);
 	const [selectedMode, setSelectedMode] = useState(null);
 	const types = [
@@ -57,21 +65,7 @@ export const  PostForm = ({closeModel}) => {
 	   }
        ];
 	const otherRooms = [
-		{
-			id: '1',
-			name: 'Sallon',
-			value: 'sallon'
-		},
-		{
-			id: '2',
-			name: 'Salle bain',
-			value: 'bathroom'
-		},
-		{
-			id: '3',
-			name: 'Toilette',
-			value: 'toilet'
-		},
+		
 		{
 			id: '4',
 			name: 'Balcon',
@@ -86,6 +80,49 @@ export const  PostForm = ({closeModel}) => {
 			id: '6',
 			name: 'Cuisine',
 			value: 'kitchen'
+		},
+		{
+			id: '6',
+			name: 'Cuisine avec placard',
+			value: 'kitchen'
+		},
+	]  
+	
+	const facilities = [
+		{
+			id: '1',
+			name: 'Ascenseur',
+			value: 'ascenseur'
+		},
+		{
+			id: '2',
+			name: 'Suppresseur',
+			value: 'suppresseur'
+		},
+		{
+			id: '3',
+			name: 'Guardien',
+			value: 'guardien'
+		},
+		{
+			id: '4',
+			name: 'Video surveillance',
+			value: 'video'
+		},
+		{
+			id: '5',
+			name: 'Wifi',
+			value: 'wifi'
+		},
+		{
+			id: '6',
+			name: 'Climatiseur',
+			value: 'clim'
+		},
+		{
+			id: '6',
+			name: "Reservoir d'eau",
+			value: 'reservoir'
 		},
 	]   
 
@@ -145,6 +182,7 @@ export const  PostForm = ({closeModel}) => {
 			  mode: selectedMode,
 			  type: selectedType,
 			  price: parseFloat(getValues('price')),
+			  title: `${selectedMode} ${selectedType}`,
 			  createdAt: firebase.firestore.FieldValue.serverTimestamp() };
 		  postRef.add(postData)
 		  .then(response  => {
@@ -169,12 +207,21 @@ export const  PostForm = ({closeModel}) => {
 	  }
 
 	 const next = () => {
-        step < 4 && setStep(step+1)
+		if(['chambre', 'magasin'].includes(selectedType) && step === 3) {
+			step < 5 && setStep(5);
+		}else{
+			step < 5 && setStep(step+1)
+		}
+        
 	  }
 
 	const prev = (event) => {
 		event.stopPropagation();
-        step > 1 && setStep(step-1);
+		if(['chambre', 'magasin'].includes(selectedType) && step === 5) {
+			step > 1 && setStep(3);
+		} else{
+			step > 1 && setStep(step-1);
+		}
 	  }
 
 	const removeImage = (index) => {
@@ -187,12 +234,20 @@ export const  PostForm = ({closeModel}) => {
 	const price = watch('price',null);
 	const priceBy = watch('priceBy', null);
 	const title = watch('title', null);
+	const latitude = watch('latitude', null);
+	const longitude = watch('longitude', null);
+	const adresse = watch('adresse', null);
+	const available = watch('available',true);
+	const bedRooms = watch('bedRooms',null);
+
 
 	const resetForm = () => {
 		reset();
 		setStep(1);
 		setSelectedMode(null);
 		setSelectedType(null);
+		setImages(null);
+		setAddress(null);
 	}
 
 	
@@ -206,7 +261,7 @@ export const  PostForm = ({closeModel}) => {
 			    {step === 1 &&
 				<>
 					<div className='form-group w-100 my-3'>
-						<label className='fw-bold text-muted'>Choisir le type d'annonce (Vente, Location)</label>
+						<label className='fw-bold text-muted'>Choisir le type d'annonce (Vente, Location) <span className='text-danger'>*</span></label>
 						<div className='row mt-2'>
 							<div className='col'>
 								<label for='post-location' className={(selectedMode === 'location') ? 'p-2 fw-bold location-option location-option-active text-center': 'p-3 fw-bold  location-option text-center'}>
@@ -262,7 +317,7 @@ export const  PostForm = ({closeModel}) => {
 
 					</div>
 					<div className='form-group mt-5'>
-                       <label className='form-label fw-bold text-muted'>Choisir le type d'appartement</label>
+                       <label className='form-label fw-bold text-muted'>Choisir le type d'appartement <span className='text-danger'>*</span></label>
 						<div className='row'>
                            {types.map( t => <div className='col-4'>
                               <label for="type" className='mt-3 type-item' 
@@ -279,9 +334,10 @@ export const  PostForm = ({closeModel}) => {
 
 					</div>
 				</>}
-				{step === 2 && 
+
+				{ step === 2 && 
 					<div className='form-group w-100 mt-5'>
-					<label className='form-label fw-bold text-muted'>Ajouter des images (max 10)</label>
+					<label className='form-label fw-bold text-muted'>Ajouter des images (max 10) <span className='text-danger'>*</span></label>
 					{errors.images && <div className='text-danger'>Veuillez sélectionner des images</div>}
 					<div className='row w-100 px-0'>
 						<div className='col-6 px-1'>
@@ -311,14 +367,10 @@ export const  PostForm = ({closeModel}) => {
 					</div>
 					
 				</div>}		
-				{step === 3 &&<div>
-					<div className='form-group w-100'>
-						<label className='form-label fw-bold text-muted'>Titre votre annonce</label>
-						<input type="text"  defaultValue={selectedMode.capitalize() + ' '+ selectedType} {...register("title", {required: true})} className='form-control w-100' />
-						{errors.nom && <span className='text-danger'>Veillez renseigner le titre</span>}
-					</div>
+				{step === 3 &&
+				<div>
 					<div className='form-group w-100 mt-3'>
-						<label className='form-label fw-bold text-muted'>Adresse de localisation</label>
+						<label className='form-label fw-bold text-muted'>Adresse de localisation <span className='text-danger'>*</span></label>
 						{
 						<PlacesAutocomplete
 							value={address}
@@ -364,64 +416,172 @@ export const  PostForm = ({closeModel}) => {
 						</PlacesAutocomplete>}
 					</div>
 					<div className='form-group w-100 mt-3'>
-						<label className='form-label fw-bold text-muted'>Prix par (Mois, Jour)</label>
-						<div className='d-flex justify-content-between align-items-center'>
-						    <input 
-							type="number"  
-							{...register("price", {required: true, min: 20000, pattern: {value: /^[0-9]*$/,message: 'Entrer un nombre',}})} 
-							className='form-control w-100'
-							style={{
-								borderRight: 'none !important'
-							}} />
-							<select 
-							defaultValue={null}
-							className='form-select ms-3' 
-							{...register("priceBy",  {required: true})}>
-								<option value={null} selected disabled>Par ...</option>
-								<option value={'mois'}>Mois</option>
-								<option value={'jour'}>Jour</option>
-							</select>
-						</div>
-						{errors.price && <span className='text-danger'>Veillez renseigner le prix</span>}
+						{(selectedMode === 'location' || selectedMode === 'co-loc') &&
+						<>
+							<label className='form-label fw-bold text-muted'>Prix par (Mois, Jour) <span className='text-danger'>*</span></label>
+							<div className='d-flex justify-content-between align-items-center'>
+								<input 
+								type="number"  
+								{...register("price", {required: true, min: 20000, pattern: {value: /^[0-9]*$/,message: 'Entrer un nombre',}})} 
+								className='form-control w-100'
+								onKeyUp={() => trigger('price')} 
+								style={{
+									borderRight: 'none !important'
+								}} />
+								<select 
+								defaultValue={null}
+								className='form-select ms-3' 
+								{...register("priceBy",  {required: true})}>
+									<option value={null} selected disabled>Par ...</option>
+									<option value={'mois'}>Mois</option>
+									<option value={'jour'}>Jour</option>
+								</select>
+							</div>
+						</>}
+
+						{selectedMode === 'vente' &&
+						<>
+							<label className='form-label fw-bold text-muted'>Prix de vente <span className='text-danger'>*</span></label>
+							<div className='d-flex justify-content-between align-items-center'>
+								<input 
+								type="number"  
+								{...register("price", {required: true, min: 20000, pattern: {value: /^[0-9]*$/,message: 'Entrer un nombre',}})} 
+								onKeyUp={() => trigger('price')} 
+
+								className='form-control w-100'
+								style={{
+									borderRight: 'none !important'
+								}} />
+							</div>
+						</>}
+						
+						{errors.price && touchedFields.price && <span className='text-danger'>Le prix minimum est de 20000  <span className='text-danger'>*</span></span>}
 					</div>
+
+					<label className='form-label fw-bold text-muted mt-3'>Disponibilité <span className='text-danger'>*</span></label>
+
+					<div className=' d-flex justify-content-between align-items-center'>
+						<div className='bg-light w-100 p-3' style={{
+							height: '46px'
+						}}>
+								<input id="available" checked={available === 'now'} type='checkbox' value="now" onChange={(event) => {
+									if(event.target.checked){
+										setValue('available', 'now');
+									} else{
+										setValue('available', null);
+									}
+								}} />
+								<span className='ms-2'>Immédiate</span>
+						</div>
+						<div className=' w-100 ms-3'>
+							<input className='form-control w-100'  disabled={available !==  null && available === "now"} id="available" type='date' {...register('available')} />
+							
+						</div>
+
+					</div>
+					
 				</div>}
-				{step === 4 && <div>
+				{step === 4 && !['chambre', 'magasin'].includes(selectedType) && <div>
 				<div className='row'>
-                   <div className='col-12 bg-light border pb-4 mt-4' style={{
+                   {!['chambre', 'magasin'].includes(selectedType) &&  
+				   <div className='col-12 bg-light border pb-4 mt-4' style={{
 					borderRadius: '4px'
 				   }}>
 					<div className='form-group  mt-3'>
-						<label className='form-label fw-bold text-muted'>Nombre de chambre</label>
+						<label className='form-label fw-bold text-muted'>Chambre(s) <span className='text-danger'>*</span></label>
 						<div className='d-flex justify-content-between'>
-							{[1,2,3,4,5,6].map (m => <div>
-								<input disabled={(selectedType ==='chambre' || selectedType === 'studio' ) && m > 1} type='radio' {...register('bedRooms', {required: true})} value={m} />
-								<span className='ms-2 fw-bold'>{m === 6 ? '6+': m}</span>
+							{[1,2,3,4,5].map (m => <div>
+								<input  type='radio' {...register('bedRooms', {required: true})} value={m} />
+								<span className='ms-2 fw-bold'>{m === 5 ? '5+': m}</span>
 							</div>)}
 						</div>
 						{errors.chambre && <span className='text-danger'>Veillez renseigner le nombre de chambre</span>}
 						</div>
-				   </div>
-				   <label className='form-label fw-bold text-muted mt-3'>Autres piéces</label>
-
-				   {otherRooms.map(d => 
-				   <div className='col-6'>
-						<div className='form-group mt-3'>
-						   <input type="checkbox" value={d.value} {...register('otherRooms')} />
-						   <span className='ms-2 fw-bold'>{d.name}</span>
+				   </div>}
+				   { !['chambre', 'magasin'].includes(selectedType) && 
+				   <div className='col-12 bg-light border pb-4 mt-4' style={{
+					borderRadius: '4px'
+				   }}>
+					<div className='form-group  mt-3'>
+						<label className='form-label fw-bold text-muted'>Sallon(s)</label>
+						<div className='d-flex justify-content-between'>
+							{[1,2,3,4,5].map (m => <div>
+								<input  type='radio' {...register('sallon', {required: true})} value={m} />
+								<span className='ms-2 fw-bold'>{m === 5 ? '5+': m}</span>
+							</div>)}
 						</div>
-				   </div>)}
-				</div>
-				<div className='form-group w-100 mt-3'>
-					<label className='form-label fw-bold text-muted'>Description </label>
-					<textarea 
-					cols={6}
-					{...register("description", { required: true })}  
-					className='form-control w-100' style={{
-						height: '120px !important'
-					}} />
-					{errors.description && <span className='text-danger'>Veillez Ajouter une description</span>}
+						{errors.chambre && <span className='text-danger'>Veillez renseigner le nombre de sallon</span>}
+						</div>
+				   </div>}
+				   {!['chambre', 'magasin'].includes(selectedType) && 
+				   <div className='col-12 bg-light border pb-4 mt-4' style={{
+					borderRadius: '4px'
+				   }}>
+					<div className='form-group  mt-3'>
+						<label className='form-label fw-bold text-muted'>Salle(s) de Bain</label>
+						<div className='d-flex justify-content-between'>
+							{[1,2,3,4,5].map (m => <div>
+								<input  type='radio' {...register('bathRooms', {required: true})} value={m} />
+								<span className='ms-2 fw-bold'>{m === 5 ? '5+': m}</span>
+							</div>)}
+						</div>
+						{errors.chambre && <span className='text-danger'>Veillez renseigner le nombre de sallon</span>}
+						</div>
+				   </div>}
+				   {!['chambre', 'magasin'].includes(selectedType) && 
+				   <div className='col-12 bg-light border pb-4 mt-4' style={{
+					borderRadius: '4px'
+				   }}>
+					<div className='form-group  mt-3'>
+						<label className='form-label fw-bold text-muted'>Toilette(s)</label>
+						<div className='d-flex justify-content-between'>
+							{[1,2,3,4,5].map (m => <div>
+								<input  type='radio' {...register('toilets', {required: true})} value={m} />
+								<span className='ms-2 fw-bold'>{m === 5 ? '5+': m}</span>
+							</div>)}
+						</div>
+						{errors.toilet && <span className='text-danger'>Veillez renseigner le nombre de toilette</span>}
+						</div>
+				   </div>}
+				  
 				</div>
 				</div>}
+
+				{step === 5 && 
+					<div>
+						<div className='row'>
+						<label className='form-label fw-bold text-muted mt-3'>Autres piéces</label>
+
+						{otherRooms.map(d => 
+						<div className='col-6'>
+							<div className='form-group mt-3'>
+								<input type="checkbox" value={d.value} {...register('otherRooms')} />
+								<span className='ms-2 fw-bold'>{d.name}</span>
+							</div>
+						</div>)}
+
+						<label className='form-label fw-bold text-muted mt-3'>Accessoires</label>
+
+						{facilities.map(d => 
+						<div className='col-6'>
+							<div className='form-group mt-3'>
+								<input type="checkbox" value={d.value} {...register('facilities')} />
+								<span className='ms-2 fw-bold'>{d.name}</span>
+							</div>
+						</div>) }
+						<div className='form-group w-100 mt-3'>
+							<label className='form-label fw-bold text-muted'> Autres informations </label>
+							<textarea 
+							cols={6}
+							{...register("description", { required: false })}  
+							className='form-control w-100' style={{
+								height: '120px !important'
+							}} />
+							{errors.description && <span className='text-danger'>Veillez Ajouter une description</span>}
+						</div>
+						</div>
+					</div>
+				}
 				
 					<div className={step > 1 ?'mt-5 px-2 d-flex justify-content-between align-items-end': 'mt-5 px-2 d-flex justify-content-end align-items-end'}>
 						{step > 1 &&    
@@ -429,16 +589,17 @@ export const  PostForm = ({closeModel}) => {
 							<ArrowLeftOutlined />
 							<span className='ms-3 fw-bold'>Précédent</span>
 						</button>}
-						{step < 4 &&<button type='button' disabled={!(
+						{step < 5 &&<button type='button' disabled={!(
 							(step === 1 && (selectedMode && selectedType)) 
 							|| (step === 2 && images.length > 0)
-							|| (step === 3 && (price && title && priceBy))
-							|| (step === 4)
+							|| (step === 3 && ((price && address && available && priceBy  && selectedMode !== 'vente' ) || (price && address && available && selectedMode === 'vente' ) ))
+							|| (step === 4 && (bedRooms))
+							|| (step === 5)
 							)}  onClick={() => next()} className='btn btn-outline-warning'>
 							<span className='me-3 fw-bold'>Suivant </span>
 							<ArrowRightOutlined />
 						</button>}
-						{step === 4 && <button type="submit"  className='btn btn-primary fw-bold' > Publier</button>}
+						{step === 5 && <button type="submit"  className='btn btn-primary fw-bold' > Publier</button>}
 					</div>
 				</form>
 				

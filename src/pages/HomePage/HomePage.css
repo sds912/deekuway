@@ -10,25 +10,22 @@
   width: 40px;
   height: 40px;
   font-size: 22px !important;
-  color: #02627a;
+  color: #FA8E44;
 
 }
 
-.btn-filter-active{
-  background-color: #02627a !important;
-  color: #FFFFFF !important;
-}
+
 
 .navbar-item{
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 700; 
   text-transform: uppercase;
   cursor: pointer;
 }
 
 .navbar-item-active{
-  color: #02627a;
-  border-bottom: 1px solid #02627a;
+  color: #FA8E44;
+  border-bottom: 1px solid #FA8E44;
 }
 
 

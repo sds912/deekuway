@@ -18,10 +18,7 @@ import { PostListSkeleton } from '../../components/PostListSkeleton/PostListSkel
 import { useDispatch, useSelector } from 'react-redux';
 import { countPage, getAllPost } from '../../features/post-slice';
 import data from '../../assets/data.json';
-
-const appartkeywords = ["appement", "appart", "Appart", "apartment", "appartment", "appar"];
-const studiokeywords = ["studio", "stuio", "Studio"];
-const chambrekeywords = ["Chambre", "Chmbre", "chambres"];
+import { getAllReadyViewPost } from '../../services/localStorageService';
 
 const  HomePageMobile = () => {
 
@@ -40,6 +37,7 @@ const  HomePageMobile = () => {
 	const [favorites, setFavorites] = useState([]);
   const [currentImage, setCurrentImage] = useState(0);
 	const [isViewerOpen, setIsViewerOpen] = useState(false);
+  const [allReadyViewPost, setAllReadyViewPost] = useState([]);
 
   const handleFilterCancelModal = () => {
     setIsFilterModalVisible(false);
@@ -57,6 +55,8 @@ const  HomePageMobile = () => {
       query = query.where('mode', '==', 'location');
     } else if (mode === 'vente') {
       query = query.where('mode', '==', 'vente');
+    }else if (mode === 'co-loc'){
+      query = query.where('mode', '==', 'co-loc');
     }
   
     if (search !== null && search !== '') {
@@ -146,9 +146,13 @@ const  HomePageMobile = () => {
 
 
   useEffect(() => {
-  fetchData(mode,null, currentPage, pageSize);
+   fetchData(mode,null, currentPage, pageSize);
+   //setPosts(data.posts);
    loadBoostedPosts(mode);
    loadPageTotal();
+   setAllReadyViewPost(getAllReadyViewPost());
+
+
  // Clean up the listener when unmounti
   },[]);
   
@@ -210,6 +214,7 @@ const  HomePageMobile = () => {
           <div className={mode === 'all' ? 'mode active-mode': 'mode'} onClick={() => filterByMode('all')}>Tous</div>
           <div className={mode === 'location' ? 'mode active-mode': 'mode'} onClick={() => filterByMode('location')}>Location</div>
           <div className={mode === 'vente' ? 'mode active-mode' : 'mode'} onClick={() => filterByMode('vente')}>Vente</div>
+          <div className={mode === 'co-loc' ? 'mode active-mode' : 'mode'} onClick={() => filterByMode('co-loc')}>Co-location</div>
       </div>
       <div>
         <div className='search-filter mt-1 mb-3'>
@@ -232,7 +237,7 @@ const  HomePageMobile = () => {
       </div>
 			 <div style={{paddingBottom: '100px'}}>
 				{contextHolder}
-				{boostedPosts && !loading && <PostListCarousel  posts={boostedPosts}  />}
+				{boostedPosts && !loading && <PostListCarousel  posts={boostedPosts} allReadyViewPost={allReadyViewPost}  />}
         {loading &&  <div className='d-flex justify-content-center'>
          <Skeleton.Image style={{width: '95vw', height: '160px', borderRadius: '20px'}} /> 
         </div>}
@@ -240,10 +245,10 @@ const  HomePageMobile = () => {
 				{!loading && <PostListMobile 
         postToHomePage={handlePostFromPostList}   
         posts={posts} selectedPost={post} 
-        favorites={favorites} 
         openImageViewer={openImageViewer} 
         reloadData={() => fetchData(mode, null, currentPage, pageSize, type)}
-        screen={'home'}  />}
+        screen={'home'} 
+        allReadyViewPost={allReadyViewPost} />}
         {loading &&  <PostListSkeleton />}
         <div className='w-100 text-center mt-3'>
         {totalPage > 5 && 
@@ -263,8 +268,14 @@ const  HomePageMobile = () => {
         visible={isFilterModalVisible}
         onCancel={handleFilterCancelModal}
         footer={false}
+        style={{
+          top: '10px'
+        }}
+        
       >
-        <div className='mt-5'>
+        <div className='mt-5' style={{
+          height: '82vh'
+        }}>
         <PostFilter  onPostListFilter={(posts) => {
          setPosts(posts);
          setIsFilterModalVisible(false);

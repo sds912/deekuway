@@ -1,259 +1,305 @@
 {
     "posts" : [
         {
-            "id": "1",
-            "mode": "location",
-            "type": "appartement",
-            "images": [
-               "post.jpg"
-            ],
-            "title": "Appartement à louer",
-            "price": "230000",
-            "priceBy": "mois",
-            "bedRooms": "2",
+            "id": "0GaxiCR7Szsvb6SJpJJu",
+            "bedRooms": "5",
             "otherRooms": [
                 "sallon",
-                "bedroom",
+                "bathroom",
+                "toilet",
+                "balcon",
+                "espacefamiliale"
+            ],
+            "owner": {
+                "uid": "uMe7ItMtV0XRsIYE1jd54PBE8Yz2",
+                "name": "pape",
+                "email": "babacar912@gmail.com",
+                "phone": "777556654",
+                "avatar": null
+            },
+            "type": "maison",
+            "latitude": 14.7717952,
+            "address": "Cité Aliou Sow, Unnamed Road, Dakar, Sénégal",
+            "priceBy": "Par ...",
+            "images": [
+                "https://firebasestorage.googleapis.com/v0/b/deekuway.appspot.com/o/images%2Frendu-3d-du-modele-maison.jpg?alt=media&token=100f6d46-bc41-4673-88ff-4cf2b4cdb24f"
+            ],
+            "mode": "vente",
+            "price": 120000000,
+            "title": "Maison à vendre ",
+            "description": "Je vends une maison",
+            "longitude": -17.4126863,
+            "createdAt": {
+                "seconds": 1706112851,
+                "nanoseconds": 794000000
+            }
+        },
+        {
+            "id": "6H6XBM4eK6Iz4Nt2PTc4",
+            "price": 70000,
+            "createdAt": {
+                "seconds": 1706111019,
+                "nanoseconds": 552000000
+            },
+            "otherRooms": [
+                "bathroom",
                 "toilet",
                 "balcon"
             ],
-            "description": "je loue un appartement ",
-            "owner": {
-                "name": "pape",
-                "phone": "777443663",
-                "email": "senghor.pape912@hotmail.com"
-            }
-        }, {
-            "id": "1",
+            "description": "Je loue une chambre",
+            "longitude": -17.4521585,
             "mode": "location",
-            "type": "appartement",
-            "images": [
-               "post.jpg"
-            ],
-            "title": "Appartement à louer",
-            "price": "230000",
+            "title": "Je loue une chambre salle de bain",
+            "owner": {
+                "email": "babacar912@gmail.com",
+                "phone": "777556654",
+                "name": "pape",
+                "uid": "uMe7ItMtV0XRsIYE1jd54PBE8Yz2",
+                "avatar": null
+            },
             "priceBy": "mois",
-            "bedRooms": "2",
+            "address": "Parcelles Assainies Unité 26, Dakar, Sénégal",
+            "images": [
+                "https://firebasestorage.googleapis.com/v0/b/deekuway.appspot.com/o/images%2Fu9xyi7d3v5q7fbdwu4uu.webp?alt=media&token=7774ec1f-74a1-4717-a875-2d8e36d09a57"
+            ],
+            "type": "chambre",
+            "bedRooms": "1",
+            "latitude": 14.753727
+        },
+        {
+            "id": "WbdWKEPwVITGHnH1FMxY",
+            "bedRooms": "3",
+            "createdAt": {
+                "seconds": 1706116758,
+                "nanoseconds": 456000000
+            },
+            "priceBy": "mois",
+            "latitude": 14.1652083,
+            "price": 700000,
+            "mode": "location",
+            "type": "studio",
             "otherRooms": [
                 "sallon",
-                "bedroom",
+                "bathroom",
+                "toilet",
+                "balcon",
+                "espacefamiliale",
+                "kitchen"
+            ],
+            "owner": {
+                "phone": "777556654",
+                "email": "babacar912@gmail.com",
+                "avatar": null,
+                "uid": "uMe7ItMtV0XRsIYE1jd54PBE8Yz2",
+                "name": "pape"
+            },
+            "address": "Kaolack, Sénégal",
+            "title": "mmm",
+            "longitude": -16.0757749,
+            "images": [
+                "https://firebasestorage.googleapis.com/v0/b/deekuway.appspot.com/o/images%2Fqtgib94vif6fqpxphtuk.webp?alt=media&token=053d8061-58d0-40e2-b268-04c07cec2ab9"
+            ],
+            "description": "ok"
+        },
+        {
+            "id": "ZrtroidC0LL5QPw92UJ5",
+            "otherRooms": false,
+            "images": [
+                "https://firebasestorage.googleapis.com/v0/b/deekuway.appspot.com/o/images%2F406534786_6979363305452809_2110086594280368986_n.jpg?alt=media&token=6a3abd75-670d-41d2-9815-1b0055805e6f"
+            ],
+            "type": "magasin",
+            "title": "Magasin à louer ",
+            "bedRooms": "1",
+            "createdAt": {
+                "seconds": 1706112131,
+                "nanoseconds": 702000000
+            },
+            "longitude": -17.4684255,
+            "priceBy": "mois",
+            "latitude": 14.7117003,
+            "price": 250000,
+            "owner": {
+                "email": "babacar912@gmail.com",
+                "uid": "uMe7ItMtV0XRsIYE1jd54PBE8Yz2",
+                "name": "pape",
+                "phone": "777556654",
+                "avatar": null
+            },
+            "mode": "location",
+            "address": "Cité Keur Gorgui, Dakar, Sénégal",
+            "description": "Je loue un magasin"
+        },
+        {
+            "id": "cIC56kFCUZcqOTEgSnjp",
+            "createdAt": {
+                "seconds": 1706129307,
+                "nanoseconds": 208000000
+            },
+            "mode": "location",
+            "bedRooms": "4",
+            "priceBy": "mois",
+            "images": [
+                "https://firebasestorage.googleapis.com/v0/b/deekuway.appspot.com/o/images%2Fqtgib94vif6fqpxphtuk.webp?alt=media&token=e21c5d8c-3c00-41c9-a6dc-15228248ac39"
+            ],
+            "title": "Location appartement",
+            "price": 600000,
+            "owner": {
+                "email": "babacar912@gmail.com",
+                "name": "pape",
+                "phone": "777556654",
+                "avatar": null,
+                "uid": "uMe7ItMtV0XRsIYE1jd54PBE8Yz2"
+            },
+            "description": "Je loue un appart",
+            "address": "Dakar Region, Sénégal",
+            "type": "appartement",
+            "otherRooms": [
+                "sallon",
+                "bathroom",
+                "toilet",
+                "balcon",
+                "espacefamiliale",
+                "kitchen"
+            ],
+            "latitude": 14.7659044,
+            "longitude": -17.2666396
+        },
+        {
+            "id": "dTdWEfKZICUUgVrEQmZH",
+            "address": "Keur Massar, Sénégal",
+            "latitude": 14.786368,
+            "title": "Bureau à louer à keur massar",
+            "owner": {
+                "avatar": null,
+                "uid": "uMe7ItMtV0XRsIYE1jd54PBE8Yz2",
+                "email": "babacar912@gmail.com",
+                "phone": "777556654",
+                "name": "pape"
+            },
+            "bedRooms": "3",
+            "createdAt": {
+                "seconds": 1706111923,
+                "nanoseconds": 30000000
+            },
+            "longitude": -17.311941,
+            "type": "bureau",
+            "price": 300000,
+            "images": [
+                "https://firebasestorage.googleapis.com/v0/b/deekuway.appspot.com/o/images%2F3505_7.webp?alt=media&token=5d24a90e-1761-4ebc-89a4-8369a6be959f"
+            ],
+            "description": "je loue un bureau à keur massar",
+            "otherRooms": [
+                "sallon",
+                "bathroom",
                 "toilet",
                 "balcon"
             ],
-            "description": "je loue un appartement ",
-            "owner": {
-                "name": "pape",
-                "phone": "777443663",
-                "email": "senghor.pape912@hotmail.com"
-            }
-        }, {
-            "id": "1",
             "mode": "location",
-            "type": "appartement",
-            "images": [
-               "post.jpg"
-            ],
-            "title": "Appartement à louer",
-            "price": "230000",
+            "priceBy": "mois"
+        },
+        {
+            "id": "kWjyHwluMACxLFsTcAMH",
+            "owner": {
+                "uid": "uMe7ItMtV0XRsIYE1jd54PBE8Yz2",
+                "email": "babacar912@gmail.com",
+                "name": "pape",
+                "avatar": null,
+                "phone": "777556654"
+            },
+            "longitude": -17.4639544,
+            "title": "Appartement 2 chambre salon à louer cité soprim",
+            "createdAt": {
+                "seconds": 1706059988,
+                "nanoseconds": 231000000
+            },
             "priceBy": "mois",
-            "bedRooms": "2",
+            "description": "ok",
             "otherRooms": [
                 "sallon",
-                "bedroom",
+                "bathroom",
                 "toilet",
-                "balcon"
+                "balcon",
+                "espacefamiliale"
             ],
-            "description": "je loue un appartement ",
-            "owner": {
-                "name": "pape",
-                "phone": "777443663",
-                "email": "senghor.pape912@hotmail.com"
-            }
-        }, {
-            "id": "1",
-            "mode": "location",
-            "type": "appartement",
+            "latitude": 14.7357484,
             "images": [
-               "post.jpg"
+                "https://firebasestorage.googleapis.com/v0/b/deekuway.appspot.com/o/images%2Fbyegfcxwvu0tjdqbb8hs.webp?alt=media&token=4eeb3e3f-5ea0-47c7-a9b0-2f0f5278af17",
+                "https://firebasestorage.googleapis.com/v0/b/deekuway.appspot.com/o/images%2Ffqs4rwexkgsyebf48yy6.webp?alt=media&token=fa0c5a96-f412-4743-94d6-e0d07d77029f",
+                "https://firebasestorage.googleapis.com/v0/b/deekuway.appspot.com/o/images%2Fcuccavlheiqwpnhonihi.webp?alt=media&token=76ee87ed-016e-4997-bb0f-835618fcea63"
             ],
-            "title": "Appartement à louer",
-            "price": "230000",
-            "priceBy": "mois",
+            "mode": "location",
+            "address": "Soprim, Dakar, Sénégal",
+            "type": "appartement",
             "bedRooms": "2",
+            "price": 2300000
+        },
+        {
+            "id": "m7VLKCB36foRJHwFpSK3",
+            "title": "Maison à ventre",
+            "bedRooms": "3",
+            "owner": {
+                "avatar": null,
+                "name": "pape",
+                "uid": "uMe7ItMtV0XRsIYE1jd54PBE8Yz2",
+                "email": "babacar912@gmail.com",
+                "phone": "777556654"
+            },
+            "type": "maison",
+            "mode": "location",
+            "price": 60000000,
+            "description": "je loue une maison",
+            "priceBy": "Par ...",
+            "createdAt": {
+                "seconds": 1706111678,
+                "nanoseconds": 670000000
+            },
+            "longitude": -17.458372,
+            "images": [
+                "https://firebasestorage.googleapis.com/v0/b/deekuway.appspot.com/o/images%2Fpexels-jovydas-pinkevicius-2462015.jpg?alt=media&token=708b4d51-e7bc-4734-a92c-651fbbbce618"
+            ],
             "otherRooms": [
                 "sallon",
-                "bedroom",
+                "bathroom",
                 "toilet",
-                "balcon"
+                "balcon",
+                "espacefamiliale"
             ],
-            "description": "je loue un appartement ",
-            "owner": {
-                "name": "pape",
-                "phone": "777443663",
-                "email": "senghor.pape912@hotmail.com"
-            }
-        }, {
-            "id": "1",
-            "mode": "location",
-            "type": "appartement",
-            "images": [
-               "post.jpg"
-            ],
-            "title": "Appartement à louer",
-            "price": "230000",
-            "priceBy": "mois",
-            "bedRooms": "2",
+            "address": "KER YOFF, Dakar, Sénégal",
+            "latitude": 14.7460988
+        },
+        {
+            "id": "nJmr0YtYl6t3rFL09kIR",
+            "bedRooms": "1",
+            "createdAt": {
+                "seconds": 1706060112,
+                "nanoseconds": 96000000
+            },
             "otherRooms": [
                 "sallon",
-                "bedroom",
-                "toilet",
-                "balcon"
+                "bathroom",
+                "toilet"
             ],
-            "description": "je loue un appartement ",
+            "title": "Studio à alouer",
             "owner": {
                 "name": "pape",
-                "phone": "777443663",
-                "email": "senghor.pape912@hotmail.com"
-            }
-        }, {
-            "id": "1",
-            "mode": "location",
-            "type": "appartement",
+                "phone": "777556654",
+                "avatar": null,
+                "uid": "uMe7ItMtV0XRsIYE1jd54PBE8Yz2",
+                "email": "babacar912@gmail.com"
+            },
+            "price": 150000,
             "images": [
-               "post.jpg"
+                "https://firebasestorage.googleapis.com/v0/b/deekuway.appspot.com/o/images%2Fa98sox2adfh8hvppz6lc.webp?alt=media&token=b25de689-5ca1-4749-aa6b-8535cc502294",
+                "https://firebasestorage.googleapis.com/v0/b/deekuway.appspot.com/o/images%2Fmsat2fuonyubjrynqldp.webp?alt=media&token=8bcafbd2-aa29-45ab-a87f-3514b866d2a2",
+                "https://firebasestorage.googleapis.com/v0/b/deekuway.appspot.com/o/images%2Fu9xyi7d3v5q7fbdwu4uu%20-%20Copie.webp?alt=media&token=5552094e-ab4c-4270-a151-9558b65eb37c"
             ],
-            "title": "Appartement à louer",
-            "price": "230000",
             "priceBy": "mois",
-            "bedRooms": "2",
-            "otherRooms": [
-                "sallon",
-                "bedroom",
-                "toilet",
-                "balcon"
-            ],
-            "description": "je loue un appartement ",
-            "owner": {
-                "name": "pape",
-                "phone": "777443663",
-                "email": "senghor.pape912@hotmail.com"
-            }
-        }, {
-            "id": "1",
+            "description": "ok",
+            "longitude": -17.4240634,
             "mode": "location",
-            "type": "appartement",
-            "images": [
-               "post.jpg"
-            ],
-            "title": "Appartement à louer",
-            "price": "230000",
-            "priceBy": "mois",
-            "bedRooms": "2",
-            "otherRooms": [
-                "sallon",
-                "bedroom",
-                "toilet",
-                "balcon"
-            ],
-            "description": "je loue un appartement ",
-            "owner": {
-                "name": "pape",
-                "phone": "777443663",
-                "email": "senghor.pape912@hotmail.com"
-            }
-        }, {
-            "id": "1",
-            "mode": "location",
-            "type": "appartement",
-            "images": [
-               "post.jpg"
-            ],
-            "title": "Appartement à louer",
-            "price": "230000",
-            "priceBy": "mois",
-            "bedRooms": "2",
-            "otherRooms": [
-                "sallon",
-                "bedroom",
-                "toilet",
-                "balcon"
-            ],
-            "description": "je loue un appartement ",
-            "owner": {
-                "name": "pape",
-                "phone": "777443663",
-                "email": "senghor.pape912@hotmail.com"
-            }
-        }, {
-            "id": "1",
-            "mode": "location",
-            "type": "appartement",
-            "images": [
-               "post.jpg"
-            ],
-            "title": "Appartement à louer",
-            "price": "230000",
-            "priceBy": "mois",
-            "bedRooms": "2",
-            "otherRooms": [
-                "sallon",
-                "bedroom",
-                "toilet",
-                "balcon"
-            ],
-            "description": "je loue un appartement ",
-            "owner": {
-                "name": "pape",
-                "phone": "777443663",
-                "email": "senghor.pape912@hotmail.com"
-            }
-        }, {
-            "id": "1",
-            "mode": "location",
-            "type": "appartement",
-            "images": [
-               "post.jpg"
-            ],
-            "title": "Appartement à louer",
-            "price": "230000",
-            "priceBy": "mois",
-            "bedRooms": "2",
-            "otherRooms": [
-                "sallon",
-                "bedroom",
-                "toilet",
-                "balcon"
-            ],
-            "description": "je loue un appartement ",
-            "owner": {
-                "name": "pape",
-                "phone": "777443663",
-                "email": "senghor.pape912@hotmail.com"
-            }
-        }, {
-            "id": "1",
-            "mode": "location",
-            "type": "appartement",
-            "images": [
-               "post.jpg"
-            ],
-            "title": "Appartement à louer",
-            "price": "230000",
-            "priceBy": "mois",
-            "bedRooms": "2",
-            "otherRooms": [
-                "sallon",
-                "bedroom",
-                "toilet",
-                "balcon"
-            ],
-            "description": "je loue un appartement ",
-            "owner": {
-                "name": "pape",
-                "phone": "777443663",
-                "email": "senghor.pape912@hotmail.com"
-            }
+            "type": "studio",
+            "latitude": 14.7601193,
+            "address": "Fadia, Dakar, Sénégal"
         }
-        
-    ] 
+    ]
 }

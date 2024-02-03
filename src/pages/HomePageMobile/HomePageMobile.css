@@ -24,7 +24,7 @@
   height: 32px;
    width: 40px !important;
    color: #FFFFFF;
-   background-color: #02627a !important;
+   background-color: #96577F !important;
    display: flex;
    justify-content: center;
    align-items: center;
@@ -55,17 +55,17 @@
 .active-mode{
   opacity: 1 !important;
   border: none !important;
-  color: #02627a !important;
+  color: #96577F !important;
 }
 .type-active{
-  background-color: #02627a;
+  background-color: #96577F;
   color: #FFFFFF;
   opacity: 1 !important;
   border: none !important;
 }
 
 :where(.css-dev-only-do-not-override-2q8sxy).ant-pagination .ant-pagination-item-active {
-  border-color: #02627a !important;
+  border-color: #96577F !important;
 }
 
 

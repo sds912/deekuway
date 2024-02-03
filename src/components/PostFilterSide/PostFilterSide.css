@@ -1,14 +1,3 @@
-input[type="checkbox"]:checked {
-    background-color: #02627a !important;
-    border-color: #02627a;
-  }
-
- 
-  
-  .ant-checkbox-checked .ant-checkbox-inner:hover {
-    background-color: #02627a;
-    border-color: #02627a;
-  }
 
   .option{
     display: flex !important;
@@ -24,10 +13,7 @@ input[type="checkbox"]:checked {
     transition: all .7s;
   }
 
-  .option-active{
-    background-color: #02627a !important;
-    color: #CCCCCC;
-  }
+
 
   .option input {
     width: 0 !important;

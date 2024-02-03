@@ -10,6 +10,7 @@ import './LoginPage.css';
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import { RegisterForm } from "../../components/RegisterForm/RegisterForm";
+import { FirebaseErrorMessage } from "../../outils/error_handling";
 
 
 export const LoginPage = () => {
@@ -32,10 +33,7 @@ export const LoginPage = () => {
 			message.success('Bravo ! Connection réussie !');
             navigate('/');
 		  } catch (error) {
-			message.open({
-				type: "error",
-				content: "Erreur de connection:" + error
-			})
+			FirebaseErrorMessage(error.code, message);
 		  }
 	  }
 
@@ -68,9 +66,9 @@ export const LoginPage = () => {
             marginTop: '0'
         }}>
         <div className="login-form" style={{
-            padding: !isTabletOrMobile ? '20px' : '40px 20px'
+            padding: !isTabletOrMobile ? '10px 20px' : '40px 20px'
         }}>
-        <h4 className={!isTabletOrMobile ? "text-center fw-bold p-3 bg-light": 'text-center fw-bold mb-2 p-3 bg-light'} style={{fontSize: '26px'}}>
+        <h4 className={!isTabletOrMobile ? "text-center fw-bold p-3 pt-0 bg-light": 'text-center fw-bold mb-2 p-3 pt-0 bg-light'} style={{fontSize: '26px'}}>
            { authPage === 'login' ? 'Connexion': "Inscription"}
             </h4>
         <div style={{
@@ -104,7 +102,9 @@ export const LoginPage = () => {
         </div>}
        
      </div>
-     <div >
+     <div style={{
+        marginTop:'-10px'
+     }} >
          <div className="text-center mt-4" >
             {authPage === 'login' && <button 
                 onClick={() => setAuthPage('register')}

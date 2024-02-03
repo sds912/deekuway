@@ -12,6 +12,9 @@ import { useMediaQuery } from '@uidotdev/usehooks';
 import { Link, useLocation } from 'react-router-dom';
 import GeolocationMap from '../../components/GeolocationMap/GeolocationMap';
 import data from '../../assets/data.json';
+import { getAllReadyViewPost } from '../../services/localStorageService';
+import ReactSimpleImageViewer from 'react-simple-image-viewer';
+import Loader from '../../components/Loader/Loader';
 
 const  HomePage = () => {
 	const [post, setPost] = useState(null);
@@ -31,6 +34,7 @@ const  HomePage = () => {
   const [currentImage, setCurrentImage] = useState(0);
 	const [isViewerOpen, setIsViewerOpen] = useState(false);
   const location = useLocation();
+  const [allReadyViewed, setAllReadyViewed] = useState([]);
 
   const handleFilterCancelModal = () => {
     setIsFilterModalVisible(false);
@@ -44,6 +48,8 @@ const  HomePage = () => {
       query = query.where('mode', '==', 'location');
     } else if (mode === 'vente') {
       query = query.where('mode', '==', 'vente');
+    } else if(mode === 'co-loc'){
+      query = query.where('mode', '==', 'co-loc');
     }
   
     if (search !== null && search !== '') {
@@ -186,10 +192,10 @@ const  HomePage = () => {
 
 
   useEffect(() => {
-   fetchData(mode,null, currentPage, pageSize);
-   loadBoostedPosts(mode);
-   loadPageTotal();
- // Clean up the listener when unmounti
+    fetchData(mode,null, currentPage, pageSize);
+    loadBoostedPosts(mode);
+    loadPageTotal();
+    setAllReadyViewed(getAllReadyViewPost());
   },[]);
   
     
@@ -205,15 +211,7 @@ const  HomePage = () => {
     fetchData(mode, null, page, pageSize, null);
   }
 
- const openFilter = () => {
-    setIsFilterModalVisible(true);
- }
 
- const toggleType = (type) =>{
-  setType(type);
-  fetchData(mode, null, currentPage, pageSize, type);
-  loadPageTotal(type)
- }
 
  const openImageViewer = useCallback((event,index, post) => {
 	setCurrentImage(index);
@@ -262,6 +260,18 @@ const  HomePage = () => {
 
 	return (
        <div>
+        {loading && <Loader />}
+         {isViewerOpen && post && (
+			  <div style={{marginTop: '4px !important'}}>	
+        <ReactSimpleImageViewer
+				src={ post.images }
+				currentIndex={ currentImage }
+				disableScroll={ false }
+				closeOnClickOutside={ true }
+				onClose={ () => closeImageViewer() }
+				 
+				/> </div>
+			)}
        <div className='bg-white'>
 	   <div 
 	   className='bg-muted'
@@ -304,6 +314,7 @@ const  HomePage = () => {
             <Select.Option value={'all'}   >Tous</Select.Option>
             <Select.Option value={'location'}>Location</Select.Option>
             <Select.Option value={'vente'}>Vente</Select.Option>
+            <Select.Option value={'co-loc'}>Co-location</Select.Option>
 				   </Select>
 				</div>
 
@@ -318,14 +329,18 @@ const  HomePage = () => {
           <div style={{
             position: 'fixed'
           }}>
-					  <PostFilterSide onSubmitFilter={searchByFilter} />
+					 <PostFilterSide onSubmitFilter={searchByFilter}   /> 
           </div>
 				</div>
 				<div className='col-12 col-md-9 p-2 ' style={{marginTop: '140px', zIndex: '1'}} >
-
           { display === 'list' && <div className='row'>
             <div className='col-6'>
-					    <PostList display={display} posts={posts} postToHomePage={(post) => setPost(post)} screen={'home'}  /> 
+					    <PostList 
+              display={display} 
+              posts={posts} 
+              postToHomePage={(post) => setPost(post)} 
+              allReadyViewed={allReadyViewed}
+              screen={'home'}  /> 
             </div>
             <div className='col-6' style={{
               position: 'relative',
@@ -339,12 +354,19 @@ const  HomePage = () => {
                 top: '150px',
                 right:'20px'
               }}>
-              <GeolocationMap post={post} />
+              {post && <GeolocationMap post={post} />}
               </div>
             </div>
 
           </div>}
-					{ display === 'grid' && <PostList display={display} posts={posts} postToHomePage={(post) => setPost(post)} screen={'home'}  />}
+					{ display === 'grid' && posts && 
+          <PostList 
+          display={display} 
+          posts={posts} 
+          postToHomePage={(post) => setPost(post)} 
+          allReadyViewed={allReadyViewed}
+          openImageViewer={openImageViewer}
+          screen={'home'}  />}
          
 					 <div className='p-3 text-center'>
 					 {totalPage > 5 && 

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, {useState } from 'react';
 import './PostCard.css';
 import { Avatar, Card, Dropdown, Modal, Space, Tag, Typography, message } from 'antd';
-import {CheckCircleFilled, CheckCircleOutlined, CloseCircleOutlined, DeleteOutlined, EditOutlined, ExclamationCircleOutlined, LikeOutlined, MoreOutlined} from '@ant-design/icons';
+import { CloseCircleOutlined, DeleteOutlined, EditOutlined, ExclamationCircleOutlined, EyeFilled, LikeOutlined, MoreOutlined} from '@ant-design/icons';
 import firebase from '../../services/firebaseConfig';
 import { useNavigate } from 'react-router-dom';
 import sofa from '../../assets/sofa.svg';
@@ -10,7 +10,11 @@ import kitchen from '../../assets/kitchen.svg';
 import bathroom from '../../assets/bathroom.svg';
 import toilet from '../../assets/toilet.svg';
 import Loader from '../Loader/Loader';
-import Moment from 'react-moment';
+import { saveAlreadyViewPost } from '../../services/localStorageService';
+import { Zoom } from 'react-reveal';
+import moment from 'moment';
+import 'moment/locale/fr';
+
 
 const { Text } = Typography;
 
@@ -21,7 +25,8 @@ export const PostCard = ({
 	reloadData,
 	inFavorite, 
 	openImageViewer, 
-	screen}) => {
+	screen,
+   allReadyViewPost}) => {
 	const items = [
 		{
 		  label: <div>
@@ -44,7 +49,7 @@ export const PostCard = ({
 		
 	  ];
 	const navigate = useNavigate();
-	const [messageApi, mcontextHolder] = message.useMessage();
+	const [messageApi] = message.useMessage();
 	const [loading, setLoading] = useState(false);
 	const [modal, contextHolder] = Modal.useModal();
 
@@ -55,6 +60,7 @@ export const PostCard = ({
 		if (post !== null && post !== undefined && post.id !== undefined && post.id !== null && screen === 'home') {
 		  postToHomePage(post);
 		  navigate('/posts/' + post.id);
+		  saveAlreadyViewPost(post.id);
 		}
 	  };
 	
@@ -66,6 +72,9 @@ export const PostCard = ({
 		try {
 		  const favoritesRef = firebase.firestore().collection('favorites');
 		  const postRef = firebase.firestore().collection('posts');
+		  const userRef =  firebase.firestore().collection('user')
+		  .where('userId', '==', firebase.auth().currentUser.uid).get();
+
 	
 		  // Check if the post is already in favorites for the current user
 		  const querySnapshot = await favoritesRef
@@ -92,6 +101,8 @@ export const PostCard = ({
 			});
 	
 			await postRef.doc(post.id).update({ like: firebase.firestore.FieldValue.increment(1) });
+			//await userRef.d
+
 		  }
 		} catch (error) {
 		  console.error('Error adding/removing from favorites: ', error);
@@ -187,13 +198,15 @@ export const PostCard = ({
 		
 		
 	  }
+
    return(
+	    <Zoom>
 		<div className="PostCard">
 			{loading && <Loader />}
 			{contextHolder}
 			{post && 
 			<Card
-			    className='PostCard'
+			    className={'PostCard'}
 				bodyStyle={{
 					padding: '6px', 
 					boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px', 
@@ -243,35 +256,70 @@ export const PostCard = ({
 						<CloseCircleOutlined  />
 					</div>
 				</button>}
-				<Space direction="horizontal" style={{
+				
+				<Space 
+				direction="horizontal" 
+				style={{
 					position: 'relative !important'
 				}}>
-				{post.images.map((img, index) => 
+				{post.images.map( (img, index) => 
 					<Avatar 
 					shape="square"  
-					style={{width: 120, height: 130, display: index !== 0 && 'none', cursor:'pointer'}} 
+					style={{
+						width: 130, 
+						height: 130, 
+						display: index !== 0 && 'none', 
+						cursor:'pointer'}} 
 					src={img} 
 					onClick={(event) =>openImageViewer(event,index, post)} key={index} /> 
 					)}
-				    <Tag style={{position: 'absolute',  left: '12px', top: '12px', fontSize: '7px !important'}} color="#108ee9">{post.type.toUpperCase()}</Tag>
+					<div style={{
+						position: 'absolute', 
+						left: '12px', 
+						top: '15px',
+						padding: "4px",
+						borderRadius: "50%",
+						backgroundColor: '#FFFFFF'
+					}}>
+						<EyeFilled  style={{fontSize: '18px', display: 'flex', top: '0', bottom: '0', marginTop: 'auto', marginBottom: 'auto'}} className={(allReadyViewPost && allReadyViewPost.includes(post.id)) ? 'text-warning': 'text-muted'}  />
+					</div>
+				    <Tag 
+						style={{
+						position: 'absolute',  
+						left: '12px', 
+						top: '110px', 
+						fontSize: '7px !important',
+				        fontWeight: 'bold'
+						}} 
+						color="#00000089">
+							{post.createdAt ?  moment(post.createdAt.toDate()).fromNow().capitalize(): 'Inconnu'}
+					</Tag>
 
 					<div>
-					<h3 style={{fontSize: 12, fontWeight: 500}}>{post.title.capitalize()}</h3>
-					<div style={{fontSize: '11px'}} className='text-muted'> Publié le  {post.createdAt ? new Date(post.createdAt.toDate()).toLocaleString(): 'Inconnu'}</div>
-					<div>
-					 	<Text strong className='text-muted'  style={{fontSize: '12px'}}>CFA {post.price} / {post.priceBy}</Text>
+					<Text strong className='text-secondary'  style={{fontSize: '15px', textTransform:'uppercase'}}>CFA {post.price} / {post.priceBy}</Text>
+					<div className='mt-3 mb-4'>
+					 <Tag color='#FA8E44'>{post.mode.toUpperCase()}</Tag> <Tag color='#96577F'>{post.type.toUpperCase()}</Tag>
 					</div>
-					<Text color='#108ee9' style={{fontSize: '11px'}}><i className='fa fa-map-marker'></i> {post.address}</Text>
-					<div className='mt-1 w-100  d-flex'>
+					
+					<Text 
+					color='#108ee9' 
+					style={{fontSize: '12px'}}>
+						<i 
+						style={{fontSize: '22px'}} 
+						className='fa fa-map-marker text-secondary me-2'></i> 
+						{post.address}
+					</Text>
+					<div className='mt-1 w-100  d-flex '>
 						{post.bedRooms  && <div className='d-flex align-items-center'> <img src={bed} alt='bed' style={{width: '12px'}} className='me-2'  /> {post.bedRooms}</div>}
-						{post.otherRooms && post.otherRooms.includes('sallon')   && <div className='ms-3 d-flex align-items-center'> <img src={sofa} alt='sofa' style={{width: '16px'}} className='me-2' /><CheckCircleOutlined color='green' /></div>}
-						{post.otherRooms && post.otherRooms.includes('bathroom')   && <div className='ms-3 d-flex align-items-center'> <img src={bathroom} alt='bathroom' style={{width: '12px'}}  className='me-2'  /> 1 </div>}
-						{post.otherRooms && post.otherRooms.includes('toilet')   && <div className='ms-3 d-flex align-items-center'> <img src={toilet} alt='bathroom' style={{width: '12px'}} className='me-2'  />  1</div>}
-						{post.otherRooms && post.otherRooms.includes('kitchen')   && <div className='ms-3 d-flex align-items-center'> <img src={kitchen} alt='kitchen' style={{width: '12px'}} className='me-2'  />  1</div>}
+						{post.sallon  && <div className='ms-3 d-flex align-items-center'> <img src={sofa} alt='sofa' style={{width: '16px'}} className='me-2' /> {post.sallon} </div>}
+						{post.bathRooms   && <div className='ms-3 d-flex align-items-center'> <img src={bathroom} alt='bathroom' style={{width: '12px'}}  className='me-2'  /> {post.bathRooms} </div>}
+						{post.toilet  && <div className='ms-3 d-flex align-items-center'> <img src={toilet} alt='bathroom' style={{width: '12px'}} className='me-2'  />  {post.toilet}</div>}
+						{post.otherRooms && post.otherRooms.includes('kitchen')    && <div className='ms-3 d-flex align-items-center'> <img src={kitchen} alt='kitchen' style={{width: '12px'}} className='me-2'  />  1</div>}
 					</div>
 					</div>
 				</Space>
             </Card>}
 		</div>
+		</Zoom>
 		)
 }

@@ -13,6 +13,7 @@ import bathroom from '../../assets/bathroom.svg';
 import toilet from '../../assets/toilet.svg';
 import GeolocationMap from '../../components/GeolocationMap/GeolocationMap';
 import NavBar from '../../components/NavBar/NavBar';
+import PostList from '../../components/PostList/PostList';
 
 export const PostDetailWPage = () => {
     const responsive = {
@@ -73,7 +74,7 @@ export const PostDetailWPage = () => {
             id: response.id,
             ...data
         })
-        console.log(data)
+        loadRelatedPosts(data.mode, data.type, response.id);
       })
 
          
@@ -102,19 +103,48 @@ const handleCancelModal = () => {
 	  setIsViewerOpen(true);
     event.stopPropagation();
 	}, []);
+
+    const loadRelatedPosts = (mode, type, uid) => {
+        const postRef = firebase
+        .firestore()
+        .collection('posts')
+        .where('mode', '==', mode)
+        .where('type','==', type)
+        .limit(10);
+        
+        postRef.get().then(
+          response => {
+        const dataList = [];
+    
+         response.docs.forEach(doc => {
+            if(doc.id !== uid){
+                dataList.push({
+                    id: doc.id,
+                    ...doc.data()
+                  })
+            }
+         
+         })
+    
+         console.log(dataList)
+        setRelatedPosts(dataList);
+         
+        })
+        }
   
 	const closeImageViewer = () => {
 	  setCurrentImage(0);
 	  setIsViewerOpen(false);
 	};
     return (
-        <>
+        <div className='bg-white'>
         <NavBar />
 
         <div className='row'>
         <div className='col-6'>
             {post && 
         <div 
+       
         style={{backgroundColor: '#FFFFFF', minHeight: '100vh', paddingBottom: '60px'}}>
         {isViewerOpen && post && (  
         <ReactSimpleImageViewer
@@ -132,7 +162,7 @@ const handleCancelModal = () => {
                <Carousel
                 key={'99'}
                 responsive={responsive} 
-                arrows={false}
+                arrows={true}
                 infinite={true}
                 autoPlay={true}
                 showDots={true}
@@ -262,7 +292,17 @@ const handleCancelModal = () => {
              <GeolocationMap  post={post} screen={'web'} />
             </div>    
             </div>
+
+            {relatedPosts.length > 0 &&
+            <div className='container'>
+               <PostList
+               posts={relatedPosts}
+               allReadyViewed={[]}
+               display='grid'
+
+                />
+            </div>}
         </div>
     
-        </>);
+        </div>);
 }

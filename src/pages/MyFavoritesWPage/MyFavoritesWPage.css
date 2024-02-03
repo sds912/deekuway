@@ -10,12 +10,12 @@
   width: 40px;
   height: 40px;
   font-size: 22px !important;
-  color: #02627a;
+  color: #96577F;
 
 }
 
 .btn-filter-active{
-  background-color: #02627a !important;
+  background-color: #96577F !important;
   color: #FFFFFF !important;
 }
 
@@ -27,8 +27,8 @@
 }
 
 .navbar-item-active{
-  color: #02627a;
-  border-bottom: 1px solid #02627a;
+  color: #96577F;
+  border-bottom: 1px solid #96577F;
 }
 
 

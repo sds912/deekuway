@@ -10,6 +10,7 @@ body, html {
   overflow-x: hidden;
   width: 100vw;
   height: 100vh;
+  accent-color: #96577F;
 }
 
 code {
@@ -27,14 +28,54 @@ code {
 }
 
 .btn-primary{
-  background-color: #02627a !important;
+  background-color: #FA8E44 !important;
   outline: none !important;
   border: none !important;
   padding: 8px 8px !important;
 }
 
 .btn-outline-primary{
-  border: 1px solid #02627a !important;
+  border: 1px solid #FA8E44 !important;
+}
+
+.allready-viewed {
+  opacity: 0.7 !important;
+  box-shadow: none !important;
+}
+
+.text-secondary{
+  color: #96577F !important;
+ 
+}
+
+.text-warning{
+  color: #FA8E44 !important;
+ 
+}
+
+.bg-secondary{
+  background-color: #96577F !important;
+}
+
+input[type="checkbox"]:checked{
+  background-color: #96577F !important;
+}
+
+.btn-outline-secondary{
+  border-color: #96577F !important;
+  color: #96577F !important;
+  font-weight: 700;
+}
+
+.btn-outline-secondary:hover{
+  background-color: #96577F !important;
+}
+
+input[type="checkbox"],
+input[type="radio"]{
+	width: 1.5em;
+	height: 1.5em;
+	margin-right: 0.65rem;
 }
 
         

@@ -7,6 +7,7 @@ import { EditOutlined } from '@ant-design/icons';
 import { EditProfilForm } from '../../components/EditProfilForm/EditProfilForm';
 import { BottomNav } from '../../components/BottomNav/BottomNav';
 import { useMediaQuery } from 'react-responsive';
+import Loader from '../../components/Loader/Loader';
 
 export const AccountPage = () =>{
 
@@ -15,6 +16,7 @@ export const AccountPage = () =>{
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
 	const [isModalVisible, setIsModalVisible] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
 
 
@@ -52,6 +54,7 @@ export const AccountPage = () =>{
 	},[]);
 
 	const loadData = () => {
+		setLoading(true);
 		loadPageTotal();	
 		firebase.auth().onAuthStateChanged(user => {
 		  const postRef =  firebase.firestore().collection('posts');
@@ -67,6 +70,7 @@ export const AccountPage = () =>{
 				})
 			})
 			setPosts(dataList);
+			setLoading(false);
 		   })
 		})
 	}
@@ -74,7 +78,8 @@ export const AccountPage = () =>{
 
 	return(
 		<>
-		<div className="AccountPage container py-5" >
+		{loading && <Loader />}
+		<div className="AccountPage container py-2 pb-5" >
 			<div className='d-flex justify-content-between align-items-center p-4 border-bottom'>
 				<div className='d-flex justify-content-start align-items-center px-2 py-3'>
 				<div>
@@ -94,6 +99,7 @@ export const AccountPage = () =>{
 		   postToHomePage={() =>{}} 
 		   favorites={[]} selectedPost={null} 
 		   reloadData={loadData}
+		   allReadyViewPost={[]}
 		   openImageViewer={() => {}}
 		   screen = {'account'}
 		    />}

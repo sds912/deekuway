@@ -57,6 +57,7 @@ export const  MyFavoritesPage = () => {
             postToHomePage={() => {}} 
             favorites={[]} 
             reloadData={loadData}
+            allReadyViewPost={[]}
             screen={'favorite'} />} 
           </div>
        </div>}

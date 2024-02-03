@@ -1,10 +1,9 @@
-import { Checkbox, Select } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import './PostFilterForm.css';
 import { EnvironmentOutlined } from "@ant-design/icons";
 import { useForm } from "react-hook-form";
-import { deleteFilterParams, loadFilterParams, saveFilterParams } from "../../services/localStorageService";
+import { deleteFilterParams} from "../../services/localStorageService";
 export const PostFilterForm = ({onSubmitFilter, resultsize}) => {
 
 	const [address, setAddress] = useState('');
@@ -31,31 +30,21 @@ export const PostFilterForm = ({onSubmitFilter, resultsize}) => {
       };
 
       const filter = data => {
-        saveFilterParams(data);
+       // saveFilterParams(data);
         onSubmitFilter(data);
       }
 
 
       const option = watch('mode');
-
-     useEffect(() => {
-       const param = loadFilterParams();
-       if(param !== null){
-        setValue('mode',param.mode);
-        setValue('bedRooms', param.bedRooms);
-        setValue('property', param.property);
-        setValue('otherRooms', param.otherRooms);
-        setValue('minPrice', param.minPrice);
-        setValue('maxPrice', param.maxPrice);
-        filter(param);
-       }
       
-     },[])
+      console.log(option)
+    
       
 
     return (
      <>  
-    <form onSubmit={handleSubmit(filter)} className="form" id="filter-form" key={'filter-form'} >
+    
+    <form onSubmit={handleSubmit(filter)} className="form" id="filter-form"  >
 
     <div style={{
         height: '70vh',
@@ -74,7 +63,7 @@ export const PostFilterForm = ({onSubmitFilter, resultsize}) => {
             <div>
                 <button 
                 style={{width: '60px'}} 
-                className="btn btn-outline-danger"
+                className="btn btn-outline-secondary"
                 onClick={() => {
                     reset();
                     deleteFilterParams();
@@ -87,21 +76,21 @@ export const PostFilterForm = ({onSubmitFilter, resultsize}) => {
 
         </div>
         
-        <div className="form-group py-2">
+       { <div className="form-group py-2">
           <div className="d-flex justify-content-between align-items-center">
-             <label for="filter-location" className={(option && option.includes('location') )? "option option-active" : "option"}>
+             <label for="filter-location" className={(option && option.includes('location') )? "option option-active bg-secondary" : "option"}>
                  Location
                  <input {...register('mode')} value="location" type='checkbox' id="filter-location" style={{
                     visibility: 'hidden'
                  }} />
              </label>
-             <label for="filter-co-loc" className={(option && option.includes('co-loc') )? "option option-active" : "option"}>
-                 Co-location
-                 <input  {...register('mode')} value="co-loc" type='checkbox' id="filter-co-loc" style={{
+             <label for="filter-co-loc" className={(option && option.includes('co-loc') )? "option option-active bg-secondary" : "option"}>
+                 Co-loc
+                 <input  {...register('mode')} value="co-location" type='checkbox' id="filter-co-loc" style={{
                     visibility: 'hidden'
                  }} />
              </label>
-             <label for="filter-vente" className={(option && option.includes('vente') )? "option option-active" : "option"}>
+             <label for="filter-vente" className={(option && option.includes('vente') )? "option option-active bg-secondary" : "option"}>
                  Vente
                  <input  {...register('mode')} value="vente" type='checkbox' id="filter-vente" style={{
                     visibility: 'hidden'
@@ -109,7 +98,7 @@ export const PostFilterForm = ({onSubmitFilter, resultsize}) => {
              </label>
              
           </div>
-        </div>
+        </div> }
 
         <div className='form-group w-100 mt-3'>
 			<label className='form-label fw-bold text-muted'>Adresse de localisation</label>
@@ -156,9 +145,9 @@ export const PostFilterForm = ({onSubmitFilter, resultsize}) => {
                         </div>
                     </div>
                     )}
-                </PlacesAutocomplete>
+                    </PlacesAutocomplete> }
             
-               }
+            
 		</div>
         <div className="form-group mt-4">
             <label className="fw-bold text-muted">Votre budget</label>
@@ -176,7 +165,7 @@ export const PostFilterForm = ({onSubmitFilter, resultsize}) => {
         <div className="mt-3">
             <div className="d-flex justify-content-between align-items-center bg-light p-2 border" style={{borderRadius: '4px'}}>
                 <label className="fw-bold text-muted">Type de propriété</label>
-                <div className="chevron-btn">
+                <div className="chevron-btn bg-secondary">
                     {!typePropertyOpened && <i vlas className="fa fa-chevron-down fw-bold text-white"  onClick={() => setTypePropertyOpened(true)} ></i>}
                     {typePropertyOpened  && <i vlas className="fa fa-chevron-up fw-bold text-white"    onClick={() => setTypePropertyOpened(false)} ></i>}
                 </div>
@@ -193,30 +182,53 @@ export const PostFilterForm = ({onSubmitFilter, resultsize}) => {
         </div>
         <div className="d-flex justify-content-between align-items-center mt-3 bg-light p-2 border"  style={{borderRadius: '4px'}}>
             <label className="fw-bold text-muted">Piéces</label>
-            <div  className="chevron-btn">
+            <div  className="chevron-btn bg-secondary">
                 {!autrePieceOpened && <i vlas className="fa fa-chevron-down fw-bold text-white"  onClick={() => setAutrePieceOpened(true)} ></i>}
                 {autrePieceOpened  && <i vlas className="fa fa-chevron-up fw-bold text-white"    onClick={() => setAutrePieceOpened(false)} ></i>}
             </div>
         </div>
        
-        {autrePieceOpened && <div className="form-group mt-4">
+        {autrePieceOpened && 
+        <div className="form-group mt-4">
             <div className="row">
                 <div className="col-12">
-                    <label className="fw-bold">Chambres</label>
-                    <div className="d-flex justify-content-between align-items-center">
-                        {["1","2","3","4","5","6"].map( d =>  
-                        <div className="d-flex justify-content-start align-items-center">
-                            <input {...register('bedRooms')} type="checkbox" value={d} className="me-2" /> {d === "6" ? "6+": d}
+                    <label className="fw-bold mb-2">Chambres</label>
+                    {<div className="d-flex justify-content-between align-items-center">
+                        {["1","2","3","4","5"].map((d,index)=>  
+                        <div key={index} className="d-flex justify-content-start align-items-center">
+                            <input {...register('bedRooms')} type="checkbox" value={d} className="me-2" /> {d === "5" ? "5+": d}
                         </div>)}
-                    </div>
+                        </div> }
+                </div>
+            </div>
+
+            <div className="row mt-3">
+                <div className="col-12">
+                    <label className="fw-bold mb-2">Salle de bain</label>
+                    {<div className="d-flex justify-content-between align-items-center">
+                        {["1","2","3","4","5"].map((d,index)=>  
+                        <div key={index} className="d-flex justify-content-start align-items-center">
+                            <input {...register('bathRooms')} type="checkbox" value={d} className="me-2" /> {d === "5" ? "5+": d}
+                        </div>)}
+                        </div> }
+                </div>
+            </div>
+
+            <div className="row mt-3">
+                <div className="col-12">
+                    <label className="fw-bold mb-2">Toilette</label>
+                    {<div className="d-flex justify-content-between align-items-center">
+                        {["1","2","3","4","5"].map((d,index)=>  
+                        <div key={index} className="d-flex justify-content-start align-items-center">
+                            <input {...register('toilet')} type="checkbox" value={d} className="me-2" /> {d === "5" ? "5+": d}
+                        </div>)}
+                        </div> }
                 </div>
             </div>
           
             {
             <div className="form-group mt-4">
                 <label className="fw-bold">Autres piéces</label>
-                <div className="mt-2 fw-bold"><input {...register('otherRooms')} type="checkbox" value={"bathRooms"} /> <span className="ms-2">Salle de bain</span> </div>
-                <div className="mt-2 fw-bold"><input {...register('otherRooms')} type="checkbox" value={"toilet"} /> <span className="ms-2">Toilette</span> </div>
                 <div className="mt-2 fw-bold"><input {...register('otherRooms')} type="checkbox" value={"sallon"} /> <span className="ms-2">Sallon</span></div>
                 <div className="mt-2 fw-bold"><input {...register('otherRooms')} type="checkbox" value={"kitchen"} /> <span className="ms-2">Cuisine</span></div>
                 <div className="mt-2 fw-bold"><input {...register('otherRooms')} type="checkbox" value={"balcon"} /> <span className="ms-2">Balcon</span></div>
@@ -235,13 +247,12 @@ export const PostFilterForm = ({onSubmitFilter, resultsize}) => {
                 right: '0',
                 width: "200px",
                 height: "45px",
-                backgroundColor: '#02627a',
                 border: 'none',
                 outline: 'none',
                 marginLeft: 'auto',
                 marginRight: 'auto'
             }}
-            className="btn  fw-bold text-white">
+            className="btn  fw-bold text-white bg-secondary">
             Appliquer le filtre
         </button>
        </form>

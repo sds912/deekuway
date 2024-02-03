@@ -7,15 +7,21 @@ import  firebase from '../../services/firebaseConfig';
 import { useNavigate,Link, useLocation } from 'react-router-dom';
 
 export const BottomNav = () => {
-	let navigate = useNavigate();
+	const  navigate = useNavigate();
 	const [isPostModalVisible, setPostIsModalVisible] = useState(false);
 	const location = useLocation();
 
 	const redirectToAccount = () => {
-		const userId = firebase.auth().currentUser?.uid; // Assuming you retrieve the user ID from Firebase Auth
-		if (userId) {
-		  navigate(`/account/${userId}`)
-		}
+		firebase.auth().onAuthStateChanged(user => {
+			
+			// Assuming you retrieve the user ID from Firebase Auth
+			if (user && user.uid) {
+			navigate(`/account/${user.uid}`)
+			}else{
+               navigate('/login');
+			}
+		})
+		
 	  };
 
 	const openPostOrConnect = () => {
