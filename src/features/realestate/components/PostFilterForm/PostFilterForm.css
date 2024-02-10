@@ -1,0 +1,44 @@
+  .option{
+    display: flex !important;
+    border: 1px solid #CCCCCC;
+    height: 26px;
+    justify-content: center !important;
+    align-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 8px;
+    padding: 20px 12px;
+    cursor: pointer;
+    transition: all .7s;
+    font-size: 12px;
+  }
+
+  .option-active{
+    color: #FFFFFF;
+  }
+
+  .option input {
+    width: 0 !important;
+    display: none;
+  }
+
+  .option:hover{
+    opacity: 0.7;
+  }
+
+  .chevron-btn{
+      width: 26px;
+      height: 26px;
+      border-radius: 18px;
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      align-items: center;
+      color: #FFFFFF;
+      transition: all 0.6s;
+      cursor: pointer;
+  }
+
+  .chevron-btn:hover{
+    opacity: 0.6;
+  }

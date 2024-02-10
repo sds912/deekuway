@@ -3,3 +3,8 @@
   background-color: #f4f4f4 !important;
 
 }
+
+.post-card-active{
+  transition: all .8s;
+  border: 2px solid #FA8E44;
+}
