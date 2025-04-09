@@ -10,8 +10,10 @@
     padding: 20px 12px;
     cursor: pointer;
     transition: all .7s;
-    font-size: 12px;
+    font-size: 10px;
+    font-weight: 400;
   }
+  
 
   .option-active{
     color: #FFFFFF;

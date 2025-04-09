@@ -7,8 +7,7 @@ export const PostFilterSide = ({onSubmitFilter, setResultSize}) => {
         position: 'relative',
         width: "300px",
         marginTop: '100px',
-        paddingBottom: '40px'
-         }} className=" pt-4 px-3 bg-light">  
+         }} className=" p-2 bg-light">  
        <PostFilterForm onSubmitFilter={onSubmitFilter} resultsize={setResultSize} />
     </div>
     )

@@ -2,14 +2,14 @@
 
 }
 
-.location-option, .vente-option{
+.location-option, .vente-option, .co-loc-option{
     border: 1px solid #e5e5e5;
     font-size: 14px;
     transition: all .5s;
     border-radius: 7px;
     text-align: center;
     width: 100%;
-    height: 80px;
+    height: 100px;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 
 }
@@ -24,8 +24,13 @@
   color: #e5e5e5;
 }
 
+.co-loc-option-active{
+  background-color: #96577F;
+  color: #e5e5e5;
+}
 
-.location-option:hover, .vente-option:hover{
+
+.location-option:hover, .vente-option:hover, .co-loc-option:hover{
     opacity: .6;
     cursor: pointer;
     

@@ -141,8 +141,8 @@ const NavBar = () => {
         visible={isPostModalVisible}
         onCancel={handlePostCancelModal}
         footer={false}
-        style={{top: 20}}
-        
+        style={{top: 20, height: 600}}
+        maskClosable={false}
       >
         <PostForm closeModel={handlePostCancelModal} />
       </Modal>

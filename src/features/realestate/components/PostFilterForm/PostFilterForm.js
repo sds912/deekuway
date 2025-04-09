@@ -13,7 +13,7 @@ export const PostFilterForm = ({onSubmitFilter, resultsize}) => {
 	const [autrePieceOpened, setAutrePieceOpened] = useState(true);
 	const {register, handleSubmit ,  setValue, watch,  reset} = useForm();
     const [max, setMax] = useState(0);
-    const [min, setMin] = useState(20000);
+    const [min, setMin] = useState(2000);
     const [currency, setCurrency] = useState('CFA');
 
     const handleChange = (address) => {
@@ -46,7 +46,7 @@ export const PostFilterForm = ({onSubmitFilter, resultsize}) => {
       const toilets    = watch('toilet');
       const bathRooms  = watch('bathRooms');
       const property   = watch('property');
-      const otherRooms   = watch('otherRooms');
+      const otherRooms = watch('otherRooms');
     
       
 
